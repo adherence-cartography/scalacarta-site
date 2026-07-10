@@ -382,11 +382,13 @@ section{position:relative;}
 }
 .tier-card:hover{transform:translateY(-3px);}
 .tier-badge{
-  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  position:absolute;top:-11px;left:50%;transform:translateX(-50%);
   font-family:var(--font-mono);font-size:0.58rem;
   letter-spacing:0.2em;text-transform:uppercase;
   padding:3px 12px;border-radius:20px;
   white-space:nowrap;
+  z-index:2;
+  background:var(--surface);
 }
 .tier-icon{
   font-size:1.8rem;margin-bottom:12px;line-height:1;
@@ -432,35 +434,35 @@ section{position:relative;}
 
 /* Per-tier color overrides */
 .tier-card.t-institutional{border-top:3px solid var(--gold);}
-.tier-card.t-institutional .tier-badge{background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.35);color:#d4a843;}
+.tier-card.t-institutional .tier-badge{border:1px solid rgba(212,168,67,0.35);color:#d4a843;}
 .tier-card.t-institutional .tier-check{color:#d4a843;}
 .tier-card.t-institutional .tier-cta{background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.35);color:#d4a843;}
 .tier-card.t-institutional .tier-cta:hover{background:rgba(212,168,67,0.22);border-color:rgba(212,168,67,0.6);}
 .tier-card.t-institutional:hover{border-color:rgba(212,168,67,0.3);}
 
 .tier-card.t-validation{border-top:3px solid var(--cyan);}
-.tier-card.t-validation .tier-badge{background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.3);color:#06b6d4;}
+.tier-card.t-validation .tier-badge{border:1px solid rgba(6,182,212,0.3);color:#06b6d4;}
 .tier-card.t-validation .tier-check{color:#06b6d4;}
 .tier-card.t-validation .tier-cta{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:#06b6d4;}
 .tier-card.t-validation .tier-cta:hover{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.55);}
 .tier-card.t-validation:hover{border-color:rgba(6,182,212,0.25);}
 
 .tier-card.t-affiliate{border-top:3px solid var(--green);}
-.tier-card.t-affiliate .tier-badge{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.28);color:#10b981;}
+.tier-card.t-affiliate .tier-badge{border:1px solid rgba(16,185,129,0.28);color:#10b981;}
 .tier-card.t-affiliate .tier-check{color:#10b981;}
 .tier-card.t-affiliate .tier-cta{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28);color:#10b981;}
 .tier-card.t-affiliate .tier-cta:hover{background:rgba(16,185,129,0.18);border-color:rgba(16,185,129,0.5);}
 .tier-card.t-affiliate:hover{border-color:rgba(16,185,129,0.22);}
 
 .tier-card.t-student{border-top:3px solid var(--purple);}
-.tier-card.t-student .tier-badge{background:rgba(139,111,245,0.1);border:1px solid rgba(139,111,245,0.28);color:#8b6ff5;}
+.tier-card.t-student .tier-badge{border:1px solid rgba(139,111,245,0.28);color:#8b6ff5;}
 .tier-card.t-student .tier-check{color:#8b6ff5;}
 .tier-card.t-student .tier-cta{background:rgba(139,111,245,0.08);border:1px solid rgba(139,111,245,0.28);color:#8b6ff5;}
 .tier-card.t-student .tier-cta:hover{background:rgba(139,111,245,0.18);border-color:rgba(139,111,245,0.5);}
 .tier-card.t-student:hover{border-color:rgba(139,111,245,0.22);}
 
 .tier-card.t-industry{border-top:3px solid var(--amber);}
-.tier-card.t-industry .tier-badge{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.28);color:#f59e0b;}
+.tier-card.t-industry .tier-badge{border:1px solid rgba(245,158,11,0.28);color:#f59e0b;}
 .tier-card.t-industry .tier-check{color:#f59e0b;}
 .tier-card.t-industry .tier-cta{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.28);color:#f59e0b;}
 .tier-card.t-industry .tier-cta:hover{background:rgba(245,158,11,0.18);border-color:rgba(245,158,11,0.5);}
