@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TESSERA GRC — Global Research Consortium · Scala Carta Foundation</title>
+<meta name="description" content="TESSERA GRC: the world's first clinician-led adherence science network. Five membership tiers, 62+ countries, MAP instrument. A program of Scala Carta Foundation."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#080e1a;
+  --surface:#0d1525;
+  --card:#111d30;
+  --card2:#0f1a2c;
+  --border:rgba(255,255,255,0.07);
+  --bright:#e8f0f8;
+  --muted:#6b8099;
+  --text:#cdd8e8;
+  --base:#4e9cf5;
+  --pe:#d4a843;
+  --green:#10b981;
+  --cyan:#06b6d4;
+  --purple:#8b6ff5;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --gold:#d4a843;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+html,body{
+  min-height:100%;
+  background:var(--ink);
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ── Ambient bg ──────────────────────────────────────────────────────── */
+.page-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 55% at 0% 0%,  rgba(78,156,245,0.055) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 60% at 90% 90%, rgba(212,168,67,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 40%, rgba(16,185,129,0.03) 0%,transparent 70%);
+}
+
+/* ── Nav ─────────────────────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 48px;
+  background:rgba(8,14,26,0.94);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(212,168,67,0.12);
+}
+.nav-brand{display:flex;align-items:center;gap:16px;}
+.nav-logo{
+  width:44px;height:44px;flex-shrink:0;
+}
+.nav-wordmark{display:flex;flex-direction:column;gap:1px;}
+.nav-badge{
+  font-family:var(--font-mono);font-size:0.6rem;
+  letter-spacing:0.32em;text-transform:uppercase;
+  color:rgba(212,168,67,0.55);
+  display:flex;align-items:center;gap:7px;
+}
+.nav-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#10b981;box-shadow:0 0 6px #10b981;
+  animation:blink 2.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.nav-title{
+  font-family:var(--font-display);
+  font-size:1.25rem;font-weight:300;
+  color:#fff;letter-spacing:0.04em;line-height:1;
+}
+.nav-title em{font-style:italic;color:rgba(212,168,67,0.85);}
+.nav-links{display:flex;align-items:center;gap:22px;}
+.nav-link{
+  font-family:var(--font-mono);font-size:0.7rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:color 0.2s;
+}
+.nav-link:hover{color:var(--bright);}
+.nav-cta{
+  font-family:var(--font-mono);font-size:0.7rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:9px 22px;border-radius:7px;
+  border:1px solid rgba(212,168,67,0.4);
+  background:rgba(212,168,67,0.08);
+  color:rgba(212,168,67,0.9);
+  text-decoration:none;
+  transition:all 0.2s;
+}
+.nav-cta:hover{background:rgba(212,168,67,0.16);border-color:rgba(212,168,67,0.65);}
+
+/* ── Layout wrapper ─────────────────────────────────────────────────── */
+.page-wrap{position:relative;z-index:1;}
+section{position:relative;}
+
+/* ── Utility ─────────────────────────────────────────────────────────── */
+.section-label{
+  font-family:var(--font-mono);font-size:0.68rem;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--muted);
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:18px;
+}
+.section-label::after{
+  content:'';flex:1;max-width:80px;
+  height:1px;background:var(--border);
+}
+.section-label span{color:var(--pe);}
+.container{max-width:1080px;margin:0 auto;padding:0 40px;}
+.container-wide{max-width:1200px;margin:0 auto;padding:0 40px;}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+  padding:0 48px;
+}
+.hero-grid{
+  max-width:1080px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 480px;
+  gap:60px;align-items:center;
+  padding:80px 0;
+}
+.hero-kicker{
+  font-family:var(--font-mono);font-size:0.7rem;
+  letter-spacing:0.36em;text-transform:uppercase;
+  color:rgba(212,168,67,0.7);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-kicker::before{
+  content:'';width:32px;height:1px;background:rgba(212,168,67,0.35);
+}
+.hero-headline{
+  font-family:var(--font-display);
+  font-size:clamp(2.8rem,4.8vw,4.2rem);
+  font-weight:300;color:#fff;
+  letter-spacing:0.02em;line-height:1.12;
+  margin-bottom:28px;
+}
+.hero-headline em{font-style:italic;color:rgba(212,168,67,0.88);}
+.hero-sub{
+  font-size:1.08rem;color:var(--muted);
+  line-height:1.75;max-width:520px;
+  margin-bottom:36px;
+}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(212,168,67,0.22),rgba(212,168,67,0.1));
+  border:1px solid rgba(212,168,67,0.5);
+  border-radius:9px;padding:14px 28px;
+  font-family:var(--font-body);font-size:0.97rem;font-weight:500;
+  color:#e8c96a;text-decoration:none;
+  transition:all 0.22s;cursor:pointer;
+}
+.btn-gold:hover{background:rgba(212,168,67,0.28);border-color:rgba(212,168,67,0.75);}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:9px;padding:13px 26px;
+  font-family:var(--font-mono);font-size:0.72rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:all 0.22s;cursor:pointer;
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.22);color:var(--bright);}
+
+/* Hero globe visualization */
+.hero-visual{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.globe-wrap{
+  position:relative;width:440px;height:440px;
+  flex-shrink:0;
+  /* canvas fills the full wrap */
+}
+.globe-ring{
+  position:absolute;inset:0;
+  border-radius:50%;
+  border:1px solid rgba(212,168,67,0.1);
+  animation:globe-spin 60s linear infinite;
+}
+.globe-ring:nth-child(2){
+  inset:24px;
+  border-color:rgba(78,156,245,0.08);
+  animation-duration:45s;animation-direction:reverse;
+}
+.globe-ring:nth-child(3){
+  inset:48px;
+  border-color:rgba(16,185,129,0.07);
+  animation-duration:30s;
+}
+@keyframes globe-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.globe-svg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+}
+.globe-pulse{
+  position:absolute;
+  width:12px;height:12px;
+  border-radius:50%;
+  background:rgba(212,168,67,0.5);
+  box-shadow:0 0 12px rgba(212,168,67,0.4);
+}
+.globe-pulse::before{
+  content:'';position:absolute;inset:-6px;
+  border-radius:50%;
+  border:1px solid rgba(212,168,67,0.3);
+  animation:pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(2.5);opacity:0;}
+}
+/* Stagger pulses at different locations */
+.globe-pulse.p1{top:38%;left:42%;}
+.globe-pulse.p2{top:22%;left:62%;animation-delay:0.7s;background:rgba(6,182,212,0.5);box-shadow:0 0 12px rgba(6,182,212,0.4);}
+.globe-pulse.p3{top:55%;left:28%;animation-delay:1.4s;background:rgba(16,185,129,0.5);box-shadow:0 0 12px rgba(16,185,129,0.4);}
+.globe-pulse.p4{top:30%;left:22%;animation-delay:0.3s;}
+.globe-pulse.p5{top:62%;left:58%;animation-delay:1s;background:rgba(139,111,245,0.5);box-shadow:0 0 12px rgba(139,111,245,0.4);}
+
+.hero-counter-row{
+  position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:1px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.hero-counter-item{
+  padding:12px 20px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.hero-counter-val{
+  font-family:var(--font-display);
+  font-size:1.6rem;font-weight:300;
+  color:var(--pe);line-height:1;
+}
+.hero-counter-label{
+  font-family:var(--font-mono);font-size:0.58rem;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ETYMOLOGY
+═══════════════════════════════════════════════════════════════════════ */
+#etymology{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(212,168,67,0.035),rgba(8,14,26,0));
+  padding:64px 0;
+}
+.etymology-grid{
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  gap:0;
+}
+.etymology-divider{
+  background:var(--border);
+  margin:0 48px;
+}
+.etymology-block{padding:0 48px;}
+.ety-kicker{
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:rgba(212,168,67,0.6);
+  margin-bottom:12px;
+}
+.ety-word{
+  font-family:var(--font-display);
+  font-size:2.4rem;font-weight:300;
+  color:#fff;letter-spacing:0.06em;
+  margin-bottom:16px;
+  line-height:1;
+}
+.ety-word em{font-style:italic;color:var(--pe);}
+.ety-meaning{
+  font-size:0.93rem;color:var(--muted);
+  line-height:1.75;
+}
+.ety-meaning strong{color:var(--bright);font-weight:500;}
+.ety-pills{
+  display:flex;gap:8px;flex-wrap:wrap;
+  margin-top:16px;
+}
+.ety-pill{
+  font-family:var(--font-mono);font-size:0.65rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;
+  background:rgba(212,168,67,0.08);
+  border:1px solid rgba(212,168,67,0.2);
+  color:rgba(212,168,67,0.75);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ABOUT TESSERA
+═══════════════════════════════════════════════════════════════════════ */
+#about{padding:80px 0;}
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:48px;align-items:start;
+}
+.about-text h2{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,3.2vw,2.8rem);
+  font-weight:300;color:#fff;
+  line-height:1.2;margin-bottom:20px;
+}
+.about-text h2 em{font-style:italic;color:var(--pe);}
+.about-text p{
+  font-size:1rem;color:var(--muted);
+  line-height:1.78;margin-bottom:16px;
+}
+.about-text p strong{color:var(--bright);font-weight:500;}
+.about-pillars{
+  display:flex;flex-direction:column;gap:14px;
+}
+.pillar{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-left:3px solid var(--pe);
+  border-radius:0 10px 10px 0;
+  padding:18px 20px;
+}
+.pillar-title{
+  font-size:0.95rem;color:var(--bright);font-weight:500;
+  margin-bottom:4px;
+}
+.pillar-desc{font-size:0.85rem;color:var(--muted);line-height:1.6;}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MEMBERSHIP TIERS
+═══════════════════════════════════════════════════════════════════════ */
+#membership{
+  padding:80px 0;
+  background:linear-gradient(180deg,rgba(13,21,37,0) 0%,rgba(13,21,37,0.6) 40%,rgba(13,21,37,0) 100%);
+}
+.tiers-intro{text-align:center;margin-bottom:56px;}
+.tiers-intro h2{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,3.5vw,3rem);
+  font-weight:300;color:#fff;
+  line-height:1.2;margin-bottom:16px;
+}
+.tiers-intro h2 em{font-style:italic;color:var(--pe);}
+.tiers-intro p{
+  font-size:1rem;color:var(--muted);
+  line-height:1.7;max-width:600px;margin:0 auto;
+}
+
+.tiers-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
+}
+.tier-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:24px 18px;
+  position:relative;
+  display:flex;flex-direction:column;
+  transition:transform 0.22s, border-color 0.22s;
+}
+.tier-card:hover{transform:translateY(-3px);}
+.tier-badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:0.58rem;
+  letter-spacing:0.2em;text-transform:uppercase;
+  padding:3px 12px;border-radius:20px;
+  white-space:nowrap;
+}
+.tier-icon{
+  font-size:1.8rem;margin-bottom:12px;line-height:1;
+  text-align:center;
+}
+.tier-name{
+  font-family:var(--font-display);
+  font-size:1.25rem;font-weight:400;
+  color:#fff;text-align:center;
+  margin-bottom:6px;line-height:1.2;
+}
+.tier-target{
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.16em;text-transform:uppercase;
+  text-align:center;color:var(--muted);
+  margin-bottom:18px;
+}
+.tier-divider{
+  height:1px;background:var(--border);
+  margin-bottom:16px;
+}
+.tier-benefits{
+  list-style:none;
+  display:flex;flex-direction:column;gap:8px;
+  flex:1;margin-bottom:20px;
+}
+.tier-benefits li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:0.82rem;color:var(--muted);line-height:1.5;
+}
+.tier-check{
+  flex-shrink:0;margin-top:2px;
+  font-size:0.7rem;
+}
+.tier-cta{
+  display:block;
+  border-radius:8px;padding:11px 16px;
+  font-family:var(--font-mono);font-size:0.66rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  text-decoration:none;text-align:center;
+  transition:all 0.2s;
+}
+
+/* Per-tier color overrides */
+.tier-card.t-institutional{border-top:3px solid var(--gold);}
+.tier-card.t-institutional .tier-badge{background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.35);color:#d4a843;}
+.tier-card.t-institutional .tier-check{color:#d4a843;}
+.tier-card.t-institutional .tier-cta{background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.35);color:#d4a843;}
+.tier-card.t-institutional .tier-cta:hover{background:rgba(212,168,67,0.22);border-color:rgba(212,168,67,0.6);}
+.tier-card.t-institutional:hover{border-color:rgba(212,168,67,0.3);}
+
+.tier-card.t-validation{border-top:3px solid var(--cyan);}
+.tier-card.t-validation .tier-badge{background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.3);color:#06b6d4;}
+.tier-card.t-validation .tier-check{color:#06b6d4;}
+.tier-card.t-validation .tier-cta{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:#06b6d4;}
+.tier-card.t-validation .tier-cta:hover{background:rgba(6,182,212,0.2);border-color:rgba(6,182,212,0.55);}
+.tier-card.t-validation:hover{border-color:rgba(6,182,212,0.25);}
+
+.tier-card.t-affiliate{border-top:3px solid var(--green);}
+.tier-card.t-affiliate .tier-badge{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.28);color:#10b981;}
+.tier-card.t-affiliate .tier-check{color:#10b981;}
+.tier-card.t-affiliate .tier-cta{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28);color:#10b981;}
+.tier-card.t-affiliate .tier-cta:hover{background:rgba(16,185,129,0.18);border-color:rgba(16,185,129,0.5);}
+.tier-card.t-affiliate:hover{border-color:rgba(16,185,129,0.22);}
+
+.tier-card.t-student{border-top:3px solid var(--purple);}
+.tier-card.t-student .tier-badge{background:rgba(139,111,245,0.1);border:1px solid rgba(139,111,245,0.28);color:#8b6ff5;}
+.tier-card.t-student .tier-check{color:#8b6ff5;}
+.tier-card.t-student .tier-cta{background:rgba(139,111,245,0.08);border:1px solid rgba(139,111,245,0.28);color:#8b6ff5;}
+.tier-card.t-student .tier-cta:hover{background:rgba(139,111,245,0.18);border-color:rgba(139,111,245,0.5);}
+.tier-card.t-student:hover{border-color:rgba(139,111,245,0.22);}
+
+.tier-card.t-industry{border-top:3px solid var(--amber);}
+.tier-card.t-industry .tier-badge{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.28);color:#f59e0b;}
+.tier-card.t-industry .tier-check{color:#f59e0b;}
+.tier-card.t-industry .tier-cta{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.28);color:#f59e0b;}
+.tier-card.t-industry .tier-cta:hover{background:rgba(245,158,11,0.18);border-color:rgba(245,158,11,0.5);}
+.tier-card.t-industry:hover{border-color:rgba(245,158,11,0.22);}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MAP INSTRUMENT
+═══════════════════════════════════════════════════════════════════════ */
+#map-instrument{padding:80px 0;}
+.map-wrap{
+  display:grid;grid-template-columns:1fr 320px;
+  gap:48px;align-items:start;
+}
+.map-text h2{
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:300;color:#fff;
+  line-height:1.2;margin-bottom:16px;
+}
+.map-text h2 em{font-style:italic;color:var(--pe);}
+.map-text p{
+  font-size:0.97rem;color:var(--muted);
+  line-height:1.76;margin-bottom:14px;
+}
+.domain-cards{
+  display:flex;flex-direction:column;gap:10px;
+  margin-top:20px;
+}
+.domain-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+}
+.domain-icon{
+  width:38px;height:38px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.domain-label{
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:3px;
+}
+.domain-name{font-size:0.92rem;color:var(--bright);font-weight:500;}
+.domain-items{font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);}
+
+.pe-card{
+  background:rgba(212,168,67,0.04);
+  border:1px solid rgba(212,168,67,0.16);
+  border-radius:14px;
+  padding:28px;
+  position:sticky;top:80px;
+}
+.pe-title{
+  font-family:var(--font-mono);font-size:0.65rem;
+  letter-spacing:0.26em;text-transform:uppercase;
+  color:var(--pe);margin-bottom:16px;
+}
+.pe-eq{
+  font-family:var(--font-display);
+  font-size:1.9rem;font-weight:300;
+  color:#fff;text-align:center;
+  margin-bottom:6px;
+}
+.pe-eq-sub{
+  font-family:var(--font-mono);font-size:0.68rem;
+  color:var(--muted);text-align:center;
+  margin-bottom:20px;
+}
+.pe-divider{height:1px;background:rgba(212,168,67,0.12);margin-bottom:16px;}
+.pe-phenotypes-label{
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;
+}
+.phenotype-list{display:flex;flex-direction:column;gap:8px;}
+.phenotype-row{
+  display:flex;align-items:center;gap:10px;
+  font-size:0.82rem;
+}
+.ph-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ph-name{color:var(--bright);flex:1;}
+.ph-score{font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);}
+.pe-note{
+  margin-top:16px;
+  font-family:var(--font-mono);font-size:0.66rem;
+  letter-spacing:0.1em;color:var(--muted);
+  line-height:1.6;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESEARCH EXCHANGE
+═══════════════════════════════════════════════════════════════════════ */
+#research-exchange{
+  padding:80px 0;
+  background:linear-gradient(135deg,rgba(6,182,212,0.04),rgba(8,14,26,0));
+}
+.rx-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:48px;align-items:center;
+}
+.rx-text h2{
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:300;color:#fff;
+  line-height:1.2;margin-bottom:16px;
+}
+.rx-text h2 em{font-style:italic;color:var(--cyan);}
+.rx-text p{
+  font-size:0.97rem;color:var(--muted);
+  line-height:1.76;margin-bottom:14px;
+}
+.rx-card-mock{
+  background:var(--card2);
+  border:1px solid rgba(6,182,212,0.18);
+  border-radius:14px;
+  padding:0;
+  overflow:hidden;
+}
+.rx-card-header{
+  background:rgba(6,182,212,0.07);
+  border-bottom:1px solid rgba(6,182,212,0.12);
+  padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.rx-card-label{
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:#06b6d4;
+}
+.rx-card-count{
+  font-family:var(--font-mono);font-size:0.7rem;
+  color:var(--muted);
+}
+.rx-post{
+  padding:16px 18px;
+  border-bottom:1px solid var(--border);
+}
+.rx-post:last-child{border-bottom:none;}
+.rx-post-tier{
+  font-family:var(--font-mono);font-size:0.6rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:5px;
+  display:flex;align-items:center;gap:7px;
+}
+.rx-post-tier-dot{width:6px;height:6px;border-radius:50%;}
+.rx-post-title{
+  font-size:0.9rem;color:var(--bright);font-weight:500;
+  margin-bottom:4px;line-height:1.4;
+}
+.rx-post-meta{
+  font-family:var(--font-mono);font-size:0.65rem;
+  color:var(--muted);
+}
+.rx-post-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.rx-tag{
+  font-family:var(--font-mono);font-size:0.6rem;
+  letter-spacing:0.1em;
+  padding:3px 9px;border-radius:20px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+.rx-lock{
+  padding:12px 18px;
+  background:rgba(139,111,245,0.05);
+  border-top:1px solid rgba(139,111,245,0.12);
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(139,111,245,0.65);
+  display:flex;align-items:center;gap:8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESEARCHER DIRECTORY
+═══════════════════════════════════════════════════════════════════════ */
+#researcher-directory{padding:100px 0;background:linear-gradient(180deg,transparent 0%,rgba(212,168,67,0.03) 50%,transparent 100%);}
+.dir-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:48px;align-items:center;
+}
+.dir-text h2{
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:300;color:#fff;
+  line-height:1.2;margin-bottom:16px;
+}
+.dir-text h2 em{font-style:italic;color:var(--pe);}
+.dir-text p{
+  font-size:0.97rem;color:var(--muted);
+  line-height:1.76;margin-bottom:14px;
+}
+.dir-cards-mock{
+  display:flex;flex-direction:column;gap:10px;
+}
+.dir-profile-card{
+  background:var(--card2);
+  border:1px solid rgba(212,168,67,0.14);
+  border-radius:12px;
+  padding:16px 18px;
+  display:flex;flex-direction:column;gap:8px;
+  transition:border-color 0.2s;
+}
+.dir-profile-top{display:flex;align-items:center;gap:12px;}
+.dir-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(212,168,67,0.12);
+  border:1px solid rgba(212,168,67,0.28);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:0.7rem;
+  color:#d4a843;flex-shrink:0;font-weight:500;
+}
+.dir-name{
+  font-size:0.88rem;color:var(--bright);font-weight:600;
+  line-height:1.3;
+}
+.dir-cred{font-size:0.68rem;color:var(--muted);}
+.dir-inst{font-size:0.70rem;color:rgba(107,128,153,0.7);margin-top:2px;}
+.dir-badges{display:flex;gap:5px;flex-wrap:wrap;}
+.dir-badge{
+  font-family:var(--font-mono);font-size:0.58rem;
+  padding:2px 6px;border-radius:4px;letter-spacing:0.04em;
+}
+.dir-badge-map{background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);color:#d4a843;}
+.dir-badge-peacs{background:rgba(78,156,245,0.10);border:1px solid rgba(78,156,245,0.28);color:#4e9cf5;}
+.dir-badge-mmas{background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.28);color:#10b981;}
+.dir-spec-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.dir-spec-tag{
+  font-family:var(--font-mono);font-size:0.58rem;
+  padding:2px 8px;border-radius:20px;
+  background:rgba(139,111,245,0.08);
+  border:1px solid rgba(139,111,245,0.18);
+  color:rgba(139,111,245,0.75);
+}
+.dir-bio{
+  font-size:0.72rem;color:rgba(107,128,153,0.85);
+  line-height:1.5;
+}
+.dir-connect{
+  font-family:var(--font-mono);font-size:0.60rem;
+  letter-spacing:0.10em;text-transform:uppercase;
+  color:rgba(78,156,245,0.8);text-decoration:none;
+  align-self:flex-start;
+}
+.dir-count-row{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:0.60rem;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(212,168,67,0.5);
+  margin-bottom:8px;
+}
+.dir-count-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#d4a843;box-shadow:0 0 5px #d4a843;
+  animation:blink 2.2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOUNDING HUB
+═══════════════════════════════════════════════════════════════════════ */
+#founding-hub{padding:80px 0;}
+.hub-card{
+  background:linear-gradient(135deg,rgba(16,185,129,0.05),rgba(212,168,67,0.04));
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:44px 48px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:40px;align-items:start;
+}
+.hub-flag{font-size:4.5rem;line-height:1;flex-shrink:0;}
+.hub-label{
+  font-family:var(--font-mono);font-size:0.66rem;
+  letter-spacing:0.28em;text-transform:uppercase;
+  color:#10b981;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.hub-label::before{content:'';width:16px;height:1px;background:#10b981;}
+.hub-title{
+  font-family:var(--font-display);
+  font-size:2rem;font-weight:300;
+  color:#fff;margin-bottom:10px;
+}
+.hub-title em{font-style:italic;color:rgba(212,168,67,0.85);}
+.hub-desc{
+  font-size:0.95rem;color:var(--muted);
+  line-height:1.72;margin-bottom:20px;
+}
+.hub-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.hub-stat{display:flex;flex-direction:column;gap:3px;}
+.hub-stat-val{
+  font-family:var(--font-display);
+  font-size:1.8rem;font-weight:300;
+  color:var(--pe);line-height:1;
+}
+.hub-stat-label{
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--muted);
+}
+.hub-map{flex-shrink:0;width:210px;}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HOW TO JOIN
+═══════════════════════════════════════════════════════════════════════ */
+#how-to-join{padding:80px 0;}
+.join-intro{text-align:center;margin-bottom:48px;}
+.join-intro h2{
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:300;color:#fff;
+  margin-bottom:14px;
+}
+.join-intro h2 em{font-style:italic;color:var(--pe);}
+.join-intro p{font-size:1rem;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.7;}
+.steps-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:24px;position:relative;
+}
+.steps-row::before{
+  content:'';
+  position:absolute;top:28px;left:calc(16.66% + 20px);
+  right:calc(16.66% + 20px);
+  height:1px;background:var(--border);
+}
+.step-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;padding:28px;
+  text-align:center;
+  position:relative;
+}
+.step-num{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(212,168,67,0.08);
+  border:1px solid rgba(212,168,67,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.5rem;font-weight:300;
+  color:var(--pe);margin:0 auto 18px;
+  position:relative;z-index:1;
+}
+.step-title{
+  font-size:1rem;color:var(--bright);font-weight:500;
+  margin-bottom:8px;
+}
+.step-desc{font-size:0.88rem;color:var(--muted);line-height:1.65;}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CTA STRIP
+═══════════════════════════════════════════════════════════════════════ */
+#cta{
+  padding:80px 0 100px;
+}
+.cta-wrap{
+  background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(78,156,245,0.05));
+  border:1px solid rgba(212,168,67,0.18);
+  border-radius:20px;
+  padding:56px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.cta-wrap::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(212,168,67,0.06),transparent 70%);
+  pointer-events:none;
+}
+.cta-super{
+  font-family:var(--font-mono);font-size:0.68rem;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:rgba(212,168,67,0.6);
+  margin-bottom:18px;
+}
+.cta-title{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:300;color:#fff;
+  line-height:1.18;margin-bottom:18px;
+}
+.cta-title em{font-style:italic;color:rgba(212,168,67,0.88);}
+.cta-sub{
+  font-size:1.02rem;color:var(--muted);
+  line-height:1.72;max-width:600px;
+  margin:0 auto 36px;
+}
+.cta-buttons{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+}
+.btn-large{
+  display:inline-flex;align-items:center;gap:10px;
+  border-radius:10px;padding:16px 36px;
+  font-family:var(--font-body);font-size:1rem;font-weight:500;
+  text-decoration:none;transition:all 0.22s;cursor:pointer;
+}
+.btn-primary-large{
+  background:linear-gradient(135deg,rgba(212,168,67,0.28),rgba(212,168,67,0.14));
+  border:1px solid rgba(212,168,67,0.55);
+  color:#e8c96a;
+}
+.btn-primary-large:hover{background:rgba(212,168,67,0.35);border-color:rgba(212,168,67,0.8);}
+.btn-outline-large{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.14);
+  color:var(--muted);
+  font-family:var(--font-mono);font-size:0.78rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+}
+.btn-outline-large:hover{border-color:rgba(255,255,255,0.25);color:var(--bright);}
+.cta-note{
+  margin-top:24px;
+  font-family:var(--font-mono);font-size:0.66rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(107,128,153,0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════════════════ */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  padding:40px 0 36px;
+}
+.footer-inner{
+  display:grid;grid-template-columns:1fr auto;
+  gap:40px;align-items:start;
+}
+.footer-brand{margin-bottom:12px;}
+.footer-name{
+  font-family:var(--font-display);
+  font-size:1.3rem;font-weight:300;
+  color:#fff;letter-spacing:0.04em;
+  margin-bottom:4px;
+}
+.footer-name em{font-style:italic;color:var(--pe);}
+.footer-org{
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(107,128,153,0.55);
+  margin-bottom:14px;
+}
+.footer-legal{
+  font-size:0.8rem;color:rgba(107,128,153,0.45);
+  line-height:1.65;max-width:500px;
+}
+.footer-links{
+  display:flex;flex-direction:column;gap:8px;align-items:flex-end;
+}
+.footer-link{
+  font-family:var(--font-mono);font-size:0.66rem;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(107,128,153,0.5);text-decoration:none;
+  transition:color 0.2s;
+}
+.footer-link:hover{color:var(--muted);}
+.footer-bottom{
+  margin-top:28px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.14em;
+  color:rgba(107,128,153,0.35);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:40px;}
+  .globe-wrap{width:320px;height:320px;}
+  .hero-visual{justify-content:center;}
+  .etymology-grid{grid-template-columns:1fr;gap:36px;}
+  .etymology-divider{display:none;}
+  .etymology-block{padding:0;}
+  .about-grid,.map-wrap,.rx-grid,.dir-grid,.footer-inner{grid-template-columns:1fr;gap:36px;}
+  .hub-card{grid-template-columns:auto 1fr;padding:28px 24px;}
+  .hub-map{display:none;}
+  .steps-row{grid-template-columns:1fr;gap:14px;}
+  .steps-row::before{display:none;}
+  .tiers-grid{grid-template-columns:1fr 1fr;gap:14px;}
+}
+@media(max-width:640px){
+  nav{padding:14px 20px;}
+  .nav-links{display:none;}
+  #hero{padding:0 20px;}
+  .hero-headline{font-size:2.4rem;}
+  .container,.container-wide{padding:0 20px;}
+  .tiers-grid{grid-template-columns:1fr;}
+  .hub-card{grid-template-columns:1fr;}
+  .hub-flag{font-size:3rem;}
+  .cta-wrap{padding:36px 24px;}
+  .footer-inner{grid-template-columns:1fr;}
+  .footer-links{align-items:flex-start;}
+  .footer-bottom{flex-direction:column;gap:8px;}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   APPLICATION FORM
+══════════════════════════════════════════════════════════════════ */
+:root{
+  --amber-d:rgba(212,168,67,0.5);
+  --amber-f:rgba(212,168,67,0.08);
+  --border2:rgba(255,255,255,0.13);
+  --r:10px;--rl:18px;
+  --dim:rgba(96,120,152,0.65);
+  --orange:#f97316;
+  --mono:var(--font-mono);
+  --sans:var(--font-body);
+  --display:var(--font-display);
+}
+.rv{opacity:0;transform:translateY(22px);transition:opacity 0.58s ease,transform 0.58s ease;}
+.rv.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:0.10s;}.d2{transition-delay:0.20s;}.d3{transition-delay:0.30s;}
+#apply{padding:100px 0 140px;border-top:1px solid var(--border);}
+.apply-head{text-align:center;margin-bottom:48px;}
+.form-shell{
+  max-width:780px;margin:0 auto;
+  background:var(--card);border:1px solid var(--border2);border-radius:var(--rl);overflow:hidden;
+}
+.form-top{
+  background:linear-gradient(135deg,rgba(212,168,67,0.09),rgba(212,168,67,0.03));
+  border-bottom:1px solid rgba(212,168,67,0.12);padding:28px 36px;
+}
+.form-top-label{font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--pe);margin-bottom:4px;}
+.form-top-title{font-family:var(--font-display);font-size:1.80rem;font-weight:300;color:var(--bright);}
+.stepper{
+  display:flex;align-items:center;
+  padding:18px 36px;background:rgba(255,255,255,0.018);
+  border-bottom:1px solid var(--border);
+}
+.step-item{display:flex;align-items:center;flex:1;gap:10px;}
+.step-item:last-child{flex:none;}
+.step-dot{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:0.68rem;font-weight:600;
+  border:1.5px solid var(--border2);color:var(--dim);
+  transition:all 0.28s;
+}
+.step-dot.on{background:var(--pe);color:var(--ink);border-color:var(--pe);}
+.step-dot.dn{background:rgba(46,201,138,0.14);border-color:#2ec98a;color:#2ec98a;}
+.step-lbl{font-family:var(--font-mono);font-size:0.60rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);white-space:nowrap;transition:color 0.28s;}
+.step-lbl.on{color:var(--pe);}
+.step-lbl.dn{color:#2ec98a;}
+.step-line{flex:1;height:1px;background:var(--border);transition:background 0.28s;}
+.step-line.dn{background:rgba(46,201,138,0.28);}
+.form-body{padding:36px;}
+@media(max-width:600px){.form-body{padding:22px;}.form-top{padding:20px 22px;}.stepper{padding:16px 22px;}}
+.form-step{display:none;}
+.form-step.on{display:block;animation:sIn 0.28s ease both;}
+@keyframes sIn{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);}}
+.step-h{font-family:var(--font-mono);font-size:0.60rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber-d);margin-bottom:22px;}
+.frow{display:grid;gap:14px;margin-bottom:14px;}
+.frow.t2{grid-template-columns:1fr 1fr;}
+.frow.t3{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:580px){.frow.t2,.frow.t3{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-family:var(--font-mono);font-size:0.60rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--dim);}
+.field label .r{color:var(--pe);margin-left:2px;}
+.field input,.field select,.field textarea{
+  background:rgba(255,255,255,0.025);border:1px solid var(--border2);
+  border-radius:7px;color:var(--text);font-family:var(--font-body);
+  font-size:0.87rem;padding:10px 13px;outline:none;width:100%;
+  transition:border-color 0.18s,background 0.18s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:rgba(212,168,67,0.44);background:rgba(212,168,67,0.03);
+}
+.field select{cursor:pointer;}
+.field select option{background:var(--surface);}
+.field textarea{resize:vertical;min-height:88px;}
+.fnote{font-size:0.70rem;color:var(--dim);font-style:italic;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px;}
+.chip{
+  font-family:var(--font-mono);font-size:0.60rem;letter-spacing:0.08em;
+  padding:5px 11px;border-radius:4px;border:1px solid var(--border2);
+  color:var(--dim);cursor:pointer;user-select:none;transition:all 0.14s;
+}
+.chip:hover{border-color:rgba(212,168,67,0.28);color:var(--muted);}
+.chip.sel{background:rgba(212,168,67,0.10);border-color:rgba(212,168,67,0.44);color:var(--pe);}
+.chip.csel{background:rgba(56,189,248,0.08);border-color:rgba(56,189,248,0.38);color:#38bdf8;}
+.chip.gsel{background:rgba(46,201,138,0.08);border-color:rgba(46,201,138,0.38);color:#2ec98a;}
+.chip.psel{background:rgba(139,111,245,0.08);border-color:rgba(139,111,245,0.38);color:var(--purple);}
+.tier-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:9px;margin-top:3px;}
+.tier-opt{
+  background:rgba(255,255,255,0.018);border:1px solid var(--border2);
+  border-radius:8px;padding:14px 13px;cursor:pointer;transition:all 0.17s;
+}
+.tier-opt:hover{border-color:rgba(212,168,67,0.28);}
+.tier-opt.sel{border-color:var(--tc)!important;background:rgba(255,255,255,0.035);box-shadow:0 0 0 1px var(--tc);}
+.tier-opt-name{font-family:var(--font-mono);font-size:0.70rem;font-weight:600;color:var(--text);margin-bottom:3px;transition:color 0.17s;}
+.tier-opt.sel .tier-opt-name{color:var(--tc);}
+.tier-opt-note{font-size:0.68rem;color:var(--dim);line-height:1.44;}
+.os-check-box{
+  background:rgba(249,115,22,0.04);border:1px solid rgba(249,115,22,0.18);
+  border-radius:9px;padding:17px 19px;margin-top:14px;
+}
+.os-check-lbl{display:flex;align-items:flex-start;gap:11px;cursor:pointer;}
+.os-check-lbl input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;accent-color:#f97316;cursor:pointer;}
+.os-check-text strong{font-family:var(--font-mono);font-size:0.70rem;font-weight:600;color:#f97316;display:block;margin-bottom:4px;letter-spacing:0.06em;}
+.os-check-text p{font-size:0.74rem;color:var(--muted);line-height:1.54;}
+.terms-lbl{display:flex;align-items:flex-start;gap:9px;margin-top:14px;font-size:0.74rem;color:var(--muted);line-height:1.5;cursor:pointer;}
+.terms-lbl input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;accent-color:var(--pe);cursor:pointer;}
+.terms-lbl a{color:var(--pe);text-decoration:none;}
+.terms-lbl a:hover{text-decoration:underline;}
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:22px;border-top:1px solid var(--border);}
+.btn-back{
+  background:transparent;border:1px solid var(--border2);color:var(--muted);
+  font-family:var(--font-mono);font-size:0.66rem;letter-spacing:0.10em;text-transform:uppercase;
+  padding:9px 19px;border-radius:6px;cursor:pointer;transition:all 0.17s;
+}
+.btn-back:hover{color:var(--bright);border-color:rgba(255,255,255,0.2);}
+.btn-next{
+  background:var(--pe);color:var(--ink);font-family:var(--font-mono);
+  font-size:0.70rem;letter-spacing:0.10em;text-transform:uppercase;
+  font-weight:600;padding:11px 26px;border-radius:6px;border:none;
+  cursor:pointer;transition:opacity 0.17s,transform 0.17s;
+}
+.btn-next:hover{opacity:0.86;transform:translateY(-1px);}
+.btn-next:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.ferr{font-family:var(--font-mono);font-size:0.66rem;color:var(--red);margin-top:8px;min-height:18px;}
+.form-success{display:none;text-align:center;padding:56px 36px;}
+.s-hex{
+  width:70px;height:80px;margin:0 auto 22px;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:rgba(46,201,138,0.12);border:1px solid rgba(46,201,138,0.35);
+  display:flex;align-items:center;justify-content:center;font-size:1.9rem;
+}
+.s-title{font-family:var(--font-display);font-size:2.2rem;font-weight:300;color:var(--bright);margin-bottom:11px;}
+.s-ref{
+  font-family:var(--font-mono);font-size:0.66rem;letter-spacing:0.18em;color:#2ec98a;
+  background:rgba(46,201,138,0.08);border:1px solid rgba(46,201,138,0.2);
+  border-radius:5px;padding:7px 18px;display:inline-block;margin-bottom:18px;
+}
+.s-body{font-size:0.86rem;line-height:1.68;color:var(--muted);max-width:430px;margin:0 auto 28px;}
+.s-next{
+  background:rgba(255,255,255,0.025);border:1px solid var(--border2);
+  border-radius:10px;padding:20px 22px;text-align:left;max-width:430px;margin:0 auto;
+}
+.s-next-h{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:11px;}
+.s-next-item{display:flex;gap:10px;font-size:0.76rem;color:var(--muted);margin-bottom:7px;line-height:1.5;}
+.s-next-item span:first-child{color:var(--pe);flex-shrink:0;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" integrity="sha384-ajMUFBUFMCyjh8uxJg6bkGcKe9RTolyjwbxB3yES0QQMenP3Oztj/W9vA2SJPcIh" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" integrity="sha384-f6/UpzjTjIXASlp20cArQsaRh1EvHVJd5kegy/gYR9W2D0a32TnEqUEiW4Zm/5O0" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="page-bg"></div>
+<div class="page-wrap">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="TESSERA GRC">
+      <defs>
+        <filter id="nav-hex-glow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- 7-hex honeycomb: gold center + 6 tier-color surround (flat-top, R=6) -->
+      <!-- Upper-left (blue) -->
+      <polygon points="20,9.6 17,14.8 11,14.8 8,9.6 11,4.4 17,4.4"
+        fill="rgba(78,156,245,0.22)" stroke="rgba(78,156,245,0.52)" stroke-width="0.8"/>
+      <!-- Upper-right (green) -->
+      <polygon points="32,9.6 29,14.8 23,14.8 20,9.6 23,4.4 29,4.4"
+        fill="rgba(16,185,129,0.22)" stroke="rgba(16,185,129,0.52)" stroke-width="0.8"/>
+      <!-- Left (purple) -->
+      <polygon points="14,20 11,25.2 5,25.2 2,20 5,14.8 11,14.8"
+        fill="rgba(139,111,245,0.22)" stroke="rgba(139,111,245,0.52)" stroke-width="0.8"/>
+      <!-- Center (gold) -->
+      <polygon points="26,20 23,25.2 17,25.2 14,20 17,14.8 23,14.8"
+        fill="rgba(212,168,67,0.85)" stroke="rgba(212,168,67,1)" stroke-width="1.1"
+        filter="url(#nav-hex-glow)"/>
+      <!-- Right (cyan) -->
+      <polygon points="38,20 35,25.2 29,25.2 26,20 29,14.8 35,14.8"
+        fill="rgba(6,182,212,0.28)" stroke="rgba(6,182,212,0.58)" stroke-width="0.8"/>
+      <!-- Lower-left (amber) -->
+      <polygon points="20,30.4 17,35.6 11,35.6 8,30.4 11,25.2 17,25.2"
+        fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.52)" stroke-width="0.8"/>
+      <!-- Lower-right (gold lighter) -->
+      <polygon points="32,30.4 29,35.6 23,35.6 20,30.4 23,25.2 29,25.2"
+        fill="rgba(212,168,67,0.16)" stroke="rgba(212,168,67,0.40)" stroke-width="0.8"/>
+    </svg>
+    <div class="nav-wordmark">
+      <div class="nav-badge">
+        <span class="nav-dot"></span>
+        Scala Carta Foundation
+      </div>
+      <div class="nav-title">TESSERA <em>GRC</em></div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="/">ATLAS Platform</a>
+    <a class="nav-link" href="#membership">Membership Tiers</a>
+    <a class="nav-link" href="#research-exchange">Research Exchange</a>
+    <a class="nav-cta" href="#apply">Apply to Join</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-grid container-wide">
+    <div class="hero-copy">
+      <div class="hero-kicker">Scala Carta Foundation &middot; Global Research Consortium &middot; Est. 2026</div>
+      <h1 class="hero-headline">
+        The world's first<br>
+        clinician-led<br>
+        <em>adherence science</em><br>
+        network.
+      </h1>
+      <p class="hero-sub">
+        TESSERA GRC unites clinicians, researchers, and healthcare professionals across six continents
+        under a single validated measurement framework. Every member contributes a tile to
+        a global mosaic of adherence evidence.
+      </p>
+      <div class="hero-actions">
+        <a href="#membership" class="btn-gold">Explore Membership Tiers</a>
+        <a href="#about" class="btn-ghost">Learn About TESSERA</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="globe-wrap">
+        <!-- 3D Canvas Globe -->
+        <canvas id="tessera-globe" width="440" height="440" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+
+        <!-- Stats counter floating below globe -->
+        <div class="hero-counter-row">
+          <div class="hero-counter-item">
+            <div class="hero-counter-val">62+</div>
+            <div class="hero-counter-label">Countries</div>
+          </div>
+          <div class="hero-counter-item">
+            <div class="hero-counter-val">5</div>
+            <div class="hero-counter-label">Tiers</div>
+          </div>
+          <div class="hero-counter-item">
+            <div class="hero-counter-val">MAP</div>
+            <div class="hero-counter-label">Instrument</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ETYMOLOGY
+═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ABOUT TESSERA
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="section-label">About <span>TESSERA GRC</span></div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>A consortium built on<br><em>measurement, not opinion.</em></h2>
+        <p>
+          TESSERA GRC is the global research arm of <strong>Scala Carta Foundation</strong>, a
+          registered foundation headquartered in the United States. Our mission is to standardize
+          the measurement of medication adherence across all care settings using the MAP
+          (Multidimensional Adherence Parameters) instrument and the ATLAS platform.
+          <a href="../science/" style="color:var(--pe);font-size:0.88rem;white-space:nowrap;">Learn about MAP and PEACS &rarr;</a>
+        </p>
+        <p>
+          Where most adherence research relies on self-report bias or proxy endpoints, TESSERA
+          members collect structured MAP data through a clinician-administered protocol that takes
+          under three minutes at the point of care. That data feeds a normative global
+          database, enabling cross-country benchmarking that has never been possible before.
+        </p>
+        <p>
+          Membership is tiered to serve every stakeholder: universities running validation studies,
+          clinics measuring patient populations, individual researchers building their evidence base,
+          graduate students earning their first publication credit, and industry partners seeking
+          real-world adherence data for regulatory submissions.
+        </p>
+      </div>
+
+      <div class="about-pillars">
+        <div class="pillar">
+          <div class="pillar-title">Validated Measurement</div>
+          <div class="pillar-desc">All TESSERA studies use the MAP instrument, ensuring cross-site comparability. No bespoke questionnaires, no drift from the normative dataset.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-title">Global Normative Database</div>
+          <div class="pillar-desc">Every consented assessment contributes to the TESSERA Normative Dataset: country-level, disease-category, and demographic PE score distributions.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-title">Non-Profit Governance</div>
+          <div class="pillar-desc">Scala Carta Foundation governs TESSERA with a scientific advisory board. No commercial agenda drives study design. Members co-author, not co-market.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MEMBERSHIP TIERS
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="membership">
+  <div class="container-wide">
+    <div class="tiers-intro">
+      <div class="section-label" style="justify-content:center;margin-bottom:14px;">Five Tiers <span>&middot; One Consortium</span></div>
+      <h2>Choose your <em>level of engagement</em></h2>
+      <p>
+        Every tier contributes to the global MAP normative dataset. The tier you choose reflects
+        the scope of your access, the depth of your data rights, and your role in shaping
+        adherence science.
+      </p>
+    </div>
+
+    <div class="tiers-grid">
+
+      <!-- Tier 1: Institutional Partner -->
+      <div class="tier-card t-institutional">
+        <div class="tier-badge">Flagship</div>
+        <div class="tier-icon">&#127963;</div>
+        <div class="tier-name">Institutional<br>Partner</div>
+        <div class="tier-target">Universities &middot; Health Systems &middot; Hospitals</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-benefits">
+          <li><span class="tier-check">&#10003;</span> Full ATLAS Research Suite (unlimited seats)</li>
+          <li><span class="tier-check">&#10003;</span> Permanent TESSERA Site designation + Study ID</li>
+          <li><span class="tier-check">&#10003;</span> Multi-site PI dashboard</li>
+          <li><span class="tier-check">&#10003;</span> Data residency choice (US / EU / UAE)</li>
+          <li><span class="tier-check">&#10003;</span> Co-authorship on normative publications</li>
+          <li><span class="tier-check">&#10003;</span> Quarterly PEACS benchmarking report</li>
+          <li><span class="tier-check">&#10003;</span> Scala Carta advisory access</li>
+          <li><span class="tier-check">&#10003;</span> Grant letters of support</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Summit invitation</li>
+          <li><span class="tier-check">&#10003;</span> Priority feature development input</li>
+        </ul>
+        <a href="#apply" class="tier-cta" onclick="pickTier(1)">Apply Now</a>
+      </div>
+
+      <!-- Tier 2: Validation Partner -->
+      <div class="tier-card t-validation">
+        <div class="tier-badge">Research</div>
+        <div class="tier-icon">&#128202;</div>
+        <div class="tier-name">Validation<br>Partner</div>
+        <div class="tier-target">Research Centers &middot; Clinical Departments</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-benefits">
+          <li><span class="tier-check">&#10003;</span> ATLAS Research Suite (up to 10 seats)</li>
+          <li><span class="tier-check">&#10003;</span> MAP validation protocol support</li>
+          <li><span class="tier-check">&#10003;</span> Global normative dataset access</li>
+          <li><span class="tier-check">&#10003;</span> Co-authorship on validation papers</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Affiliate badge + credential</li>
+          <li><span class="tier-check">&#10003;</span> Semi-annual benchmarking report</li>
+          <li><span class="tier-check">&#10003;</span> Grant letters of support</li>
+          <li><span class="tier-check">&#10003;</span> Research Exchange posting rights</li>
+          <li><span class="tier-check">&#10003;</span> PEACS phenotype comparison tools</li>
+        </ul>
+        <a href="#apply" class="tier-cta" onclick="pickTier(2)">Apply Now</a>
+      </div>
+
+      <!-- Tier 3: Research Affiliate -->
+      <div class="tier-card t-affiliate">
+        <div class="tier-badge">Affiliate</div>
+        <div class="tier-icon">&#128203;</div>
+        <div class="tier-name">Research<br>Affiliate</div>
+        <div class="tier-target">Independent Researchers &middot; Labs</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-benefits">
+          <li><span class="tier-check">&#10003;</span> ATLAS Research license (3 seats)</li>
+          <li><span class="tier-check">&#10003;</span> Research Exchange post and discovery</li>
+          <li><span class="tier-check">&#10003;</span> Normative benchmarking (read access)</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Affiliate credential</li>
+          <li><span class="tier-check">&#10003;</span> Annual benchmarking report</li>
+          <li><span class="tier-check">&#10003;</span> MAP certification for team</li>
+          <li><span class="tier-check">&#10003;</span> Structured RWE data export</li>
+          <li><span class="tier-check">&#10003;</span> Publication acknowledgment pathway</li>
+        </ul>
+        <a href="#apply" class="tier-cta" onclick="pickTier(3)">Apply Now</a>
+      </div>
+
+      <!-- Tier 4: Student Affiliate -->
+      <div class="tier-card t-student">
+        <div class="tier-badge">Student</div>
+        <div class="tier-icon">&#127979;</div>
+        <div class="tier-name">Student<br>Affiliate</div>
+        <div class="tier-target">Graduate Students &middot; Clinical Trainees</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-benefits">
+          <li><span class="tier-check">&#10003;</span> ATLAS Student Workspace</li>
+          <li><span class="tier-check">&#10003;</span> MAP certification course access</li>
+          <li><span class="tier-check">&#10003;</span> Research Exchange (discover studies)</li>
+          <li><span class="tier-check">&#10003;</span> Mentor connection via Research Exchange</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Student credential</li>
+          <li><span class="tier-check">&#10003;</span> Evidence Portfolio builder</li>
+          <li><span class="tier-check">&#10003;</span> PEACS interpretation training</li>
+          <li><span class="tier-check">&#10003;</span> Graduation toward Research Affiliate</li>
+        </ul>
+        <a href="#apply" class="tier-cta" onclick="pickTier(4)">Apply Now</a>
+      </div>
+
+      <!-- Tier 5: Industry Partner -->
+      <div class="tier-card t-industry">
+        <div class="tier-badge">Industry</div>
+        <div class="tier-icon">&#127970;</div>
+        <div class="tier-name">Industry<br>Partner</div>
+        <div class="tier-target">Pharma &middot; Health Tech &middot; Payers</div>
+        <div class="tier-divider"></div>
+        <ul class="tier-benefits">
+          <li><span class="tier-check">&#10003;</span> ATLAS Industry Suite</li>
+          <li><span class="tier-check">&#10003;</span> Anonymized population adherence insights</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Industry Advisory Council seat</li>
+          <li><span class="tier-check">&#10003;</span> Co-branded research opportunities</li>
+          <li><span class="tier-check">&#10003;</span> Regulatory evidence package access</li>
+          <li><span class="tier-check">&#10003;</span> Disease-category population reports</li>
+          <li><span class="tier-check">&#10003;</span> PEACS phenotype segmentation</li>
+          <li><span class="tier-check">&#10003;</span> Custom country or indication scoping</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Summit speaking track</li>
+        </ul>
+        <a href="#apply" class="tier-cta" onclick="pickTier(5)">Apply Now</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     RESEARCH EXCHANGE
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="research-exchange">
+  <div class="container">
+    <div class="section-label">Global Collaboration <span>&middot; Research Exchange</span></div>
+    <div class="rx-grid">
+      <div class="rx-text">
+        <h2>A pinboard for the<br><em>global adherence community.</em></h2>
+        <p>
+          Post active studies, call for international co-investigators, and discover matching
+          cohorts across 40+ countries. Research Affiliate tier and above can post; all tiers
+          can browse and respond to open calls.
+        </p>
+        <a href="/" class="btn-ghost" style="display:inline-flex;margin-top:8px;">View in ATLAS Globe &#8599;</a>
+      </div>
+
+      <!-- Live Exchange from Firebase -->
+      <div class="rx-card-mock">
+        <div class="rx-card-header">
+          <div class="rx-card-label">&#9670; Research Exchange</div>
+          <div class="rx-card-count" id="rx-count">Connecting&hellip;</div>
+        </div>
+        <div id="rx-live-posts">
+          <!-- skeleton -->
+          <div class="rx-post" style="opacity:0.2;pointer-events:none;" aria-hidden="true">
+            <div class="rx-post-tier"><div class="rx-post-tier-dot" style="background:#d4a843;"></div>&nbsp;</div>
+            <div class="rx-post-title" style="background:rgba(255,255,255,0.06);color:transparent;border-radius:4px;width:80%;">&nbsp;</div>
+            <div class="rx-post-meta" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:55%;margin-top:6px;">&nbsp;</div>
+          </div>
+        </div>
+        <div class="rx-lock">
+          &#128274; &nbsp; Join TESSERA to post your study or respond to open calls
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     RESEARCHER DIRECTORY
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="researcher-directory">
+  <div class="container">
+    <div class="section-label">Community <span>&middot; Researcher Directory</span></div>
+    <div class="dir-grid">
+
+      <!-- Live researcher profiles from Firebase -->
+      <div class="dir-cards-mock">
+        <div class="dir-count-row" id="dir-count-row">
+          <div class="dir-count-dot" id="dir-count-dot" style="opacity:0.3;"></div>
+          <span id="dir-count-label">ATLAS Researcher Directory &middot; Connecting&hellip;</span>
+        </div>
+        <div id="dir-live-cards">
+          <div class="dir-profile-card" style="opacity:0.25;pointer-events:none;user-select:none;" aria-hidden="true">
+            <div class="dir-profile-top">
+              <div class="dir-avatar" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);color:transparent;">__</div>
+              <div>
+                <div class="dir-name" style="background:rgba(255,255,255,0.06);color:transparent;border-radius:4px;width:120px;">&nbsp;</div>
+                <div class="dir-cred" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:80px;margin-top:4px;">&nbsp;</div>
+              </div>
+            </div>
+            <div class="dir-inst" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:180px;">&nbsp;</div>
+            <div class="dir-badges"><span class="dir-badge dir-badge-map" style="opacity:0.15;">MAP</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text column -->
+      <div class="dir-text">
+        <h2>Find your next<br><em>collaborator by name.</em></h2>
+        <p>
+          Searchable profiles of active TESSERA members: instruments, specialties, region, and
+          institutional affiliation. Each profile is verified to a live ATLAS workspace. Browse
+          by specialty, country, or disease category, and connect directly.
+        </p>
+        <p style="font-size:0.84rem;color:rgba(212,168,67,0.65);font-family:var(--font-mono);letter-spacing:0.06em;margin-top:4px;">
+          Researcher Affiliate tier and above. Profile creation is opt-in.
+        </p>
+        <a href="/" class="btn-ghost" style="display:inline-flex;margin-top:8px;">Access Directory in ATLAS &#8599;</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FOUNDING HUB — fully live from tessera_sites/site_001 in Firebase
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="founding-hub" style="display:none;">
+  <div class="container">
+    <div class="section-label" id="hub-section-label">TESSERA Site 001 <span>&middot; Founding Hub</span></div>
+    <div id="hub-live-card"><!-- populated by Firebase listener --></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HOW TO JOIN
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="how-to-join">
+  <div class="container">
+    <div class="join-intro">
+      <div class="section-label" style="justify-content:center;margin-bottom:14px;">Process <span>&middot; How It Works</span></div>
+      <h2>Three steps to<br><em>join the consortium.</em></h2>
+      <p>
+        From inquiry to active membership in under two weeks for most tiers. No complex
+        procurement process. No lengthy onboarding forms.
+      </p>
+    </div>
+
+    <div class="steps-row">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Complete the Application</div>
+        <p class="step-desc">
+          Fill out the <a href="#apply" style="color:var(--pe);text-decoration:none;">membership application below</a>
+          with your institution, country, research focus, and preferred tier. Applications are reviewed within 5 business days.
+        </p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Receive Your Workspace Key</div>
+        <p class="step-desc">
+          After a brief alignment call, Scala Carta Foundation issues your ATLAS workspace key
+          provisioned for your tier and data residency region. No installation required.
+        </p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Activate and Contribute</div>
+        <p class="step-desc">
+          Your TESSERA Study ID is issued, your team completes MAP certification, and your
+          first assessments begin contributing to the global normative dataset.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CTA
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-wrap">
+      <div class="cta-super">Scala Carta Foundation &middot; Global Research Consortium</div>
+      <h2 class="cta-title">
+        Your institution belongs<br>in the <em>TESSERA mosaic.</em>
+      </h2>
+      <p class="cta-sub">
+        Whether you are a single researcher, a teaching hospital, a medical or health sciences
+        school, or a global pharmaceutical company, TESSERA GRC has a tier built for your scope
+        of work. Every member adds one more tile to the first true map of global medication adherence.
+      </p>
+      <div class="cta-buttons">
+        <a href="#apply" class="btn-large btn-primary-large">
+          Apply to Join TESSERA
+        </a>
+        <a href="/" class="btn-large btn-outline-large">
+          Explore ATLAS Platform
+        </a>
+      </div>
+      <div class="cta-note">
+        Questions: consortium@scalacartafoundation.org &nbsp;&middot;&nbsp; Applications reviewed within 5 business days
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     MEMBERSHIP APPLICATION FORM
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="apply">
+  <div class="container">
+    <div class="apply-head">
+      <div class="section-label" style="justify-content:center;margin-bottom:14px;">Membership Application <span>&middot; Apply Now</span></div>
+      <h2 style="font-family:var(--font-display);font-size:clamp(2rem,3.5vw,3rem);font-weight:300;color:#fff;line-height:1.2;margin-bottom:16px;">
+        Join <em style="font-style:italic;color:var(--pe);">TESSERA GRC.</em>
+      </h2>
+      <p style="font-size:1rem;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto;">
+        Applications are reviewed within 5 business days. You will receive an ATLAS workspace
+        access code and a formal membership confirmation from the Scala Carta Foundation.
+      </p>
+    </div>
+
+    <div class="form-shell rv">
+      <div class="form-top">
+        <div class="form-top-label">TESSERA GRC · Scala Carta Foundation</div>
+        <div class="form-top-title">Membership Application</div>
+      </div>
+
+      <div class="stepper" id="stepper">
+        <div class="step-item">
+          <div class="step-dot on" id="dot1">1</div>
+          <div class="step-lbl on" id="lbl1">Identity</div>
+        </div>
+        <div class="step-line" id="ln1"></div>
+        <div class="step-item">
+          <div class="step-dot" id="dot2">2</div>
+          <div class="step-lbl" id="lbl2">Research</div>
+        </div>
+        <div class="step-line" id="ln2"></div>
+        <div class="step-item">
+          <div class="step-dot" id="dot3">3</div>
+          <div class="step-lbl" id="lbl3">Membership</div>
+        </div>
+      </div>
+
+      <div class="form-body">
+
+        <!-- Step 1 -->
+        <div class="form-step on" id="fs1">
+          <div class="step-h">Step 1 of 3 — Your Identity</div>
+          <div class="frow t2">
+            <div class="field">
+              <label>Title</label>
+              <select id="f-title">
+                <option value="">Prefer not to say</option>
+                <option>Dr.</option><option>Prof.</option>
+                <option>Mr.</option><option>Ms.</option><option>Mx.</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Preferred / Display Name <span class="fnote">(optional)</span></label>
+              <input type="text" id="f-pref" placeholder="e.g. Harriet"/>
+            </div>
+          </div>
+          <div class="frow t2">
+            <div class="field">
+              <label>First Name <span class="r">*</span></label>
+              <input type="text" id="f-first" placeholder="First name"/>
+            </div>
+            <div class="field">
+              <label>Last Name <span class="r">*</span></label>
+              <input type="text" id="f-last" placeholder="Last name"/>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="field">
+              <label>Institutional Email Address <span class="r">*</span></label>
+              <input type="email" id="f-email" placeholder="your@institution.edu"/>
+            </div>
+          </div>
+          <div class="frow t2">
+            <div class="field">
+              <label>ORCID iD <span class="fnote">(optional)</span></label>
+              <input type="text" id="f-orcid" placeholder="0000-0000-0000-0000"/>
+            </div>
+            <div class="field">
+              <label>LinkedIn Profile <span class="fnote">(optional)</span></label>
+              <input type="url" id="f-linkedin" placeholder="linkedin.com/in/…"/>
+            </div>
+          </div>
+          <div class="ferr" id="e1"></div>
+          <div class="form-nav">
+            <div></div>
+            <button class="btn-next" onclick="nextStep(1)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-step" id="fs2">
+          <div class="step-h">Step 2 of 3 — Your Research</div>
+          <div class="frow t2">
+            <div class="field">
+              <label>Institution / University <span class="r">*</span></label>
+              <input type="text" id="f-inst" placeholder="e.g. University of Cape Town"/>
+            </div>
+            <div class="field">
+              <label>Department / School <span class="fnote">(optional)</span></label>
+              <input type="text" id="f-dept" placeholder="e.g. School of Pharmacy"/>
+            </div>
+          </div>
+          <div class="frow t2">
+            <div class="field">
+              <label>Country <span class="r">*</span></label>
+              <select id="f-country" onchange="checkLMIC()">
+                <option value="">Select country…</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Role <span class="r">*</span></label>
+              <select id="f-role">
+                <option value="">Select role…</option>
+                <option value="pi">Principal Investigator (PI)</option>
+                <option value="researcher">Research Scientist / Faculty</option>
+                <option value="clinician">Clinician-Researcher</option>
+                <option value="postdoc">Postdoctoral Researcher</option>
+                <option value="student">PhD / Graduate Student</option>
+                <option value="industry">Industry Researcher</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="field">
+              <label>Study Title or Research Focus <span class="r">*</span></label>
+              <input type="text" id="f-study" placeholder="e.g. MAP Validation in HIV Patients — Sub-Saharan Africa"/>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:14px;">
+            <label>Disease / Therapeutic Areas <span class="fnote">(select all that apply)</span></label>
+            <div class="chips" id="disease-chips">
+              <div class="chip" data-v="diabetes">Diabetes</div>
+              <div class="chip" data-v="hypertension">Hypertension</div>
+              <div class="chip" data-v="hiv">HIV / AIDS</div>
+              <div class="chip" data-v="oncology">Oncology</div>
+              <div class="chip" data-v="mental-health">Mental Health</div>
+              <div class="chip" data-v="cardiovascular">Cardiovascular</div>
+              <div class="chip" data-v="respiratory">Respiratory</div>
+              <div class="chip" data-v="transplant">Transplant</div>
+              <div class="chip" data-v="tb">Tuberculosis</div>
+              <div class="chip" data-v="renal">Renal / CKD</div>
+              <div class="chip" data-v="geriatrics">Geriatrics</div>
+              <div class="chip" data-v="pediatrics">Pediatrics</div>
+              <div class="chip" data-v="other">Other</div>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:14px;">
+            <label>Instruments of Interest</label>
+            <div class="chips" id="inst-chips">
+              <div class="chip" data-v="map" data-cls="c">MAP (Multidimensional Adherence Parameters)</div>
+              <div class="chip" data-v="mmas8" data-cls="g">MMAS-8</div>
+              <div class="chip" data-v="peacs" data-cls="p">PEACS Phenotyping</div>
+            </div>
+          </div>
+          <div class="frow t2">
+            <div class="field">
+              <label>IRB / Ethics Status</label>
+              <select id="f-irb">
+                <option value="">Not yet applicable</option>
+                <option value="not-started">Not yet started</option>
+                <option value="in-preparation">In preparation</option>
+                <option value="approved">Approved</option>
+                <option value="exempt">Exempt / Waived</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Estimated Enrollment <span class="fnote">(optional)</span></label>
+              <input type="number" id="f-n" placeholder="e.g. 500" min="1"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Brief Research Description <span class="fnote">(optional)</span></label>
+            <textarea id="f-desc" placeholder="Briefly describe your study aims, target population, and how you plan to use the ATLAS platform…"></textarea>
+          </div>
+          <div class="ferr" id="e2"></div>
+          <div class="form-nav">
+            <button class="btn-back" onclick="prevStep(2)">← Back</button>
+            <button class="btn-next" onclick="nextStep(2)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="form-step" id="fs3">
+          <div class="step-h">Step 3 of 3 — Membership &amp; Access</div>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Membership Tier <span class="r">*</span></label>
+            <div class="tier-picker" id="tier-picker"></div>
+          </div>
+
+          <div id="os-box" style="display:none;">
+            <div class="os-check-box">
+              <label class="os-check-lbl">
+                <input type="checkbox" id="f-os"/>
+                <div class="os-check-text">
+                  <strong>TESSERA Open Science Program</strong>
+                  <p>I am applying from an institution in an eligible region and would like to
+                  request full platform access at no cost through the Scala Carta Foundation's
+                  Open Science Program. Eligibility is self-declared; no documentation is
+                  required at this stage.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:20px;">
+            <label>How did you hear about TESSERA GRC?</label>
+            <select id="f-ref">
+              <option value="">Select…</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="colleague">Colleague / Mentor</option>
+              <option value="publication">Publication / Citation</option>
+              <option value="conference">Conference / Symposium</option>
+              <option value="search">Web Search</option>
+              <option value="atlas">ATLAS Platform</option>
+              <option value="email">Email Outreach</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Anything else you'd like us to know? <span class="fnote">(optional)</span></label>
+            <textarea id="f-msg" placeholder="Additional context, questions, or how you envision contributing to the consortium…" style="min-height:72px;"></textarea>
+          </div>
+
+          <label class="terms-lbl">
+            <input type="checkbox" id="f-terms"/>
+            I agree to the <a href="https://adherence.cc/terms" target="_blank">TESSERA GRC Membership Terms</a>
+            and <a href="https://adherence.cc/privacy" target="_blank">Privacy Policy</a>
+            of the Scala Carta Foundation.
+          </label>
+
+          <div class="ferr" id="e3"></div>
+          <div class="form-nav">
+            <button class="btn-back" onclick="prevStep(3)">← Back</button>
+            <button class="btn-next" id="btn-sub" onclick="submitApp()">Submit Application →</button>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div class="form-success" id="form-success">
+          <div class="s-hex">✓</div>
+          <div class="s-title">Application Received</div>
+          <div class="s-ref" id="s-ref">APP-2026-XXXX</div>
+          <p class="s-body">
+            Thank you for applying to TESSERA GRC. Your application has been submitted to the
+            Scala Carta Foundation for review. A confirmation email will arrive within 24 hours,
+            and a membership decision within 5 business days.
+          </p>
+          <div class="s-next">
+            <div class="s-next-h">What Happens Next</div>
+            <div class="s-next-item"><span>1.</span><span>Confirmation email with your application reference number sent to your address.</span></div>
+            <div class="s-next-item"><span>2.</span><span>Scala Carta Foundation staff review your application and assign your membership tier.</span></div>
+            <div class="s-next-item"><span>3.</span><span>You receive your ATLAS workspace access code and formal TESSERA GRC welcome package.</span></div>
+            <div class="s-next-item"><span>4.</span><span>If approved for the Open Science Program, full platform access is provisioned immediately upon activation.</span></div>
+          </div>
+        </div>
+
+      </div><!-- /form-body -->
+    </div><!-- /form-shell -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <div style="display:flex;align-items:center;gap:36px;margin-bottom:18px;padding:18px 22px;background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.12);border-radius:12px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:7px;">
+              <svg width="80" height="74" viewBox="0 0 104 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="TESSERA GRC hexagonal mosaic">
+                <defs>
+                  <filter id="hex-glow-consortium" x="-40%" y="-40%" width="180%" height="180%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                </defs>
+                <!-- Row 0 -->
+                <polygon points="31.17,0 41.56,6 41.56,18 31.17,24 20.78,18 20.78,6"   fill="none"                   stroke="rgba(212,176,80,0.28)"  stroke-width="0.9"/>
+                <polygon points="51.95,0 62.34,6 62.34,18 51.95,24 41.56,18 41.56,6"   fill="rgba(212,176,80,0.2)"   stroke="rgba(212,176,80,0.42)"  stroke-width="0.9"/>
+                <polygon points="72.73,0 83.12,6 83.12,18 72.73,24 62.34,18 62.34,6"   fill="none"                   stroke="rgba(16,185,129,0.25)"  stroke-width="0.9"/>
+                <!-- Row 1 -->
+                <polygon points="20.78,18 31.17,24 31.17,36 20.78,42 10.39,36 10.39,24" fill="rgba(139,111,245,0.22)" stroke="rgba(139,111,245,0.40)" stroke-width="0.9"/>
+                <polygon points="41.56,18 51.95,24 51.95,36 41.56,42 31.17,36 31.17,24" fill="rgba(212,176,80,0.52)"  stroke="rgba(212,176,80,0.65)"  stroke-width="0.9"/>
+                <polygon points="62.34,18 72.73,24 72.73,36 62.34,42 51.95,36 51.95,24" fill="rgba(6,182,212,0.48)"   stroke="rgba(6,182,212,0.62)"   stroke-width="0.9"/>
+                <polygon points="83.12,18 93.51,24 93.51,36 83.12,42 72.73,36 72.73,24" fill="rgba(16,185,129,0.20)"  stroke="rgba(16,185,129,0.38)"  stroke-width="0.9"/>
+                <!-- Row 2 (center) -->
+                <polygon points="10.39,36 20.78,42 20.78,54 10.39,60 0,54 0,42"         fill="none"                   stroke="rgba(6,182,212,0.22)"   stroke-width="0.9"/>
+                <polygon points="31.17,36 41.56,42 41.56,54 31.17,60 20.78,54 20.78,42" fill="rgba(6,182,212,0.68)"   stroke="rgba(6,182,212,0.80)"   stroke-width="0.9"/>
+                <polygon points="51.95,36 62.34,42 62.34,54 51.95,60 41.56,54 41.56,42" fill="#D4A843"                stroke="rgba(212,168,67,0.88)"  stroke-width="1.2" filter="url(#hex-glow-consortium)" opacity="0.92"/>
+                <polygon points="72.73,36 83.12,42 83.12,54 72.73,60 62.34,54 62.34,42" fill="rgba(16,185,129,0.68)"  stroke="rgba(16,185,129,0.80)"  stroke-width="0.9"/>
+                <polygon points="93.51,36 103.9,42 103.9,54 93.51,60 83.12,54 83.12,42" fill="none"                   stroke="rgba(245,158,11,0.22)"  stroke-width="0.9"/>
+                <!-- Row 3 -->
+                <polygon points="20.78,54 31.17,60 31.17,72 20.78,78 10.39,72 10.39,60" fill="rgba(16,185,129,0.20)"  stroke="rgba(16,185,129,0.38)"  stroke-width="0.9"/>
+                <polygon points="41.56,54 51.95,60 51.95,72 41.56,78 31.17,72 31.17,60" fill="rgba(139,111,245,0.50)" stroke="rgba(139,111,245,0.64)" stroke-width="0.9"/>
+                <polygon points="62.34,54 72.73,60 72.73,72 62.34,78 51.95,72 51.95,60" fill="rgba(16,185,129,0.48)"  stroke="rgba(16,185,129,0.62)"  stroke-width="0.9"/>
+                <polygon points="83.12,54 93.51,60 93.51,72 83.12,78 72.73,72 72.73,60" fill="rgba(212,176,80,0.18)"  stroke="rgba(212,176,80,0.36)"  stroke-width="0.9"/>
+                <!-- Row 4 -->
+                <polygon points="31.17,72 41.56,78 41.56,90 31.17,96 20.78,90 20.78,78" fill="none"                   stroke="rgba(212,176,80,0.25)"  stroke-width="0.9"/>
+                <polygon points="51.95,72 62.34,78 62.34,90 51.95,96 41.56,90 41.56,78" fill="rgba(245,158,11,0.20)"  stroke="rgba(245,158,11,0.40)"  stroke-width="0.9"/>
+                <polygon points="72.73,72 83.12,78 83.12,90 72.73,96 62.34,90 62.34,78" fill="none"                   stroke="rgba(139,111,245,0.22)" stroke-width="0.9"/>
+              </svg>
+              <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(212,168,67,0.6);">TESSERA GRC</div>
+            </div>
+            <div style="width:1px;height:80px;background:rgba(212,168,67,0.14);flex-shrink:0;"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:7px;">
+              <svg width="160" height="48" viewBox="0 0 200 56" xmlns="http://www.w3.org/2000/svg" aria-label="Scala Carta Foundation cartographic scale mark">
+                <rect x="0"   y="16" width="40" height="24" fill="#D4A843" opacity="0.85"/>
+                <rect x="40"  y="16" width="40" height="24" fill="none" stroke="#D4A843" stroke-width="0.9" opacity="0.72"/>
+                <rect x="80"  y="16" width="40" height="24" fill="#D4A843" opacity="0.85"/>
+                <rect x="120" y="16" width="40" height="24" fill="none" stroke="#D4A843" stroke-width="0.9" opacity="0.72"/>
+                <rect x="160" y="16" width="40" height="24" fill="#D4A843" opacity="0.85"/>
+                <line x1="0"   y1="9"  x2="0"   y2="47" stroke="#D4A843" stroke-width="1.4" opacity="0.9"/>
+                <line x1="40"  y1="9"  x2="40"  y2="47" stroke="#D4A843" stroke-width="0.9" opacity="0.65"/>
+                <line x1="80"  y1="9"  x2="80"  y2="47" stroke="#D4A843" stroke-width="0.9" opacity="0.65"/>
+                <line x1="120" y1="9"  x2="120" y2="47" stroke="#D4A843" stroke-width="0.9" opacity="0.65"/>
+                <line x1="160" y1="9"  x2="160" y2="47" stroke="#D4A843" stroke-width="0.9" opacity="0.65"/>
+                <line x1="200" y1="9"  x2="200" y2="47" stroke="#D4A843" stroke-width="1.4" opacity="0.9"/>
+              </svg>
+              <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(212,168,67,0.6);">Scala Carta Foundation</div>
+            </div>
+          </div>
+          <div class="footer-org">Registered Foundation &middot; United States</div>
+        </div>
+        <p class="footer-legal">
+          TESSERA GRC is a program of Scala Carta Foundation, a registered foundation.
+          The MAP instrument is independently authored. ATLAS is a product of Adherence Cartography,
+          a separate for-profit entity operating under license from Scala Carta Foundation.
+          All TESSERA data is governed by the TESSERA Data Governance Charter.
+          ATLAS platform is HIPAA, GDPR, and UAE PDPL compliant.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="/">ATLAS Platform</a>
+        <a class="footer-link" href="#membership">Membership Tiers</a>
+        <a class="footer-link" href="#research-exchange">Research Exchange</a>
+        <a class="footer-link" href="#founding-hub">Rome Pilot</a>
+        <a class="footer-link" href="#apply">Apply Now</a>
+        <a class="footer-link" href="mailto:consortium@scalacartafoundation.org">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&#169; 2026 Scala Carta Foundation. All rights reserved.</span>
+      <span>TESSERA GRC &middot; Global Research Consortium &middot; ATLAS v8.10.0</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page-wrap -->
+
+<script>
+(function() {
+  // ── Firebase init (researcher_profiles is public-read, no auth required) ──
+  var _fbApp;
+  try {
+    _fbApp = firebase.app();
+  } catch(e) {
+    _fbApp = firebase.initializeApp({
+      apiKey:            'AIzaSyBRUEGRPaIWHMlzn0lT9otbJQEYZs4Br1A',
+      authDomain:        'adherence-project-2026.firebaseapp.com',
+      databaseURL:       'https://adherence-project-2026-default-rtdb.firebaseio.com',
+      projectId:         'adherence-project-2026',
+      storageBucket:     'adherence-project-2026.firebasestorage.app',
+      messagingSenderId: '222566948658',
+      appId:             '1:222566948658:web:85528e19dd039c199a412b'
+    });
+  }
+  var _db = firebase.database(_fbApp);
+
+  var _INSTR_CFG = {
+    map:   { label:'MAP',    cls:'dir-badge-map'  },
+    peacs: { label:'PEACS',  cls:'dir-badge-peacs' },
+    mmas8: { label:'MMAS-8', cls:'dir-badge-mmas'  },
+  };
+
+  function _esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function _initials(name) {
+    return (name || '?').split(' ').map(function(w){ return w[0] || ''; }).join('').slice(0,2).toUpperCase();
+  }
+
+  function _buildCard(profile) {
+    var inits = _initials(profile.name);
+    var instParts = [profile.institution, profile.country].filter(Boolean);
+    var instruments = Array.isArray(profile.instruments) ? profile.instruments : [];
+    var specialties = Array.isArray(profile.specialties) ? profile.specialties : [];
+    var bio = profile.bio ? (profile.bio.length > 130 ? profile.bio.slice(0,130) + '…' : profile.bio) : '';
+
+    var badges = instruments.map(function(k) {
+      var cfg = _INSTR_CFG[k];
+      return cfg ? '<span class="dir-badge ' + cfg.cls + '">' + cfg.label + '</span>' : '';
+    }).join('');
+
+    var specs = specialties.slice(0,3).map(function(s) {
+      return '<span class="dir-spec-tag">' + _esc(s) + '</span>';
+    }).join('');
+    if (specialties.length > 3) specs += '<span class="dir-spec-tag" style="opacity:0.5;">+' + (specialties.length-3) + '</span>';
+
+    var connectHtml = profile.contact_email
+      ? '<a class="dir-connect" href="mailto:' + _esc(profile.contact_email) + '">Connect &rarr;</a>'
+      : '';
+
+    var card = document.createElement('div');
+    card.className = 'dir-profile-card';
+    card.innerHTML =
+      '<div class="dir-profile-top">' +
+        '<div class="dir-avatar">' + _esc(inits) + '</div>' +
+        '<div>' +
+          '<div class="dir-name">' + _esc(profile.name || '—') + '</div>' +
+          (profile.credentials ? '<div class="dir-cred">' + _esc(profile.credentials) + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      (instParts.length ? '<div class="dir-inst">' + _esc(instParts.join(' · ')) + '</div>' : '') +
+      (badges ? '<div class="dir-badges">' + badges + '</div>' : '') +
+      (specs ? '<div class="dir-spec-tags">' + specs + '</div>' : '') +
+      (bio ? '<div class="dir-bio">' + _esc(bio) + '</div>' : '') +
+      connectHtml;
+    return card;
+  }
+
+  function _renderEmpty() {
+    var wrap = document.getElementById('dir-live-cards');
+    var label = document.getElementById('dir-count-label');
+    var dot = document.getElementById('dir-count-dot');
+    if (!wrap) return;
+    if (label) label.textContent = 'ATLAS Researcher Directory · No profiles yet';
+    if (dot) dot.style.opacity = '0.3';
+    wrap.innerHTML =
+      '<div style="padding:28px 0 8px;text-align:center;color:rgba(107,128,153,0.65);font-size:0.80rem;line-height:1.8;">' +
+        'No researcher profiles have been published yet.<br>' +
+        '<span style="color:rgba(212,168,67,0.6);font-family:var(--font-mono);font-size:0.70rem;letter-spacing:0.08em;">' +
+          'Join TESSERA to be among the first.' +
+        '</span>' +
+      '</div>';
+  }
+
+  function _render(profiles) {
+    var wrap = document.getElementById('dir-live-cards');
+    var label = document.getElementById('dir-count-label');
+    var dot = document.getElementById('dir-count-dot');
+    if (!wrap) return;
+
+    var total = profiles.length;
+    var shown = profiles.slice(0, 3);
+
+    if (label) label.textContent = 'ATLAS Researcher Directory · ' + total + ' researcher' + (total !== 1 ? 's' : '') + ' live';
+    if (dot) { dot.style.opacity = '1'; dot.style.background = '#d4a843'; dot.style.boxShadow = '0 0 5px #d4a843'; }
+
+    wrap.innerHTML = '';
+    shown.forEach(function(p) { wrap.appendChild(_buildCard(p)); });
+
+    if (total > 3) {
+      var more = document.createElement('div');
+      more.style.cssText = 'margin-top:6px;text-align:center;';
+      more.innerHTML = '<a href="https://atlas.adherence.cc" style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.65);text-decoration:none;">View all ' + total + ' researchers in ATLAS &rarr;</a>';
+      wrap.appendChild(more);
+    }
+  }
+
+  // ── TESSERA Sites: build Founding Hub from Firebase — section hidden until data exists ──
+  _db.ref('tessera_sites').on('value', function(snap) {
+    var sites = snap.val() || {};
+    var entries = Object.values(sites).filter(function(s) { return s && s.city && s.country; });
+    var section = document.getElementById('founding-hub');
+    var liveCard = document.getElementById('hub-live-card');
+    var sectionLabel = document.getElementById('hub-section-label');
+    if (!section || !liveCard) return;
+
+    if (entries.length === 0) {
+      section.style.display = 'none';
+      liveCard.innerHTML = '';
+      return;
+    }
+
+    // Show the section and build cards for each site
+    section.style.display = '';
+    if (sectionLabel) {
+      var labelSite = entries[0].site_id || 'Site 001';
+      sectionLabel.innerHTML = _esc(labelSite) + ' <span>&middot; Founding Hub</span>';
+    }
+
+    liveCard.innerHTML = '';
+    entries.forEach(function(s) {
+      var statsHtml = [
+        ['Pilot Pharmacies',    s.stat_pharmacies],
+        ['Target Patients',     s.stat_patients],
+        ['Pilot Duration',      s.stat_duration],
+        ['Disease Categories',  s.stat_disease_categories],
+      ].filter(function(p){ return p[1]; }).map(function(p) {
+        return '<div class="hub-stat"><div class="hub-stat-val">' + _esc(p[1]) +
+          '</div><div class="hub-stat-label">' + _esc(p[0]) + '</div></div>';
+      }).join('');
+
+      var card = document.createElement('div');
+      card.className = 'hub-card';
+      card.innerHTML =
+        '<div class="hub-flag">' + _esc(s.flag || '') + '</div>' +
+        '<div class="hub-body">' +
+          '<div class="hub-label">' + _esc(s.hub_label || 'TESSERA Hub') + '</div>' +
+          '<h2 class="hub-title">' + _esc(s.country || '') + ' &middot; <em>' + _esc(s.city || '') + '</em></h2>' +
+          (s.description ? '<p class="hub-desc">' + _esc(s.description) + '</p>' : '') +
+          (statsHtml ? '<div class="hub-stats">' + statsHtml + '</div>' : '') +
+        '</div>' +
+        '<div class="hub-map">' +
+          '<svg viewBox="0 0 220 300" width="200" style="opacity:0.88;">' +
+            '<path d="M 25,38 Q 108,12 185,48 L 180,56 L 162,66 L 156,80 L 160,95 L 162,108 L 168,118 L 188,128 L 174,138 L 168,152 L 170,166 L 174,180 L 180,194 L 174,212 L 160,206 L 146,192 L 132,204 L 122,228 L 115,250 L 108,265 L 95,258 L 82,245 L 74,228 L 68,210 L 63,195 L 58,180 L 52,166 L 60,156 L 50,148 L 46,130 L 48,112 L 52,95 L 54,80 L 52,70 L 38,70 L 22,76 L 26,54 Z" fill="rgba(212,168,67,0.06)" stroke="rgba(212,168,67,0.3)" stroke-width="1.5" stroke-linejoin="round"/>' +
+            '<circle cx="78" cy="140" r="7" fill="rgba(212,168,67,0.15)" stroke="#d4a843" stroke-width="1.5"/>' +
+            '<circle cx="78" cy="140" r="3" fill="#d4a843"/>' +
+            '<circle cx="78" cy="140" r="12" fill="none" stroke="#d4a843" stroke-width="0.7" opacity="0.3"/>' +
+            '<text x="92" y="144" font-family="\'IBM Plex Mono\',monospace" font-size="8" fill="#d4a843" opacity="0.9">' + _esc((s.city || '').toUpperCase()) + '</text>' +
+            '<text x="92" y="155" font-family="\'IBM Plex Mono\',monospace" font-size="6" fill="rgba(212,168,67,0.55)">' + _esc(s.hub_label || 'TESSERA HUB') + '</text>' +
+            '<rect x="50" y="17" width="120" height="18" rx="3" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.28)" stroke-width="1"/>' +
+            '<text x="110" y="30" font-family="\'IBM Plex Mono\',monospace" font-size="7" fill="#10b981" text-anchor="middle">' + _esc(s.site_id || 'TESSERA SITE 001') + '</text>' +
+          '</svg>' +
+        '</div>';
+      liveCard.appendChild(card);
+    });
+  });
+
+  // ── Research Exchange live listener ──────────────────────────────────────
+  var _REX_TYPE_CFG = {
+    study_seeking_collaborator: { label:'Seeking Collaborator', color:'#d4a843' },
+    grant_announcement:         { label:'Grant Opportunity',    color:'#38bdf8' },
+    publication:                { label:'Publication',          color:'#2ec98a' },
+    job_posting:                { label:'Position Available',   color:'#8b6ff5' },
+  };
+
+  function _rxBuildPost(card) {
+    var tCfg = _REX_TYPE_CFG[card.type] || { label: card.type || 'Post', color:'#8b6ff5' };
+    var metaParts = [card.name, card.institution, card.country].filter(Boolean);
+    var postedStr = card.posted ? (function() {
+      var d = new Date(card.posted);
+      return d.toLocaleDateString('en-US', { month:'short', year:'numeric' });
+    })() : '';
+
+    var post = document.createElement('div');
+    post.className = 'rx-post';
+    post.innerHTML =
+      '<div class="rx-post-tier">' +
+        '<div class="rx-post-tier-dot" style="background:' + tCfg.color + ';"></div>' +
+        _esc(tCfg.label) + (card.country ? ' &middot; ' + _esc(card.country) : '') +
+      '</div>' +
+      '<div class="rx-post-title">' + _esc(card.title || '—') + '</div>' +
+      (metaParts.length || postedStr ? '<div class="rx-post-meta">' +
+        _esc(metaParts.join(' · ')) + (postedStr ? ' &middot; Posted ' + postedStr : '') +
+      '</div>' : '') +
+      (card.countries_seeking && card.countries_seeking.length
+        ? '<div class="rx-post-tags">' +
+            (Array.isArray(card.countries_seeking) ? card.countries_seeking : [card.countries_seeking])
+              .slice(0,3).map(function(c){ return '<span class="rx-tag">' + _esc(c) + '</span>'; }).join('') +
+          '</div>'
+        : '');
+    return post;
+  }
+
+  _db.ref('research_exchange').on('value', function(snap) {
+    var raw = snap.val() || {};
+    var now = Date.now();
+    var cards = Object.values(raw)
+      .filter(function(c) { return c && c.title && c.status !== 'closed' && (!c.expires || c.expires > now); })
+      .sort(function(a, b) { return (b.posted || 0) - (a.posted || 0); });
+
+    var wrap = document.getElementById('rx-live-posts');
+    var count = document.getElementById('rx-count');
+    if (!wrap) return;
+
+    if (cards.length === 0) {
+      if (count) count.textContent = '0 open calls';
+      wrap.innerHTML =
+        '<div style="padding:20px 0 8px;text-align:center;color:rgba(107,128,153,0.65);font-size:0.80rem;line-height:1.8;">' +
+          'No active exchange posts yet.<br>' +
+          '<span style="color:rgba(56,189,212,0.6);font-family:var(--font-mono);font-size:0.70rem;letter-spacing:0.08em;">' +
+            'Join TESSERA to be among the first to post.' +
+          '</span>' +
+        '</div>';
+      return;
+    }
+
+    var shown = cards.slice(0, 3);
+    if (count) count.textContent = cards.length + ' open call' + (cards.length !== 1 ? 's' : '');
+    wrap.innerHTML = '';
+    shown.forEach(function(c) { wrap.appendChild(_rxBuildPost(c)); });
+
+    if (cards.length > 3) {
+      var more = document.createElement('div');
+      more.style.cssText = 'margin:4px 0 2px;text-align:center;';
+      more.innerHTML = '<a href="https://atlas.adherence.cc" style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(56,189,212,0.65);text-decoration:none;">View all ' + cards.length + ' calls in ATLAS &rarr;</a>';
+      wrap.appendChild(more);
+    }
+  }, function() {
+    var count = document.getElementById('rx-count');
+    if (count) count.textContent = 'Live';
+  });
+
+  // Real-time listener — updates automatically as profiles are added or changed
+  _db.ref('researcher_profiles').on('value', function(snap) {
+    var raw = snap.val() || {};
+    var profiles = Object.values(raw)
+      .filter(function(p) { return p && p.visible !== false && p.name; })
+      .sort(function(a, b) { return (b.updated || 0) - (a.updated || 0); });
+
+    if (profiles.length === 0) {
+      _renderEmpty();
+    } else {
+      _render(profiles);
+    }
+  }, function(err) {
+    // Read error: leave the skeleton placeholder in place
+    var label = document.getElementById('dir-count-label');
+    if (label) label.textContent = 'ATLAS Researcher Directory · Live';
+  });
+})();
+</script>
+
+<!-- ═══ TESSERA 3D GLOBE RENDERER ═══ -->
+<script>
+(function(){
+'use strict';
+var cv = document.getElementById('tessera-globe');
+if (!cv || !cv.getContext) return;
+var ctx = cv.getContext('2d');
+var W=440,H=440,CX=220,CY=220,R=190;
+var rotY = 0.7, TILT = -0.26, SPEED = 0.0015;
+var D = Math.PI/180;
+
+// Simplified continent coastlines [lat_deg, lng_deg]
+var LAND = [
+  // North America
+  [[70,-170],[65,-168],[60,-142],[55,-130],[48,-125],[42,-124],[32,-117],[22,-110],[18,-92],[10,-85],[8,-77],[10,-78],[18,-76],[24,-80],[30,-81],[35,-75],[40,-74],[45,-64],[50,-56],[54,-57],[58,-63],[62,-65],[68,-72],[72,-78],[78,-90],[82,-100],[80,-120],[76,-140],[72,-158],[70,-170]],
+  // South America
+  [[12,-72],[8,-60],[0,-53],[-5,-36],[-10,-37],[-22,-43],[-30,-50],[-35,-57],[-50,-68],[-55,-68],[-54,-65],[-42,-65],[-35,-72],[-25,-70],[-18,-70],[-12,-77],[-5,-81],[0,-78],[5,-76],[12,-72]],
+  // Europe
+  [[36,-9],[44,-9],[44,2],[45,8],[44,14],[40,18],[40,26],[42,28],[47,30],[48,40],[56,28],[60,26],[60,18],[57,11],[56,8],[55,15],[52,14],[50,12],[48,17],[47,16],[45,14],[44,8],[43,3],[43,-2],[40,-4],[36,-5],[36,-9]],
+  // Africa
+  [[36,5],[38,10],[37,15],[22,14],[12,15],[5,10],[1,8],[0,9],[-5,10],[-10,38],[-25,33],[-34,27],[-35,18],[-18,38],[-10,40],[-1,37],[11,43],[12,44],[20,42],[37,43],[42,42],[50,30],[37,10],[36,5]],
+  // Asia
+  [[70,30],[60,40],[55,60],[50,80],[45,75],[40,65],[28,55],[20,57],[12,45],[10,52],[15,43],[22,68],[8,78],[5,100],[10,106],[15,103],[25,120],[36,120],[40,130],[50,140],[55,135],[60,150],[65,170],[70,165],[70,150],[65,140],[60,120],[65,100],[70,80],[75,60],[72,40],[70,30]],
+  // Australia
+  [[-15,130],[-13,135],[-14,142],[-18,148],[-28,154],[-38,147],[-38,140],[-35,136],[-34,120],[-22,114],[-17,122],[-15,128],[-15,130]],
+  // Greenland
+  [[60,-44],[64,-52],[68,-52],[72,-60],[76,-68],[82,-60],[83,-52],[80,-22],[74,-22],[70,-28],[66,-33],[62,-38],[60,-44]]
+];
+
+// Member dots [lat, lng, r, g, b]
+var DOTS = [
+  [41.9, 12.5, 212,168,67],   // Rome
+  [25.2, 55.3, 6,182,212],    // Dubai
+  [1.3, 103.8, 16,185,129],   // Singapore
+  [13.5, 2.1,  212,168,67],   // West Africa
+  [40.7,-74.0, 139,111,245],  // New York
+  [-15.8,-47.9,212,168,67],   // Sao Paulo
+  [30.0, 31.2, 6,182,212],    // Cairo
+  [-33.9,151.2,16,185,129],   // Sydney
+  [51.5,  -0.1,212,168,67],   // London
+  [35.7, 139.7,139,111,245],  // Tokyo
+  [19.4, -99.1,16,185,129],   // Mexico City
+  [55.8,  37.6,212,168,67],   // Moscow
+  [28.6,  77.2,6,182,212],    // New Delhi
+  [-26.2, 28.0,139,111,245]   // Johannesburg
+];
+
+function proj(latD, lngD) {
+  var la = latD*D, lo = lngD*D;
+  var x = Math.cos(la)*Math.sin(lo);
+  var y = Math.sin(la);
+  var z = Math.cos(la)*Math.cos(lo);
+  // rotate Y
+  var x1 = x*Math.cos(rotY) + z*Math.sin(rotY);
+  var z1 = -x*Math.sin(rotY) + z*Math.cos(rotY);
+  // rotate X (tilt)
+  var y2 = y*Math.cos(TILT) - z1*Math.sin(TILT);
+  var z2 = y*Math.sin(TILT) + z1*Math.cos(TILT);
+  return {sx: CX + R*x1, sy: CY - R*y2, z: z2};
+}
+
+function draw() {
+  ctx.clearRect(0,0,W,H);
+
+  // Outer atmosphere
+  var atm = ctx.createRadialGradient(CX,CY,R*0.88,CX,CY,R*1.3);
+  atm.addColorStop(0,'rgba(78,156,245,0)');
+  atm.addColorStop(0.5,'rgba(78,156,245,0.05)');
+  atm.addColorStop(0.8,'rgba(78,156,245,0.12)');
+  atm.addColorStop(1,'rgba(30,80,200,0.22)');
+  ctx.beginPath(); ctx.arc(CX,CY,R*1.3,0,2*Math.PI);
+  ctx.fillStyle=atm; ctx.fill();
+
+  // Thin atmosphere ring stroke
+  ctx.beginPath(); ctx.arc(CX,CY,R*1.05,0,2*Math.PI);
+  ctx.strokeStyle='rgba(78,156,245,0.12)'; ctx.lineWidth=6; ctx.stroke();
+
+  // Sphere base (lit upper-left)
+  var sg = ctx.createRadialGradient(CX-R*0.38,CY-R*0.38,0,CX,CY,R);
+  sg.addColorStop(0,'rgba(16,28,62,1)');
+  sg.addColorStop(0.45,'rgba(9,16,38,1)');
+  sg.addColorStop(0.85,'rgba(5,9,22,1)');
+  sg.addColorStop(1,'rgba(2,5,14,1)');
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,2*Math.PI);
+  ctx.fillStyle=sg; ctx.fill();
+
+  // Clip to sphere
+  ctx.save();
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,2*Math.PI); ctx.clip();
+
+  // Latitude grid
+  for (var lat=-80; lat<=80; lat+=20) {
+    ctx.beginPath();
+    var go=true;
+    for (var lng=-180; lng<=180; lng+=3) {
+      var p=proj(lat,lng);
+      if (p.z>-0.05) {
+        if(go){ctx.moveTo(p.sx,p.sy);go=false;} else ctx.lineTo(p.sx,p.sy);
+      } else {go=true;}
+    }
+    ctx.strokeStyle = lat===0 ? 'rgba(212,168,67,0.22)' : 'rgba(120,160,220,0.08)';
+    ctx.lineWidth = lat===0 ? 1.3 : 0.7;
+    ctx.stroke();
+  }
+
+  // Longitude grid
+  for (var lng2=-180; lng2<180; lng2+=30) {
+    ctx.beginPath();
+    var go2=true;
+    for (var lat2=-90; lat2<=90; lat2+=3) {
+      var p2=proj(lat2,lng2);
+      if (p2.z>-0.05) {
+        if(go2){ctx.moveTo(p2.sx,p2.sy);go2=false;} else ctx.lineTo(p2.sx,p2.sy);
+      } else {go2=true;}
+    }
+    ctx.strokeStyle='rgba(120,160,220,0.06)';
+    ctx.lineWidth=0.6;
+    ctx.stroke();
+  }
+
+  // Continent coastlines
+  LAND.forEach(function(coast){
+    ctx.beginPath();
+    var go3=true;
+    coast.forEach(function(pt){
+      var p3=proj(pt[0],pt[1]);
+      if (p3.z>0.02) {
+        if(go3){ctx.moveTo(p3.sx,p3.sy);go3=false;} else ctx.lineTo(p3.sx,p3.sy);
+      } else {go3=true;}
+    });
+    ctx.strokeStyle='rgba(78,156,245,0.28)';
+    ctx.lineWidth=1.0;
+    ctx.stroke();
+  });
+
+  ctx.restore();
+
+  // Limb darkening (sphere edge = 3D depth cue)
+  var limb = ctx.createRadialGradient(CX,CY,R*0.5,CX,CY,R);
+  limb.addColorStop(0,'rgba(0,0,0,0)');
+  limb.addColorStop(0.72,'rgba(0,0,0,0)');
+  limb.addColorStop(0.88,'rgba(0,0,0,0.35)');
+  limb.addColorStop(1,'rgba(0,0,0,0.78)');
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,2*Math.PI);
+  ctx.fillStyle=limb; ctx.fill();
+
+  // Specular highlight (upper-left)
+  var spec = ctx.createRadialGradient(CX-R*0.42,CY-R*0.42,0,CX-R*0.42,CY-R*0.42,R*0.6);
+  spec.addColorStop(0,'rgba(180,215,255,0.09)');
+  spec.addColorStop(0.4,'rgba(100,160,255,0.04)');
+  spec.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,2*Math.PI);
+  ctx.fillStyle=spec; ctx.fill();
+
+  // Globe border
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,2*Math.PI);
+  ctx.strokeStyle='rgba(78,156,245,0.22)'; ctx.lineWidth=1.2; ctx.stroke();
+
+  // Member dots with glow
+  DOTS.forEach(function(d){
+    var p=proj(d[0],d[1]);
+    if (p.z < 0.06) return;
+    var alpha = Math.min(1, (p.z-0.06)*2.2);
+    var dr = 5 + p.z*3;
+    var r=d[2],g=d[3],b=d[4];
+    // Glow halo
+    var glow=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,dr*4.5);
+    glow.addColorStop(0,'rgba('+r+','+g+','+b+','+(.45*alpha)+')');
+    glow.addColorStop(0.4,'rgba('+r+','+g+','+b+','+(.15*alpha)+')');
+    glow.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+    ctx.beginPath(); ctx.arc(p.sx,p.sy,dr*4.5,0,2*Math.PI);
+    ctx.fillStyle=glow; ctx.fill();
+    // Core dot
+    ctx.beginPath(); ctx.arc(p.sx,p.sy,dr,0,2*Math.PI);
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle='rgb('+r+','+g+','+b+')';
+    ctx.fill();
+    // Bright center
+    ctx.beginPath(); ctx.arc(p.sx,p.sy,dr*0.45,0,2*Math.PI);
+    ctx.fillStyle='rgba(255,255,255,0.65)';
+    ctx.fill();
+    ctx.globalAlpha=1;
+  });
+}
+
+function tick(){rotY+=SPEED; draw(); requestAnimationFrame(tick);}
+tick();
+})();
+</script>
+
+
+<script>
+// ── Membership Application Form ──────────────────────────────────────────────
+(function(){
+'use strict';
+var _fdb;
+try{_fdb=firebase.database();}catch(e){return;}
+
+var COUNTRIES=['Afghanistan','Albania','Algeria','Angola','Argentina','Armenia',
+'Australia','Austria','Azerbaijan','Bangladesh','Belarus','Belgium','Benin','Bolivia',
+'Bosnia and Herzegovina','Brazil','Bulgaria','Burkina Faso','Burundi','Cambodia',
+'Cameroon','Canada','Chad','Chile','China','Colombia','Congo (DRC)','Congo (Republic)',
+'Costa Rica','Croatia','Cuba','Cyprus','Czech Republic','Denmark','Dominican Republic',
+'Ecuador','Egypt','El Salvador','Ethiopia','Finland','France','Gambia','Georgia',
+'Germany','Ghana','Greece','Guatemala','Guinea','Haiti','Honduras','Hungary','India',
+'Indonesia','Iran','Iraq','Ireland','Israel','Italy','Jamaica','Japan','Jordan',
+'Kazakhstan','Kenya','Kuwait','Kyrgyzstan','Laos','Lebanon','Liberia','Libya',
+'Malaysia','Mali','Malta','Mauritania','Mexico','Moldova','Morocco','Mozambique',
+'Myanmar','Nepal','Netherlands','New Zealand','Nicaragua','Niger','Nigeria',
+'North Macedonia','Norway','Pakistan','Palestine','Panama','Paraguay','Peru',
+'Philippines','Poland','Portugal','Qatar','Romania','Russia','Rwanda','Saudi Arabia',
+'Senegal','Serbia','Sierra Leone','Singapore','Somalia','South Africa','South Korea',
+'South Sudan','Spain','Sri Lanka','Sudan','Sweden','Switzerland','Syria','Taiwan',
+'Tajikistan','Tanzania','Thailand','Togo','Tunisia','Turkey','UAE','Uganda',
+'Ukraine','United Kingdom','United States','Uruguay','Uzbekistan','Venezuela',
+'Vietnam','Yemen','Zambia','Zimbabwe','Other'];
+
+var LMIC=new Set(['Afghanistan','Bangladesh','Benin','Burkina Faso','Burundi',
+'Cambodia','Cameroon','Chad','Congo (DRC)','Ethiopia','Gambia','Ghana','Guinea',
+'Haiti','Honduras','India','Indonesia','Kenya','Kyrgyzstan','Laos','Liberia',
+'Mali','Mauritania','Morocco','Mozambique','Myanmar','Nepal','Nicaragua','Niger',
+'Nigeria','Pakistan','Philippines','Rwanda','Senegal','Sierra Leone','Somalia',
+'South Sudan','Sri Lanka','Sudan','Syria','Tajikistan','Tanzania','Togo','Tunisia',
+'Uganda','Ukraine','Vietnam','Yemen','Zambia','Zimbabwe','Egypt','Bolivia',
+'El Salvador','Guatemala','Albania','Armenia','Azerbaijan','Georgia','Moldova',
+'Algeria','Angola','Congo (Republic)','Iran','Iraq','Libya','Palestine',
+'Venezuela','Cuba','Jamaica','Paraguay']);
+
+var csel=document.getElementById('f-country');
+if(csel){COUNTRIES.forEach(function(c){var o=document.createElement('option');o.value=o.textContent=c;csel.appendChild(o);});}
+
+window.checkLMIC=function(){
+  var v=document.getElementById('f-country').value;
+  document.getElementById('os-box').style.display=LMIC.has(v)?'block':'none';
+};
+
+var TIERS=[
+  {id:1,color:'#d4a843',label:'Institutional Partner',note:'Universities, hospitals, multi-site research centers.'},
+  {id:2,color:'#38bdf8',label:'Validation Partner',note:'Cross-cultural adaptation and psychometric validation studies.'},
+  {id:3,color:'#2ec98a',label:'Research Affiliate',note:'Independent investigators and faculty.'},
+  {id:4,color:'#8b6ff5',label:'Student Affiliate',note:'PhD candidates and graduate students.'},
+  {id:5,color:'#f59e0b',label:'Industry Partner',note:'Pharma, biotech, and health technology organizations.'},
+];
+
+var picker=document.getElementById('tier-picker');
+if(picker){
+  picker.innerHTML=TIERS.map(function(t){
+    return '<div class="tier-opt" id="to'+t.id+'" style="--tc:'+t.color+';" onclick="pickTier('+t.id+')">' +
+      '<div class="tier-opt-name">'+t.label+'</div>' +
+      '<div class="tier-opt-note">'+t.note+'</div></div>';
+  }).join('');
+}
+
+var selTier=null;
+window.pickTier=function(id){
+  selTier=id;
+  TIERS.forEach(function(t){var el=document.getElementById('to'+t.id);if(el)el.classList.toggle('sel',t.id===id);});
+};
+
+document.querySelectorAll('#disease-chips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('sel');});});
+document.querySelectorAll('#inst-chips .chip').forEach(function(c){c.addEventListener('click',function(){
+  var cls=c.dataset.cls;
+  var selCls=cls==='c'?'csel':cls==='g'?'gsel':cls==='p'?'psel':'sel';
+  var hasSel=c.classList.contains('csel')||c.classList.contains('gsel')||c.classList.contains('psel')||c.classList.contains('sel');
+  if(hasSel){c.classList.remove('sel','csel','gsel','psel');}else{c.classList.add(selCls);}
+});});
+
+var curStep=1;
+function goStep(n){
+  for(var i=1;i<=3;i++){
+    document.getElementById('fs'+i).classList.toggle('on',i===n);
+    var dot=document.getElementById('dot'+i);
+    var lbl=document.getElementById('lbl'+i);
+    dot.className='step-dot'+(i===n?' on':i<n?' dn':'');
+    dot.textContent=i<n?'✓':String(i);
+    lbl.className='step-lbl'+(i===n?' on':i<n?' dn':'');
+    if(i<3){var ln=document.getElementById('ln'+i);ln.className='step-line'+(i<n?' dn':'');}
+  }
+  curStep=n;
+  document.querySelector('.form-shell').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+window.nextStep=function(from){
+  var err=document.getElementById('e'+from);err.textContent='';
+  if(from===1){
+    var first=document.getElementById('f-first').value.trim();
+    var last=document.getElementById('f-last').value.trim();
+    var email=document.getElementById('f-email').value.trim();
+    if(!first){err.textContent='First name is required.';return;}
+    if(!last){err.textContent='Last name is required.';return;}
+    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='A valid email address is required.';return;}
+    goStep(2);
+  }else if(from===2){
+    var inst=document.getElementById('f-inst').value.trim();
+    var country=document.getElementById('f-country').value;
+    var role=document.getElementById('f-role').value;
+    var study=document.getElementById('f-study').value.trim();
+    if(!inst){err.textContent='Institution name is required.';return;}
+    if(!country){err.textContent='Please select your country.';return;}
+    if(!role){err.textContent='Please select your role.';return;}
+    if(!study){err.textContent='A study title or research focus is required.';return;}
+    goStep(3);
+  }
+};
+
+window.prevStep=function(from){goStep(from-1);};
+
+window.submitApp=async function(){
+  var err=document.getElementById('e3');err.textContent='';
+  if(!selTier){err.textContent='Please select a membership tier.';return;}
+  if(!document.getElementById('f-terms').checked){err.textContent='Please accept the membership terms to proceed.';return;}
+  var btn=document.getElementById('btn-sub');
+  btn.disabled=true;btn.textContent='Submitting…';
+  var country=document.getElementById('f-country').value;
+  var diseases=[].slice.call(document.querySelectorAll('#disease-chips .chip.sel')).map(function(c){return c.dataset.v;});
+  var instruments=[].slice.call(document.querySelectorAll('#inst-chips .chip')).filter(function(c){
+    return c.classList.contains('sel')||c.classList.contains('csel')||c.classList.contains('gsel')||c.classList.contains('psel');
+  }).map(function(c){return c.dataset.v;});
+  var openScience=document.getElementById('f-os').checked;
+  var lmicEligible=LMIC.has(country);
+  var ref='APP-'+new Date().getFullYear()+'-'+Math.random().toString(16).slice(2,6).toUpperCase();
+  var payload={
+    title:document.getElementById('f-title').value,
+    preferred_name:document.getElementById('f-pref').value.trim(),
+    name:(document.getElementById('f-first').value.trim()+' '+document.getElementById('f-last').value.trim()).trim(),
+    first_name:document.getElementById('f-first').value.trim(),
+    last_name:document.getElementById('f-last').value.trim(),
+    contact_email:document.getElementById('f-email').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    orcid:document.getElementById('f-orcid').value.trim(),
+    linkedin:document.getElementById('f-linkedin').value.trim(),
+    institution:document.getElementById('f-inst').value.trim(),
+    department:document.getElementById('f-dept').value.trim(),
+    country:country,
+    role:document.getElementById('f-role').value,
+    tier:selTier,
+    study_title:document.getElementById('f-study').value.trim(),
+    disease_areas:diseases,
+    instruments:instruments,
+    irb_status:document.getElementById('f-irb').value,
+    enrollment:parseInt(document.getElementById('f-n').value)||null,
+    description:document.getElementById('f-desc').value.trim(),
+    open_science:openScience,
+    lmic_eligible:lmicEligible,
+    referral:document.getElementById('f-ref').value,
+    message:document.getElementById('f-msg').value.trim(),
+    status:'pending',
+    applied_at:Date.now(),
+    application_ref:ref,
+    tessera_id:null,
+    source:'tessera-signup-form-v1',
+  };
+  try{
+    await _fdb.ref('consortium_applications').push(payload);
+    [].slice.call(document.querySelectorAll('.form-step')).forEach(function(s){s.style.display='none';});
+    var succ=document.getElementById('form-success');
+    succ.style.display='block';
+    document.getElementById('s-ref').textContent=ref;
+    document.querySelector('.form-shell').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    err.textContent='Submission failed — please try again or contact info@adherence.cc.';
+    btn.disabled=false;btn.textContent='Submit Application →';
+  }
+};
+
+var rvObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');rvObs.unobserve(e.target);}});
+},{threshold:0.07});
+document.querySelectorAll('#apply .rv').forEach(function(el){rvObs.observe(el);});
+
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var t=parseInt(params.get('tier'));
+  if(t>=1&&t<=5){
+    setTimeout(function(){
+      window.pickTier(t);
+      var applyEl=document.getElementById('apply');
+      if(applyEl)applyEl.scrollIntoView({behavior:'smooth',block:'start'});
+    },300);
+  }
+})();
+
+})();
+</script>
+
+</body>
+</html>
