@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The Tessera · TESSERA GRC · Scala Carta Foundation</title>
+<meta name="description" content="The Tessera: every tile is a partner, every color is a tier. Watch the TESSERA GRC global mosaic grow with the science."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#080e1a;
+  --surface:#0d1525;
+  --card:#111d30;
+  --border:rgba(255,255,255,0.07);
+  --bright:#e8f0f8;
+  --muted:#6b8099;
+  --text:#cdd8e8;
+  --gold:#d4a843;
+  --cyan:#06b6d4;
+  --green:#10b981;
+  --purple:#8b6ff5;
+  --amber:#f59e0b;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+html,body{
+  min-height:100%;
+  background:var(--ink);
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.page-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 10% 15%, rgba(78,156,245,0.045) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 60% at 88% 88%, rgba(212,168,67,0.06) 0%,transparent 70%),
+    radial-gradient(ellipse 45% 45% at 50% 50%, rgba(16,185,129,0.025) 0%,transparent 70%);
+}
+
+/* ── Nav ───────────────────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 48px;
+  background:rgba(8,14,26,0.94);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(212,168,67,0.12);
+}
+.nav-brand{display:flex;align-items:center;gap:16px;text-decoration:none;}
+.nav-logo{width:44px;height:44px;flex-shrink:0;}
+.nav-wordmark{display:flex;flex-direction:column;gap:1px;}
+.nav-badge{
+  font-family:var(--font-mono);font-size:0.6rem;
+  letter-spacing:0.32em;text-transform:uppercase;
+  color:rgba(212,168,67,0.55);
+  display:flex;align-items:center;gap:7px;
+}
+.nav-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#10b981;box-shadow:0 0 6px #10b981;
+  animation:blink 2.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.nav-title{
+  font-family:var(--font-display);
+  font-size:1.25rem;font-weight:300;
+  color:#fff;letter-spacing:0.04em;line-height:1;
+}
+.nav-title em{font-style:italic;color:rgba(212,168,67,0.85);}
+.nav-links{display:flex;align-items:center;gap:22px;}
+.nav-link{
+  font-family:var(--font-mono);font-size:0.7rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:color 0.2s;
+}
+.nav-link:hover{color:var(--bright);}
+.nav-link.active{color:rgba(212,168,67,0.8);}
+.nav-cta{
+  font-family:var(--font-mono);font-size:0.7rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:9px 22px;border-radius:7px;
+  border:1px solid rgba(212,168,67,0.4);
+  background:rgba(212,168,67,0.08);
+  color:rgba(212,168,67,0.9);
+  text-decoration:none;
+  transition:all 0.2s;
+}
+.nav-cta:hover{background:rgba(212,168,67,0.16);border-color:rgba(212,168,67,0.65);}
+
+/* ── Page wrap ──────────────────────────────────────────────────────── */
+.page-wrap{position:relative;z-index:1;}
+
+/* ── Hero ───────────────────────────────────────────────────────────── */
+#hero{
+  padding:72px 48px 52px;
+  text-align:center;
+}
+.hero-kicker{
+  font-family:var(--font-mono);font-size:0.68rem;
+  letter-spacing:0.34em;text-transform:uppercase;
+  color:rgba(212,168,67,0.65);
+  margin-bottom:20px;
+}
+.hero-headline{
+  font-family:var(--font-display);
+  font-size:clamp(3.2rem,5.5vw,5.2rem);
+  font-weight:300;color:#fff;
+  letter-spacing:0.02em;line-height:1.08;
+  margin-bottom:18px;
+}
+.hero-headline em{font-style:italic;color:rgba(212,168,67,0.88);}
+.hero-sub{
+  font-size:1.05rem;color:var(--muted);
+  line-height:1.72;max-width:480px;
+  margin:0 auto 28px;
+}
+.live-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:0.68rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(16,185,129,0.75);
+  background:rgba(16,185,129,0.07);
+  border:1px solid rgba(16,185,129,0.2);
+  border-radius:40px;padding:9px 22px;
+}
+.live-pulse{
+  width:7px;height:7px;border-radius:50%;
+  background:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.8);
+  animation:blink 2s ease-in-out infinite;
+  flex-shrink:0;
+}
+
+/* ── Tier Legend ────────────────────────────────────────────────────── */
+.legend-bar{
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:6px 22px;
+  padding:18px 48px;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.012);
+}
+.legend-item{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:0.63rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--muted);
+  cursor:pointer;
+  user-select:none;
+  transition:color 0.2s;
+}
+.legend-item:hover{color:var(--bright);}
+.legend-item.dimmed{opacity:0.3;}
+.legend-swatch{
+  width:13px;height:15px;flex-shrink:0;
+}
+.legend-sep{
+  width:1px;height:16px;
+  background:var(--border);flex-shrink:0;
+}
+
+/* ── Mosaic ─────────────────────────────────────────────────────────── */
+.mosaic-wrap{
+  width:100%;
+  overflow:hidden;
+  background:linear-gradient(180deg,rgba(8,14,26,0) 0%,rgba(8,14,26,0.25) 100%);
+  border-bottom:1px solid var(--border);
+}
+#mosaic-svg{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+/* Empty tile */
+.hex-empty{
+  fill:rgba(255,255,255,0.038);
+  stroke:rgba(255,255,255,0.13);
+  stroke-width:0.65;
+  transition:fill 0.2s, stroke 0.2s;
+  cursor:default;
+}
+.hex-empty:hover{
+  fill:rgba(255,255,255,0.085);
+  stroke:rgba(255,255,255,0.25);
+}
+
+/* Partner tile */
+.hex-partner{
+  stroke-width:0.9;
+  cursor:pointer;
+  transform-box:fill-box;
+  transform-origin:center;
+  transition:transform 0.16s ease, opacity 0.16s;
+}
+.hex-partner:hover{
+  transform:scale(1.1);
+  opacity:0.92;
+}
+
+/* Tier fills */
+.t-institutional{ fill:rgba(212,168,67,0.84); stroke:rgba(212,168,67,0.96); }
+.t-validation   { fill:rgba(6,182,212,0.82);  stroke:rgba(6,182,212,0.95);  }
+.t-affiliate    { fill:rgba(16,185,129,0.82); stroke:rgba(16,185,129,0.95); }
+.t-student      { fill:rgba(139,111,245,0.82);stroke:rgba(139,111,245,0.95);}
+.t-industry     { fill:rgba(245,158,11,0.82); stroke:rgba(245,158,11,0.95); }
+
+/* Staggered fade-in */
+@keyframes hexFade{from{opacity:0;}to{opacity:1;}}
+.hex-tile{opacity:0;animation:hexFade 0.5s ease-out forwards;}
+
+/* ── Stats bar ──────────────────────────────────────────────────────── */
+.stats-bar{
+  display:flex;align-items:stretch;
+  border-bottom:1px solid var(--border);
+}
+.stat-cell{
+  flex:1;padding:26px 36px;
+  text-align:center;
+  border-right:1px solid var(--border);
+}
+.stat-cell:last-child{border-right:none;}
+.stat-num{
+  font-family:var(--font-display);
+  font-size:2.6rem;font-weight:300;
+  color:#fff;line-height:1;
+  margin-bottom:7px;
+}
+.stat-num em{font-style:italic;color:rgba(212,168,67,0.85);}
+.stat-label{
+  font-family:var(--font-mono);font-size:0.6rem;
+  letter-spacing:0.26em;text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ── CTA ────────────────────────────────────────────────────────────── */
+.cta-section{
+  padding:88px 48px 96px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.cta-label{
+  font-family:var(--font-mono);font-size:0.66rem;
+  letter-spacing:0.32em;text-transform:uppercase;
+  color:rgba(212,168,67,0.6);
+  margin-bottom:18px;
+}
+.cta-headline{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,3.8vw,3.2rem);
+  font-weight:300;color:#fff;
+  line-height:1.18;
+  margin-bottom:36px;
+}
+.cta-headline em{font-style:italic;color:rgba(212,168,67,0.88);}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:9px;
+  background:linear-gradient(135deg,rgba(212,168,67,0.2),rgba(212,168,67,0.09));
+  border:1px solid rgba(212,168,67,0.48);
+  border-radius:9px;padding:15px 34px;
+  font-family:var(--font-body);font-size:0.97rem;font-weight:500;
+  color:#e8c96a;text-decoration:none;
+  transition:all 0.22s;
+}
+.btn-gold:hover{
+  background:rgba(212,168,67,0.26);
+  border-color:rgba(212,168,67,0.72);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────── */
+footer{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  padding:36px 48px;
+}
+.footer-copy{
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.1em;color:var(--muted);
+}
+.footer-links{display:flex;gap:20px;}
+.footer-link{
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:color 0.2s;
+}
+.footer-link:hover{color:var(--bright);}
+
+/* ── Tooltip ────────────────────────────────────────────────────────── */
+#tip{
+  position:fixed;display:none;pointer-events:none;z-index:200;
+  background:rgba(11,18,33,0.97);
+  border:1px solid rgba(212,168,67,0.2);
+  border-radius:11px;padding:16px 22px;
+  min-width:190px;max-width:270px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.55);
+  backdrop-filter:blur(14px);
+}
+.tip-tier{
+  font-family:var(--font-mono);font-size:0.56rem;
+  letter-spacing:0.3em;text-transform:uppercase;
+  margin-bottom:9px;
+}
+.tip-name{
+  font-family:var(--font-display);font-size:1.18rem;
+  font-weight:400;color:#fff;
+  line-height:1.28;margin-bottom:6px;
+}
+.tip-meta{
+  font-family:var(--font-mono);font-size:0.63rem;
+  letter-spacing:0.08em;color:var(--muted);
+}
+
+/* Responsive ────────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  nav{padding:12px 20px;}
+  .nav-links .nav-link{display:none;}
+  #hero{padding:52px 24px 36px;}
+  .legend-bar{padding:14px 20px;gap:5px 14px;}
+  .stats-bar{flex-wrap:wrap;}
+  .stat-cell{flex:1 1 140px;padding:18px 20px;}
+  .cta-section{padding:60px 24px 68px;}
+  footer{padding:28px 20px;}
+}
+</style>
+</head>
+<body>
+<div class="page-bg"></div>
+<div class="page-wrap">
+
+<!-- ═══ NAV ════════════════════════════════════════════════════════════ -->
+<nav>
+  <a class="nav-brand" href="/">
+    <svg class="nav-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="TESSERA GRC">
+      <defs>
+        <filter id="nav-glow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <polygon points="20,9.6 17,14.8 11,14.8 8,9.6 11,4.4 17,4.4"
+        fill="rgba(78,156,245,0.22)" stroke="rgba(78,156,245,0.52)" stroke-width="0.8"/>
+      <polygon points="32,9.6 29,14.8 23,14.8 20,9.6 23,4.4 29,4.4"
+        fill="rgba(16,185,129,0.22)" stroke="rgba(16,185,129,0.52)" stroke-width="0.8"/>
+      <polygon points="14,20 11,25.2 5,25.2 2,20 5,14.8 11,14.8"
+        fill="rgba(139,111,245,0.22)" stroke="rgba(139,111,245,0.52)" stroke-width="0.8"/>
+      <polygon points="26,20 23,25.2 17,25.2 14,20 17,14.8 23,14.8"
+        fill="rgba(212,168,67,0.88)" stroke="rgba(212,168,67,1)" stroke-width="1.1"
+        filter="url(#nav-glow)"/>
+      <polygon points="38,20 35,25.2 29,25.2 26,20 29,14.8 35,14.8"
+        fill="rgba(6,182,212,0.28)" stroke="rgba(6,182,212,0.58)" stroke-width="0.8"/>
+      <polygon points="20,30.4 17,35.6 11,35.6 8,30.4 11,25.2 17,25.2"
+        fill="rgba(245,158,11,0.22)" stroke="rgba(245,158,11,0.52)" stroke-width="0.8"/>
+      <polygon points="32,30.4 29,35.6 23,35.6 20,30.4 23,25.2 29,25.2"
+        fill="rgba(212,168,67,0.16)" stroke="rgba(212,168,67,0.40)" stroke-width="0.8"/>
+    </svg>
+    <div class="nav-wordmark">
+      <div class="nav-badge"><span class="nav-dot"></span>Scala Carta Foundation</div>
+      <div class="nav-title">TESSERA <em>GRC</em></div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="https://atlas.adherence.cc">ATLAS Platform</a>
+    <a class="nav-link" href="/#membership">Membership Tiers</a>
+    <a class="nav-link active" href="/mosaic/">The Tessera</a>
+    <a class="nav-cta" href="/#apply">Apply to Join</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-kicker">TESSERA GRC &middot; Global Partner Mosaic &middot; Live</div>
+  <h1 class="hero-headline">The <em>Tessera</em></h1>
+  <p class="hero-sub">Every tile is a partner. Every color is a tier. The mosaic grows with the science.</p>
+  <div class="live-badge">
+    <span class="live-pulse"></span>
+    <span id="counter-text">Accepting founding partners</span>
+  </div>
+</section>
+
+<!-- ═══ TIER LEGEND ═════════════════════════════════════════════════════ -->
+<div class="legend-bar">
+  <div class="legend-item" style="color:rgba(255,255,255,0.35);cursor:default;">
+    <svg class="legend-swatch" viewBox="0 0 13 15">
+      <polygon points="6.5,0 12.14,3.25 12.14,9.75 6.5,13 0.86,9.75 0.86,3.25"
+        fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.28)" stroke-width="0.7"/>
+    </svg>
+    Available
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-item" data-tier="institutional">
+    <svg class="legend-swatch" viewBox="0 0 13 15">
+      <polygon points="6.5,0 12.14,3.25 12.14,9.75 6.5,13 0.86,9.75 0.86,3.25"
+        fill="rgba(212,168,67,0.85)" stroke="rgba(212,168,67,1)" stroke-width="0.7"/>
+    </svg>
+    Institutional
+  </div>
+  <div class="legend-item" data-tier="validation">
+    <svg class="legend-swatch" viewBox="0 0 13 15">
+      <polygon points="6.5,0 12.14,3.25 12.14,9.75 6.5,13 0.86,9.75 0.86,3.25"
+        fill="rgba(6,182,212,0.85)" stroke="rgba(6,182,212,1)" stroke-width="0.7"/>
+    </svg>
+    Validation
+  </div>
+  <div class="legend-item" data-tier="affiliate">
+    <svg class="legend-swatch" viewBox="0 0 13 15">
+      <polygon points="6.5,0 12.14,3.25 12.14,9.75 6.5,13 0.86,9.75 0.86,3.25"
+        fill="rgba(16,185,129,0.85)" stroke="rgba(16,185,129,1)" stroke-width="0.7"/>
+    </svg>
+    Affiliate
+  </div>
+  <div class="legend-item" data-tier="student">
+    <svg class="legend-swatch" viewBox="0 0 13 15">
+      <polygon points="6.5,0 12.14,3.25 12.14,9.75 6.5,13 0.86,9.75 0.86,3.25"
+        fill="rgba(139,111,245,0.85)" stroke="rgba(139,111,245,1)" stroke-width="0.7"/>
+    </svg>
+    Student
+  </div>
+  <div class="legend-item" data-tier="industry">
+    <svg class="legend-swatch" viewBox="0 0 13 15">
+      <polygon points="6.5,0 12.14,3.25 12.14,9.75 6.5,13 0.86,9.75 0.86,3.25"
+        fill="rgba(245,158,11,0.85)" stroke="rgba(245,158,11,1)" stroke-width="0.7"/>
+    </svg>
+    Industry
+  </div>
+</div>
+
+<!-- ═══ MOSAIC ══════════════════════════════════════════════════════════ -->
+<div class="mosaic-wrap">
+  <svg id="mosaic-svg" xmlns="http://www.w3.org/2000/svg"
+       preserveAspectRatio="xMidYMid meet" aria-label="TESSERA GRC partner mosaic">
+    <defs>
+      <filter id="glow-gold" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-cyan" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-green" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-purple" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glow-amber" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- tiles injected by JS -->
+  </svg>
+</div>
+
+<!-- ═══ STATS ═══════════════════════════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stat-cell">
+    <div class="stat-num" id="stat-partners"><em>0</em></div>
+    <div class="stat-label">Partners</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num" id="stat-countries"><em>0</em></div>
+    <div class="stat-label">Countries</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num"><em id="stat-tiles">540</em></div>
+    <div class="stat-label">Total Tiles</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num" id="stat-pct"><em>0</em><span style="font-size:1.4rem;color:var(--muted);">%</span></div>
+    <div class="stat-label">Mosaic Filled</div>
+  </div>
+</div>
+
+<!-- ═══ CTA ═════════════════════════════════════════════════════════════ -->
+<div class="cta-section">
+  <div class="cta-label">Your institution is the next tile</div>
+  <h2 class="cta-headline">Add your <em>piece</em><br>to the mosaic.</h2>
+  <a class="btn-gold" href="/#apply">Apply to Join TESSERA GRC &rarr;</a>
+</div>
+
+<!-- ═══ FOOTER ══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-copy">&copy; 2026 Scala Carta Foundation. All rights reserved.</div>
+  <div class="footer-links">
+    <a class="footer-link" href="/">TESSERA GRC</a>
+    <a class="footer-link" href="https://www.adherence.cc">Adherence Cartography</a>
+    <a class="footer-link" href="https://atlas.adherence.cc">ATLAS Platform</a>
+  </div>
+</footer>
+
+</div><!-- .page-wrap -->
+
+<!-- ═══ TOOLTIP ═════════════════════════════════════════════════════════ -->
+<div id="tip">
+  <div class="tip-tier" id="tip-tier"></div>
+  <div class="tip-name" id="tip-name"></div>
+  <div class="tip-meta" id="tip-meta"></div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
+  integrity="sha384-ajMUFBUFMCyjh8uxJg6bkGcKe9RTolyjwbxB3yES0QQMenP3Oztj/W9vA2SJPcIh"
+  crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"
+  integrity="sha384-f6/UpzjTjIXASlp20cArQsaRh1EvHVJd5kegy/gYR9W2D0a32TnEqUEiW4Zm/5O0"
+  crossorigin="anonymous"></script>
+
+<script>
+(function () {
+  // ── Hex grid constants ──────────────────────────────────────────────
+  var S       = 22;
+  var W       = +(S * Math.sqrt(3)).toFixed(4);   // 38.1051
+  var COLS    = 30;
+  var ROWS    = 18;
+  var PAD     = S;
+  var COL_STEP = W;
+  var ROW_STEP = S * 1.5;                          // 33
+  var ODD_OFF  = W / 2;                            // 19.0526
+  var SVG_W   = +(PAD + COLS * COL_STEP + ODD_OFF + PAD).toFixed(2);
+  var SVG_H   = +(PAD + (ROWS - 1) * ROW_STEP + S * 2 + PAD).toFixed(2);
+  var TOTAL   = COLS * ROWS;
+
+  // ── Boot SVG ────────────────────────────────────────────────────────
+  var svg = document.getElementById('mosaic-svg');
+  svg.setAttribute('viewBox', '0 0 ' + SVG_W + ' ' + SVG_H);
+  document.getElementById('stat-tiles').textContent = TOTAL;
+
+  // ── Tier config ─────────────────────────────────────────────────────
+  var TIERS = {
+    institutional: { label: 'Institutional Partner', color: '#d4a843', filter: 'glow-gold',   cls: 't-institutional' },
+    validation:    { label: 'Validation Partner',    color: '#06b6d4', filter: 'glow-cyan',   cls: 't-validation'    },
+    affiliate:     { label: 'Affiliate Partner',     color: '#10b981', filter: 'glow-green',  cls: 't-affiliate'     },
+    student:       { label: 'Student Affiliate',     color: '#8b6ff5', filter: 'glow-purple', cls: 't-student'       },
+    industry:      { label: 'Industry Partner',      color: '#f59e0b', filter: 'glow-amber',  cls: 't-industry'      }
+  };
+
+  // ── Hex geometry helpers ─────────────────────────────────────────────
+  function hexPoints(cx, cy) {
+    var hw = W / 2, hs = S / 2;
+    return [
+      [cx,     cy - S ],
+      [cx + hw, cy - hs],
+      [cx + hw, cy + hs],
+      [cx,     cy + S ],
+      [cx - hw, cy + hs],
+      [cx - hw, cy - hs]
+    ].map(function (p) {
+      return p[0].toFixed(2) + ',' + p[1].toFixed(2);
+    }).join(' ');
+  }
+
+  function tileCenter(row, col) {
+    var cx = PAD + W / 2 + col * COL_STEP + (row % 2 === 1 ? ODD_OFF : 0);
+    var cy = PAD + S + row * ROW_STEP;
+    return [cx, cy];
+  }
+
+  // ── Build empty grid ─────────────────────────────────────────────────
+  var tiles = new Array(TOTAL);
+
+  for (var r = 0; r < ROWS; r++) {
+    for (var c = 0; c < COLS; c++) {
+      var idx = r * COLS + c;
+      var ctr = tileCenter(r, c);
+      var poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      poly.setAttribute('points', hexPoints(ctr[0], ctr[1]));
+      poly.setAttribute('class', 'hex-tile hex-empty');
+      poly.style.animationDelay = (idx * 0.0028).toFixed(3) + 's';
+      poly.dataset.idx = idx;
+      svg.appendChild(poly);
+      tiles[idx] = { el: poly, partner: null };
+    }
+  }
+
+  // ── Render a partner tile ────────────────────────────────────────────
+  function renderPartner(partner, seq) {
+    var tileIdx = ((seq % TOTAL) + TOTAL) % TOTAL;
+    var tile = tiles[tileIdx];
+    if (!tile) return;
+    var tier = TIERS[partner.tier] || TIERS.institutional;
+    tile.partner = partner;
+    var el = tile.el;
+    el.setAttribute('class', 'hex-tile hex-partner ' + tier.cls);
+    el.setAttribute('filter', 'url(#' + tier.filter + ')');
+    el.dataset.name    = partner.name    || '';
+    el.dataset.country = partner.country || '';
+    el.dataset.flag    = partner.countryFlag || '';
+    el.dataset.tier    = partner.tier    || 'institutional';
+  }
+
+  // ── Stats ────────────────────────────────────────────────────────────
+  function updateStats(allPartners) {
+    var count = Object.keys(allPartners).length;
+    var countries = {};
+    Object.keys(allPartners).forEach(function (k) {
+      var c = allPartners[k].country;
+      if (c) countries[c] = 1;
+    });
+    var cCount = Object.keys(countries).length;
+    var pct = Math.round((count / TOTAL) * 100);
+
+    document.getElementById('stat-partners').innerHTML  = '<em>' + count + '</em>';
+    document.getElementById('stat-countries').innerHTML = '<em>' + cCount + '</em>';
+    document.getElementById('stat-pct').innerHTML =
+      '<em>' + pct + '</em><span style="font-size:1.4rem;color:var(--muted);">%</span>';
+
+    var txt;
+    if (count === 0) {
+      txt = 'Accepting founding partners';
+    } else {
+      txt = count + ' partner' + (count !== 1 ? 's' : '') +
+        (cCount ? ' across ' + cCount + ' countr' + (cCount !== 1 ? 'ies' : 'y') : '');
+    }
+    document.getElementById('counter-text').textContent = txt;
+  }
+
+  // ── Tooltip ──────────────────────────────────────────────────────────
+  var tip      = document.getElementById('tip');
+  var tipTier  = document.getElementById('tip-tier');
+  var tipName  = document.getElementById('tip-name');
+  var tipMeta  = document.getElementById('tip-meta');
+  var tipVisible = false;
+
+  document.addEventListener('mousemove', function (e) {
+    if (!tipVisible) return;
+    var vw = window.innerWidth;
+    var tipW = tip.offsetWidth + 24;
+    var x = e.clientX, y = e.clientY;
+    tip.style.left = (x + tipW > vw ? x - tipW + 12 : x + 14) + 'px';
+    tip.style.top  = Math.max(8, y - tip.offsetHeight / 2) + 'px';
+  });
+
+  svg.addEventListener('mouseover', function (e) {
+    var el = e.target;
+    if (!el.dataset || !el.dataset.name) return;
+    var tierKey = el.dataset.tier || 'institutional';
+    var tier = TIERS[tierKey] || TIERS.institutional;
+    tipTier.textContent = tier.label;
+    tipTier.style.color = tier.color;
+    tipName.textContent = el.dataset.name;
+    var meta = [];
+    if (el.dataset.flag)    meta.push(el.dataset.flag);
+    if (el.dataset.country) meta.push(el.dataset.country);
+    tipMeta.textContent = meta.join(' ');
+    tip.style.display = 'block';
+    tipVisible = true;
+  });
+
+  svg.addEventListener('mouseout', function (e) {
+    var el = e.target;
+    if (!el.dataset || !el.dataset.name) return;
+    tip.style.display = 'none';
+    tipVisible = false;
+  });
+
+  // ── Legend filter ─────────────────────────────────────────────────────
+  var activeFilter = null;
+  document.querySelectorAll('.legend-item[data-tier]').forEach(function (item) {
+    item.addEventListener('click', function () {
+      var t = item.dataset.tier;
+      if (activeFilter === t) {
+        activeFilter = null;
+        document.querySelectorAll('.legend-item[data-tier]').forEach(function (li) {
+          li.classList.remove('dimmed');
+        });
+        tiles.forEach(function (tile) {
+          tile.el.style.opacity = '';
+        });
+      } else {
+        activeFilter = t;
+        document.querySelectorAll('.legend-item[data-tier]').forEach(function (li) {
+          li.classList.toggle('dimmed', li.dataset.tier !== t);
+        });
+        tiles.forEach(function (tile) {
+          if (tile.partner) {
+            tile.el.style.opacity = tile.partner.tier === t ? '1' : '0.12';
+          }
+        });
+      }
+    });
+  });
+
+  // ── Firebase ──────────────────────────────────────────────────────────
+  var fbApp;
+  try { fbApp = firebase.app(); } catch (e) {
+    fbApp = firebase.initializeApp({
+      apiKey:            'AIzaSyBRUEGRPaIWHMlzn0lT9otbJQEYZs4Br1A',
+      authDomain:        'adherence-project-2026.firebaseapp.com',
+      databaseURL:       'https://adherence-project-2026-default-rtdb.firebaseio.com',
+      projectId:         'adherence-project-2026',
+      storageBucket:     'adherence-project-2026.firebasestorage.app',
+      messagingSenderId: '222566948658',
+      appId:             '1:222566948658:web:85528e19dd039c199a412b'
+    });
+  }
+
+  firebase.database(fbApp).ref('tessera_tiles').on('value', function (snap) {
+    var data = snap.val() || {};
+
+    // Reset all tiles to empty first
+    tiles.forEach(function (tile) {
+      tile.el.setAttribute('class', 'hex-tile hex-empty');
+      tile.el.removeAttribute('filter');
+      delete tile.el.dataset.name;
+      delete tile.el.dataset.country;
+      delete tile.el.dataset.flag;
+      delete tile.el.dataset.tier;
+      tile.partner = null;
+    });
+
+    // Sort by joinedAt then render in sequence
+    var keys = Object.keys(data).sort(function (a, b) {
+      return (data[a].joinedAt || 0) - (data[b].joinedAt || 0);
+    });
+
+    keys.forEach(function (key, seq) {
+      var p = data[key];
+      renderPartner(p, typeof p.seq !== 'undefined' ? p.seq : seq);
+    });
+
+    updateStats(data);
+  });
+
+})();
+</script>
+</body>
+</html>
