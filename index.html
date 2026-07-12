@@ -1696,6 +1696,12 @@ footer{
               <input type="text" id="f-study" placeholder="e.g. MAP Validation in HIV Patients — Sub-Saharan Africa"/>
             </div>
           </div>
+          <div class="frow">
+            <div class="field">
+              <label>Role / Title for Mosaic Tile <span class="fnote">(optional — displayed on your TESSERA mosaic)</span></label>
+              <input type="text" id="f-tile-role" placeholder="e.g. PhD Candidate in Pharmacoepidemiology, University of Porto"/>
+            </div>
+          </div>
           <div class="field" style="margin-bottom:14px;">
             <label>Disease / Therapeutic Areas <span class="fnote">(select all that apply)</span></label>
             <div class="chips" id="disease-chips">
@@ -2519,6 +2525,7 @@ window.submitApp=async function(){
     department:document.getElementById('f-dept').value.trim(),
     country:country,
     role:document.getElementById('f-role').value,
+    tile_role:document.getElementById('f-tile-role').value.trim(),
     tier:selTier,
     study_title:document.getElementById('f-study').value.trim(),
     disease_areas:diseases,
