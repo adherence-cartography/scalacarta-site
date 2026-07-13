@@ -306,30 +306,41 @@ footer{
 }
 .footer-link:hover{color:var(--bright);}
 
-/* ── Tooltip ────────────────────────────────────────────────────────── */
-#tip{
-  position:fixed;display:none;pointer-events:auto;z-index:200;
-  background:rgba(11,18,33,0.97);
-  border:1px solid rgba(212,168,67,0.2);
-  border-radius:11px;padding:16px 22px;
-  min-width:200px;max-width:290px;
-  box-shadow:0 12px 40px rgba(0,0,0,0.55);
-  backdrop-filter:blur(14px);
+/* ── Profile card (click-to-open) ───────────────────────────────────── */
+#tip-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
 }
+#tip{
+  background:rgba(8,15,28,0.98);
+  border:1px solid rgba(212,168,67,0.28);
+  border-radius:14px;padding:24px 26px;
+  min-width:240px;max-width:320px;width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.7);
+  position:relative;
+}
+.tip-close{
+  position:absolute;top:12px;right:14px;
+  font-size:1rem;line-height:1;cursor:pointer;
+  color:var(--muted);background:none;border:none;padding:4px 6px;
+  transition:color 0.15s;
+}
+.tip-close:hover{color:var(--bright);}
 .tip-tier{
   font-family:var(--font-mono);font-size:0.56rem;
   letter-spacing:0.3em;text-transform:uppercase;
-  margin-bottom:9px;
+  margin-bottom:10px;
 }
 .tip-name{
-  font-family:var(--font-display);font-size:1.18rem;
+  font-family:var(--font-display);font-size:1.22rem;
   font-weight:400;color:#fff;
-  line-height:1.28;margin-bottom:4px;
+  line-height:1.28;margin-bottom:5px;
 }
 .tip-role{
   font-family:var(--font-mono);font-size:0.62rem;
   letter-spacing:0.06em;color:rgba(212,168,67,0.85);
-  margin-bottom:5px;line-height:1.4;
+  margin-bottom:6px;line-height:1.4;
 }
 .tip-meta{
   font-family:var(--font-mono);font-size:0.63rem;
@@ -337,15 +348,17 @@ footer{
   margin-bottom:6px;
 }
 .tip-links{
-  display:flex;gap:12px;margin-top:8px;
-  padding-top:8px;border-top:1px solid rgba(212,168,67,0.12);
+  display:flex;gap:14px;margin-top:12px;
+  padding-top:12px;border-top:1px solid rgba(212,168,67,0.14);
 }
 .tip-link{
-  font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.06em;
-  text-decoration:none;padding:2px 0;
-  transition:opacity 0.15s;
+  font-family:var(--font-mono);font-size:0.64rem;letter-spacing:0.06em;
+  text-decoration:none;padding:4px 10px;border-radius:5px;
+  border:1px solid;transition:opacity 0.15s;
 }
 .tip-link:hover{opacity:0.75;}
+.tip-link-orcid{color:#a6ce39;border-color:rgba(166,206,57,0.35);background:rgba(166,206,57,0.07);}
+.tip-link-li{color:#4e9cf5;border-color:rgba(78,156,245,0.35);background:rgba(78,156,245,0.07);}
 
 /* Responsive ────────────────────────────────────────────────────────── */
 @media(max-width:768px){
@@ -549,15 +562,18 @@ footer{
 
 </div><!-- .page-wrap -->
 
-<!-- ═══ TOOLTIP ═════════════════════════════════════════════════════════ -->
-<div id="tip">
-  <div class="tip-tier" id="tip-tier"></div>
-  <div class="tip-name" id="tip-name"></div>
-  <div class="tip-role" id="tip-role" style="display:none;"></div>
-  <div class="tip-meta" id="tip-meta"></div>
-  <div class="tip-links" id="tip-links" style="display:none;">
-    <a id="tip-orcid" class="tip-link" href="#" target="_blank" rel="noopener" style="color:#a6ce39;">ORCID ↗</a>
-    <a id="tip-linkedin" class="tip-link" href="#" target="_blank" rel="noopener" style="color:#4e9cf5;">LinkedIn ↗</a>
+<!-- ═══ PROFILE CARD ══════════════════════════════════════════════════ -->
+<div id="tip-backdrop">
+  <div id="tip">
+    <button class="tip-close" id="tip-close" aria-label="Close">✕</button>
+    <div class="tip-tier" id="tip-tier"></div>
+    <div class="tip-name" id="tip-name"></div>
+    <div class="tip-role" id="tip-role" style="display:none;"></div>
+    <div class="tip-meta" id="tip-meta"></div>
+    <div class="tip-links" id="tip-links" style="display:none;">
+      <a id="tip-orcid" class="tip-link tip-link-orcid" href="#" target="_blank" rel="noopener">ORCID ↗</a>
+      <a id="tip-linkedin" class="tip-link tip-link-li" href="#" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
   </div>
 </div>
 
@@ -688,7 +704,8 @@ footer{
     document.getElementById('counter-text').textContent = txt;
   }
 
-  // ── Tooltip ──────────────────────────────────────────────────────────
+  // ── Profile card (click-to-open) ────────────────────────────────────
+  var backdrop   = document.getElementById('tip-backdrop');
   var tip        = document.getElementById('tip');
   var tipTier    = document.getElementById('tip-tier');
   var tipName    = document.getElementById('tip-name');
@@ -697,41 +714,17 @@ footer{
   var tipLinks   = document.getElementById('tip-links');
   var tipOrcid   = document.getElementById('tip-orcid');
   var tipLinkedin= document.getElementById('tip-linkedin');
-  var tipVisible = false;
-  var tipHovered = false;
 
-  tip.addEventListener('mouseenter', function () { tipHovered = true; });
-  tip.addEventListener('mouseleave', function () {
-    tipHovered = false;
-    tip.style.display = 'none';
-    tipVisible = false;
-  });
-
-  document.addEventListener('mousemove', function (e) {
-    if (!tipVisible) return;
-    var vw = window.innerWidth;
-    var tipW = tip.offsetWidth + 24;
-    var x = e.clientX, y = e.clientY;
-    tip.style.left = (x + tipW > vw ? x - tipW + 12 : x + 14) + 'px';
-    tip.style.top  = Math.max(8, y - tip.offsetHeight / 2) + 'px';
-  });
-
-  svg.addEventListener('mouseover', function (e) {
-    var el = e.target;
-    if (!el.dataset || !el.dataset.name) return;
+  function openCard(el) {
     var tierKey = el.dataset.tier || 'institutional';
-    var tier = TIERS[tierKey] || TIERS.institutional;
+    var tier    = TIERS[tierKey] || TIERS.institutional;
     tipTier.textContent = tier.label;
     tipTier.style.color = tier.color;
     tipName.textContent = el.dataset.name;
 
     var roleText = [el.dataset.role, el.dataset.affiliation].filter(Boolean).join(' · ');
-    if (roleText) {
-      tipRole.textContent = roleText;
-      tipRole.style.display = 'block';
-    } else {
-      tipRole.style.display = 'none';
-    }
+    tipRole.textContent    = roleText;
+    tipRole.style.display  = roleText ? 'block' : 'none';
 
     var meta = [];
     if (el.dataset.flag)    meta.push(el.dataset.flag);
@@ -740,29 +733,27 @@ footer{
 
     var hasOrcid    = !!el.dataset.orcid;
     var hasLinkedin = !!el.dataset.linkedin;
-    if (hasOrcid || hasLinkedin) {
-      tipOrcid.style.display    = hasOrcid    ? 'inline' : 'none';
-      tipLinkedin.style.display = hasLinkedin ? 'inline' : 'none';
-      if (hasOrcid)    tipOrcid.href    = 'https://orcid.org/' + el.dataset.orcid;
-      if (hasLinkedin) tipLinkedin.href = el.dataset.linkedin;
-      tipLinks.style.display = 'flex';
-    } else {
-      tipLinks.style.display = 'none';
-    }
+    tipOrcid.style.display    = hasOrcid    ? 'inline' : 'none';
+    tipLinkedin.style.display = hasLinkedin ? 'inline' : 'none';
+    if (hasOrcid)    tipOrcid.href    = 'https://orcid.org/' + el.dataset.orcid;
+    if (hasLinkedin) tipLinkedin.href = el.dataset.linkedin;
+    tipLinks.style.display = (hasOrcid || hasLinkedin) ? 'flex' : 'none';
 
-    tip.style.display = 'block';
-    tipVisible = true;
-  });
+    backdrop.style.display = 'flex';
+  }
 
-  svg.addEventListener('mouseout', function (e) {
+  function closeCard() {
+    backdrop.style.display = 'none';
+  }
+
+  document.getElementById('tip-close').addEventListener('click', closeCard);
+  backdrop.addEventListener('click', function (e) { if (e.target === backdrop) closeCard(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCard(); });
+
+  svg.addEventListener('click', function (e) {
     var el = e.target;
     if (!el.dataset || !el.dataset.name) return;
-    setTimeout(function () {
-      if (!tipHovered) {
-        tip.style.display = 'none';
-        tipVisible = false;
-      }
-    }, 90);
+    openCard(el);
   });
 
   // ── Legend filter ─────────────────────────────────────────────────────
