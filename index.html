@@ -3206,12 +3206,23 @@ function togglePathways(btn){
   btn.classList.toggle('open',!open);
 }
 
-/* ── RCL Template download — static file served from /assets/ ── */
+/* ── RCL Template download — fetch as blob so Edge doesn't open it inline ── */
 function downloadRCLTemplate(){
-  var a=document.createElement('a');
-  a.href='/assets/TESSERA_Normative_Contribution_Template.xlsx';
-  a.download='TESSERA_Normative_Contribution_Template.xlsx';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  fetch('/assets/TESSERA_Normative_Contribution_Template.xlsx')
+    .then(function(r){return r.blob();})
+    .then(function(blob){
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url;a.download='TESSERA_Normative_Contribution_Template.xlsx';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    })
+    .catch(function(){
+      var a=document.createElement('a');
+      a.href='/assets/TESSERA_Normative_Contribution_Template.xlsx';
+      a.download='TESSERA_Normative_Contribution_Template.xlsx';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    });
 }
 
 /* ── RCL File parse ─────────────────────────────────────────────────── */
