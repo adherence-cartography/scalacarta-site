@@ -3206,37 +3206,97 @@ function togglePathways(btn){
   btn.classList.toggle('open',!open);
 }
 
-/* ── RCL Template download ──────────────────────────────────────────── */
+/* ── RCL Template download (mirrors ATLAS downloadNormativeTemplate) ── */
 function downloadRCLTemplate(){
   if(typeof XLSX==='undefined'){alert('Template library not yet loaded — please try again in a moment.');return;}
-  var wb=XLSX.utils.book_new();
+  var btn=document.querySelector('[onclick="downloadRCLTemplate()"]');
+  var orig=btn?btn.textContent:'';
+  if(btn){btn.textContent='Generating…';btn.disabled=true;}
+  try{
+    var wb=XLSX.utils.book_new();
+    wb.Workbook={Names:[]};
 
-  // Instructions sheet
-  var instData=[
-    ['TESSERA NORMATIVE CONTRIBUTION TEMPLATE — Instructions'],[''],
-    ['1. Do NOT add a Patient ID column. This template is designed to contain no personal data.'],
-    ['2. One row = one patient assessment.'],
-    ['3. Country: full country name (e.g. Germany, Nigeria, Brazil).'],
-    ['4. Gender: Male | Female | Non-binary | Prefer not to say'],
-    ['5. Age Range: 18-29 | 30-39 | 40-49 | 50-59 | 60-69 | 70+'],
-    ['6. Education: Primary | Secondary | Tertiary | Postgraduate'],
-    ['7. Q1-Q7 responses: 1 = Yes (missed/forgot), 0 = No (did not miss)'],
-    ['8. Q8 response: 1 = Never/Rarely | 2 = Sometimes | 3 = Often | 4 = Always (difficulty remembering)'],
-    ['9. Leave a cell blank if data is genuinely missing — do not enter 0 as a substitute.'],[''],
-    ['GDPR / UK DPA: This template contains no personal data as defined under GDPR Art 4(1) or UK DPA 2018.'],
-    ['No Patient ID field exists. Age ranges are used, not exact ages. Submission does not require ethics amendment.'],[''],
-    ['Submit via the upload portal at scalacartafoundation.org or email philip.morisky@adherence.cc'],
-  ];
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(instData),'Instructions');
+    var CONDITIONS=['Hypertension','Type 2 Diabetes','Type 1 Diabetes','Heart Failure','Asthma / COPD','HIV/AIDS','Tuberculosis','Epilepsy / Seizure Disorder','Depression','Anxiety Disorder','Schizophrenia / Psychosis','Bipolar Disorder','Cancer (Oncology)','Chronic Kidney Disease','Hypothyroidism','Rheumatoid Arthritis','Osteoporosis','Dyslipidaemia / Hypercholesterolaemia','Atrial Fibrillation','Other'];
+    var AGE_RANGES=['Under 18','18–24','25–34','35–44','45–54','55–64','65–74','75 and older','Prefer not to say'];
+    var EDUCATION=['No formal education','Primary school','Secondary school','Vocational / Technical','Some university / college','Bachelor\'s degree','Master\'s degree','Doctoral degree','Prefer not to say'];
+    var ROUTES=['Oral (Tablet/Capsule)','Sublingual','Buccal','Intravenous (IV)','Intramuscular (IM)','Subcutaneous (SC)','Transdermal (Patch)','Inhaled','Intranasal','Ophthalmic (Eye drops)','Otic (Ear drops)','Rectal (Suppository)','Vaginal','Topical (Cream/Gel)','Other'];
 
-  // Data sheet
-  var sentinel='TESSERA NORMATIVE CONTRIBUTION TEMPLATE';
-  var cols=['Country','City','Condition / Indication','Drug Type','Drug Name','Drug Strength','Route','Gender','Age Range','Education','Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8'];
-  var ws=XLSX.utils.aoa_to_sheet([[sentinel],[],[cols]]);
-  // Column widths
-  ws['!cols']=[{wch:16},{wch:14},{wch:22},{wch:14},{wch:18},{wch:14},{wch:12},{wch:14},{wch:12},{wch:14},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6}];
-  XLSX.utils.book_append_sheet(wb,ws,'Data');
-  XLSX.writeFile(wb,'TESSERA_Normative_Contribution_Template.xlsx');
+    // Lookup sheet (named ranges for dropdowns)
+    var lookupAoa=[['ConditionList','AgeRangeList','EducationList','RouteList']];
+    var maxLen=Math.max(CONDITIONS.length,AGE_RANGES.length,EDUCATION.length,ROUTES.length);
+    for(var i=0;i<maxLen;i++) lookupAoa.push([CONDITIONS[i]||'',AGE_RANGES[i]||'',EDUCATION[i]||'',ROUTES[i]||'']);
+    var wsLookup=XLSX.utils.aoa_to_sheet(lookupAoa);
+    wsLookup['!cols']=[{wch:46},{wch:22},{wch:46},{wch:32}];
+    XLSX.utils.book_append_sheet(wb,wsLookup,'Lookup');
+    wb.Workbook.Names.push({Name:'ConditionList',Ref:'Lookup!$A$2:$A$'+(CONDITIONS.length+1)});
+    wb.Workbook.Names.push({Name:'AgeRangeList', Ref:'Lookup!$B$2:$B$'+(AGE_RANGES.length+1)});
+    wb.Workbook.Names.push({Name:'EducationList',Ref:'Lookup!$C$2:$C$'+(EDUCATION.length+1)});
+    wb.Workbook.Names.push({Name:'RouteList',    Ref:'Lookup!$D$2:$D$'+(ROUTES.length+1)});
+
+    // Instructions sheet
+    var wsInstr=XLSX.utils.aoa_to_sheet([
+      ['TESSERA NORMATIVE CONTRIBUTION TEMPLATE — MMAS-8 · Scala Carta Foundation'],[],
+      ['PURPOSE'],
+      ['This template is for researchers enrolled under the TESSERA Research Contribution License.'],
+      ['It does not contain a Patient ID column. No patient identifiers of any kind should be entered.'],
+      ['Submission of this file fulfils the data contribution obligation of your Research Contribution License.'],[],
+      ['INSTRUCTIONS'],[],
+      ['1.  Fill in the STUDY INFORMATION section (rows 2–7 of the "Data Entry" sheet).'],
+      ['    Study Title (B2), Principal Investigator (B3), and Institution (B4) are required.'],[],
+      ['2.  Enter one row per patient assessment, starting at ROW 11 of the Data Entry sheet.'],
+      ['    Do NOT add any patient names, ID numbers, NHS numbers, or any other identifier.'],
+      ['    Country and City are used for map geocoding only and are not identifying at population level.'],[],
+      ['3.  Q1–Q7: Select YES or NO from the dropdown. Q5 is REVERSE-SCORED (YES = took last dose = adherent).'],
+      ['    Q8 Frequency: Never/Rarely | Once in a while | Sometimes | Usually | All of the time'],[],
+      ['4.  Delete the example row (row 10) before uploading.'],[],
+      ['5.  Upload via the portal at scalacartafoundation.org or email philip.morisky@adherence.cc'],[],
+      ['GDPR / DPA NOTE'],
+      ['This file is designed to contain no personal data as defined under GDPR Art. 4(1) or UK DPA 2018.'],
+      ['It does not require ethics amendment or data management agreement review prior to submission.'],
+    ]);
+    wsInstr['!cols']=[{wch:115}];
+    XLSX.utils.book_append_sheet(wb,wsInstr,'Instructions');
+
+    // Data Entry sheet
+    var COL_HEADERS=['Date (YYYY-MM-DD)','Country *','City','Condition','Drug Type','Drug Name','Drug Strength','Route of Administration','Gender','Age Range','Education Level','Q1 — Forget to take?','Q2 — Missed past 2 wks?','Q3 — Cut back / felt worse?','Q4 — Forgot when travelling?','Q5 — Took last scheduled dose? (REVERSED)','Q6 — Stopped when felt in control?','Q7 — Feel hassled by treatment?','Q8 Frequency (how often forget?)'];
+    var EXAMPLE=['2026-01-15','United States (EXAMPLE — DELETE ROW)','New York','Hypertension','Single API','Lisinopril','10mg','Oral (Tablet/Capsule)','Male','45–54','Bachelor\'s degree','NO','NO','NO','NO','YES','NO','NO','Never/Rarely'];
+    var dataAoa=[
+      ['ATLAS PLATFORM · MMAS-8 NORMATIVE CONTRIBUTION TEMPLATE'],
+      ['STUDY TITLE *',''],
+      ['PRINCIPAL INVESTIGATOR *',''],
+      ['INSTITUTION *',''],
+      ['IRB PROTOCOL #',''],
+      ['CLINICALTRIALS.GOV ID',''],
+      ['STUDY PHASE / DESIGN',''],
+      [],
+      COL_HEADERS,
+      EXAMPLE,
+      [],[],[],[],[],[],[],[],[],[],
+    ];
+    var wsData=XLSX.utils.aoa_to_sheet(dataAoa);
+    wsData['!cols']=[{wch:22},{wch:20},{wch:22},{wch:32},{wch:18},{wch:24},{wch:14},{wch:26},{wch:14},{wch:12},{wch:20},{wch:22},{wch:22},{wch:26},{wch:28},{wch:32},{wch:28},{wch:28},{wch:26}];
+    wsData['!dataValidations']=[
+      {sqref:'D11:D2000',type:'list',formula1:'ConditionList',showDropDown:false,showErrorMessage:false},
+      {sqref:'E11:E2000',type:'list',formula1:'"Single API,Combination (FDC),Biological"',showDropDown:false,showErrorMessage:false},
+      {sqref:'H11:H2000',type:'list',formula1:'RouteList',showDropDown:false,showErrorMessage:false},
+      {sqref:'I11:I2000',type:'list',formula1:'"Male,Female,Other / Prefer not to say"',showDropDown:false,showErrorMessage:false},
+      {sqref:'J11:J2000',type:'list',formula1:'AgeRangeList',showDropDown:false,showErrorMessage:false},
+      {sqref:'K11:K2000',type:'list',formula1:'EducationList',showDropDown:false,showErrorMessage:false},
+      {sqref:'L11:R2000',type:'list',formula1:'"YES,NO"',showDropDown:false,showErrorMessage:true,errorStyle:'stop',errorTitle:'Invalid value',error:'Enter YES or NO for Q1–Q7.'},
+      {sqref:'S11:S2000',type:'list',formula1:'"Never/Rarely,Once in a while,Sometimes,Usually,All of the time"',showDropDown:false,showErrorMessage:true,errorStyle:'stop',errorTitle:'Invalid value',error:'Select a Q8 frequency from the dropdown.'},
+    ];
+    XLSX.utils.book_append_sheet(wb,wsData,'Data Entry');
+    wb.SheetNames=['Instructions','Data Entry','Lookup'];
+
+    var wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+    var blob=new Blob([wbout],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='TESSERA_Normative_Contribution_Template.xlsx';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }catch(err){alert('Could not generate template: '+err.message);}
+  if(btn){btn.textContent=orig;btn.disabled=false;}
 }
 
 /* ── RCL File parse ─────────────────────────────────────────────────── */
@@ -3244,36 +3304,51 @@ function handleRCLFile(file){
   if(!file)return;
   if(typeof XLSX==='undefined'){_rclStatus('error','Template library not loaded. Please refresh and try again.');return;}
   var label=document.getElementById('rcl-file-label');
-  label.textContent='Reading '+file.name+'...';
+  label.textContent='Reading '+file.name+'…';
   var reader=new FileReader();
   reader.onload=function(e){
     var wb;
     try{wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});}
     catch(err){_rclStatus('error','Could not read file. Please use the downloaded .xlsx template.');label.textContent='Read error — try again.';return;}
-    var wsName=wb.SheetNames.indexOf('Data')>=0?'Data':wb.SheetNames[0];
+    // Find 'Data Entry' sheet, fall back to first sheet
+    var wsName=wb.SheetNames.indexOf('Data Entry')>=0?'Data Entry':wb.SheetNames[0];
     var rows=XLSX.utils.sheet_to_json(wb.Sheets[wsName],{header:1,defval:''});
+    // Row 0 must contain the sentinel
     var sentinel=String(rows[0]&&rows[0][0]||'').toUpperCase();
     if(!sentinel.includes('NORMATIVE')){
-      _rclStatus('error','This does not appear to be the TESSERA Normative Contribution Template. Please download the template above, fill it in, and upload that file.');
-      label.textContent='Wrong template — please use the download above.';
+      _rclStatus('error','This does not appear to be the TESSERA Normative Contribution Template. Please download the template above, complete it, and upload that file.');
+      label.textContent='Wrong template — use the download above.';
       return;
     }
-    // Row 0 = sentinel, Row 1 = empty, Row 2 = headers, Row 3+ = data
-    var dataRows=rows.slice(3).filter(function(r){return r.some(function(c){return String(c).trim()!=='';});});
+    // Template structure: row 0=sentinel, 1-6=study metadata, 7=blank, 8=col headers, 9=example, 10+=data
+    // Extract study metadata from the template (rows 1-3, col B = index 1)
+    var studyTitle=String(rows[1]&&rows[1][1]||'').trim();
+    var studyPI   =String(rows[2]&&rows[2][1]||'').trim();
+    var studyInst =String(rows[3]&&rows[3][1]||'').trim();
+    // Auto-fill form fields if the researcher put study info in the template
+    if(studyTitle && document.getElementById('rcl-study') && !document.getElementById('rcl-study').value)
+      document.getElementById('rcl-study').value=studyTitle;
+    if(studyInst && document.getElementById('rcl-institution') && !document.getElementById('rcl-institution').value)
+      document.getElementById('rcl-institution').value=studyInst;
+    // Data rows start at index 10; filter out empty rows and the EXAMPLE row
+    var dataRows=rows.slice(10).filter(function(r){
+      var country=String(r[1]||'').trim().toUpperCase();
+      if(country.includes('EXAMPLE'))return false;
+      return r.some(function(c){return String(c).trim()!=='';});
+    });
     if(dataRows.length===0){
-      _rclStatus('error','No data rows found. Please complete the Data sheet and try again.');
+      _rclStatus('error','No data rows found. Complete the Data Entry sheet (starting at row 11) and delete the example row before uploading.');
       label.textContent='No data rows found.';
       return;
     }
     window._rclRows=dataRows;
+    window._rclMeta={studyTitle:studyTitle,studyPI:studyPI,studyInst:studyInst};
     label.textContent=file.name+' — '+dataRows.length+' row'+(dataRows.length!==1?'s':'')+' ready';
     _rclStatus('ready',dataRows.length+' record'+(dataRows.length!==1?'s':'')+' parsed. Fill in your details above and click Submit.');
     var btn=document.getElementById('rcl-submit-btn');
     btn.disabled=false;
-    btn.style.color='#63b3ed';
-    btn.style.borderColor='rgba(99,179,237,0.45)';
-    btn.style.cursor='pointer';
-    btn.style.background='rgba(99,179,237,0.10)';
+    btn.style.color='#63b3ed';btn.style.borderColor='rgba(99,179,237,0.45)';
+    btn.style.cursor='pointer';btn.style.background='rgba(99,179,237,0.10)';
   };
   reader.readAsArrayBuffer(file);
 }
@@ -3295,20 +3370,24 @@ function submitRCLUpload(){
   btn.disabled=true;btn.style.cursor='not-allowed';btn.textContent='Submitting…';
   var ts=Date.now();
   var batchRef='rcl_'+email.replace(/[^a-z0-9]/gi,'_').toLowerCase()+'_'+ts;
+  var meta=window._rclMeta||{};
   var pushes=rows.map(function(r,i){
+    // Template columns: A=Date B=Country C=City D=Condition E=DrugType F=DrugName
+    // G=DrugStrength H=Route I=Gender J=AgeRange K=Education L-R=Q1-Q7 S=Q8
     return db.ref('assessments').push({
-      country:      String(r[0]||'').trim(),
-      city:         String(r[1]||'').trim(),
+      date:         String(r[0]||'').trim(),
+      country:      String(r[1]||'').trim(),
+      city:         String(r[2]||'').trim(),
       patientNum:   '',
-      condition:    String(r[2]||'').trim(),
-      drugType:     String(r[3]||'').trim(),
-      drugName:     String(r[4]||'').trim(),
-      drugStrength: String(r[5]||'').trim(),
-      route:        String(r[6]||'').trim(),
-      gender:       String(r[7]||'').trim(),
-      ageRange:     String(r[8]||'').trim(),
-      education:    String(r[9]||'').trim(),
-      q1:r[10],q2:r[11],q3:r[12],q4:r[13],q5:r[14],q6:r[15],q7:r[16],q8:r[17],
+      condition:    String(r[3]||'').trim(),
+      drugType:     String(r[4]||'').trim(),
+      drugName:     String(r[5]||'').trim(),
+      drugStrength: String(r[6]||'').trim(),
+      route:        String(r[7]||'').trim(),
+      gender:       String(r[8]||'').trim(),
+      ageRange:     String(r[9]||'').trim(),
+      education:    String(r[10]||'').trim(),
+      q1:r[11],q2:r[12],q3:r[13],q4:r[14],q5:r[15],q6:r[16],q7:r[17],q8:r[18],
       submittedAt:ts,
       submittedDate:new Date(ts).toISOString(),
       upload_source:'tessera_rcl',
@@ -3316,8 +3395,9 @@ function submitRCLUpload(){
       rcl_submission:true,
       submitter_name:name,
       submitter_email:email,
-      institution:institution,
-      study_title:study,
+      institution:institution||meta.studyInst||'',
+      study_title:study||meta.studyTitle||'',
+      study_pi:meta.studyPI||'',
       batch_ref:batchRef,
       row_index:i,
     });
