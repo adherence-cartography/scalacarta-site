@@ -996,6 +996,62 @@ footer{
   .steps-row::before{display:none;}
   .tiers-grid{grid-template-columns:1fr 1fr;gap:14px;}
 }
+/* ═══════════════════════════════════════════════════════════════════════
+   LMIC RESEARCH GRANT SECTION
+═══════════════════════════════════════════════════════════════════════ */
+#lmic-grant{padding:60px 0;}
+.lmic-grant-band{
+  display:flex;align-items:flex-start;gap:32px;
+  background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(8,14,26,0));
+  border:1px solid rgba(16,185,129,0.25);
+  border-radius:18px;
+  padding:44px 48px;
+}
+.lmic-grant-icon{font-size:3rem;flex-shrink:0;line-height:1;padding-top:4px;}
+.lmic-grant-kicker{
+  font-family:var(--font-mono);font-size:0.65rem;
+  letter-spacing:0.3em;text-transform:uppercase;
+  color:rgba(16,185,129,0.65);margin-bottom:10px;
+}
+.lmic-grant-title{
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem,2.8vw,2.4rem);
+  font-weight:300;color:#fff;
+  line-height:1.2;margin-bottom:14px;
+}
+.lmic-grant-title em{font-style:italic;color:#10b981;}
+.lmic-grant-desc{
+  font-size:0.97rem;color:var(--muted);
+  line-height:1.76;margin-bottom:18px;
+  max-width:640px;
+}
+.lmic-grant-details{
+  display:flex;flex-direction:column;gap:7px;
+  margin-bottom:24px;
+}
+.lmic-grant-item{
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:0.88rem;color:var(--muted);line-height:1.5;
+}
+.lmic-grant-check{color:#10b981;flex-shrink:0;margin-top:1px;font-size:0.78rem;}
+.lmic-grant-actions{display:flex;flex-direction:column;gap:10px;}
+.lmic-grant-btn{
+  display:inline-block;
+  background:rgba(16,185,129,0.12);
+  border:1px solid rgba(16,185,129,0.38);
+  border-radius:9px;
+  padding:13px 28px;
+  font-family:var(--font-body);font-size:0.97rem;font-weight:500;
+  color:#10b981;text-decoration:none;
+  transition:all 0.2s;
+  cursor:pointer;
+}
+.lmic-grant-btn:hover{background:rgba(16,185,129,0.2);border-color:rgba(16,185,129,0.6);}
+.lmic-grant-note{
+  font-family:var(--font-mono);font-size:0.64rem;
+  letter-spacing:0.1em;color:rgba(107,128,153,0.55);
+  line-height:1.5;
+}
 @media(max-width:640px){
   nav{padding:14px 20px;}
   .nav-links{display:none;}
@@ -1346,17 +1402,18 @@ footer{
           <span class="tier-price-amt">$199</span>
           <span class="tier-price-period">/year</span>
         </div>
-        <div class="tier-price-note">LMIC researchers: Free &nbsp;&middot;&nbsp; Institutional email required</div>
+        <div class="tier-price-note">TESSERA Research Grant available — see below &nbsp;&middot;&nbsp; Institutional email required</div>
         <div class="tier-divider"></div>
         <ul class="tier-benefits">
+          <li><span class="tier-check">&#10003;</span> Formal authorization to use MMAS-8 / MAP in your study</li>
           <li><span class="tier-check">&#10003;</span> ATLAS Student Workspace</li>
           <li><span class="tier-check">&#10003;</span> MAP certification course access</li>
           <li><span class="tier-check">&#10003;</span> Research Exchange (discover studies)</li>
           <li><span class="tier-check">&#10003;</span> Mentor connection via Research Exchange</li>
-          <li><span class="tier-check">&#10003;</span> TESSERA Student credential</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Student credential (cited in publications and thesis acknowledgments)</li>
           <li><span class="tier-check">&#10003;</span> Evidence Portfolio builder</li>
           <li><span class="tier-check">&#10003;</span> PEACS interpretation training</li>
-          <li><span class="tier-check">&#10003;</span> Graduation toward Research Affiliate</li>
+          <li><span class="tier-check">&#10003;</span> Pathway to Research Affiliate upon degree completion</li>
         </ul>
         <a href="#apply" class="tier-cta" onclick="pickTier(4)">Apply Now</a>
       </div>
@@ -1372,7 +1429,7 @@ footer{
           <span class="tier-price-amt">$499</span>
           <span class="tier-price-period">/year</span>
         </div>
-        <div class="tier-price-note">3 ATLAS seats included &nbsp;&middot;&nbsp; LMIC from $49/yr</div>
+        <div class="tier-price-note">3 researcher accounts (access for up to 3 team members) &nbsp;&middot;&nbsp; LMIC from $49/yr</div>
         <div class="tier-divider"></div>
         <ul class="tier-benefits">
           <li><span class="tier-check">&#10003;</span> ATLAS Research license (3 seats)</li>
@@ -1381,15 +1438,15 @@ footer{
           <li><span class="tier-check">&#10003;</span> TESSERA Affiliate credential</li>
           <li><span class="tier-check">&#10003;</span> Annual benchmarking report</li>
           <li><span class="tier-check">&#10003;</span> MAP certification for team</li>
-          <li><span class="tier-check">&#10003;</span> Structured RWE data export</li>
-          <li><span class="tier-check">&#10003;</span> Publication acknowledgment pathway</li>
+          <li><span class="tier-check">&#10003;</span> Structured real-world data export (CSV, SPSS-ready)</li>
+          <li><span class="tier-check">&#10003;</span> Acknowledgment in TESSERA consortium publications</li>
         </ul>
         <a href="#apply" class="tier-cta" onclick="pickTier(3)">Apply Now</a>
       </div>
 
       <!-- Tier 3: Validation Partner -->
       <div class="tier-card t-validation">
-        <div class="tier-badge">Research</div>
+        <div class="tier-badge">Validation</div>
         <div class="tier-icon">&#128202;</div>
         <div class="tier-name">Validation<br>Partner</div>
         <div class="tier-target">Research Centers &middot; Clinical Departments</div>
@@ -1401,9 +1458,9 @@ footer{
         <div class="tier-divider"></div>
         <ul class="tier-benefits">
           <li><span class="tier-check">&#10003;</span> ATLAS Research Suite (up to 10 seats)</li>
-          <li><span class="tier-check">&#10003;</span> MAP validation protocol support</li>
-          <li><span class="tier-check">&#10003;</span> Global normative dataset access</li>
-          <li><span class="tier-check">&#10003;</span> Co-authorship on validation papers</li>
+          <li><span class="tier-check">&#10003;</span> Guided MAP cross-cultural validation protocol, including item adaptation and psychometric review</li>
+          <li><span class="tier-check">&#10003;</span> Read access to TESSERA global normative benchmarks</li>
+          <li><span class="tier-check">&#10003;</span> Co-authorship eligibility on TESSERA normative publications</li>
           <li><span class="tier-check">&#10003;</span> TESSERA Affiliate badge + credential</li>
           <li><span class="tier-check">&#10003;</span> Semi-annual benchmarking report</li>
           <li><span class="tier-check">&#10003;</span> Grant letters of support</li>
@@ -1427,15 +1484,15 @@ footer{
         <div class="tier-divider"></div>
         <ul class="tier-benefits">
           <li><span class="tier-check">&#10003;</span> Full ATLAS Research Suite (unlimited seats)</li>
-          <li><span class="tier-check">&#10003;</span> Permanent TESSERA Site designation + Study ID</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Site designation (retained while membership is active) + Study ID</li>
           <li><span class="tier-check">&#10003;</span> Multi-site PI dashboard</li>
           <li><span class="tier-check">&#10003;</span> Data residency choice (US / EU / UAE)</li>
           <li><span class="tier-check">&#10003;</span> Co-authorship on normative publications</li>
           <li><span class="tier-check">&#10003;</span> Quarterly PEACS benchmarking report</li>
-          <li><span class="tier-check">&#10003;</span> Scala Carta advisory access</li>
+          <li><span class="tier-check">&#10003;</span> Direct access to the Scala Carta Foundation advisory team for study design consultation</li>
           <li><span class="tier-check">&#10003;</span> Grant letters of support</li>
-          <li><span class="tier-check">&#10003;</span> TESSERA Summit invitation</li>
-          <li><span class="tier-check">&#10003;</span> Priority feature development input</li>
+          <li><span class="tier-check">&#10003;</span> TESSERA Summit invitation (inaugural event, 2027)</li>
+          <li><span class="tier-check">&#10003;</span> Input into ATLAS platform development roadmap</li>
         </ul>
         <a href="#apply" class="tier-cta" onclick="pickTier(1)">Apply Now</a>
       </div>
@@ -1446,13 +1503,14 @@ footer{
         <div class="tier-icon">&#127970;</div>
         <div class="tier-name">Industry<br>Partner</div>
         <div class="tier-target">Pharma &middot; Health Tech &middot; Payers</div>
-        <div class="tier-price-custom">Custom Pricing</div>
-        <div class="tier-price-note">Negotiated engagement &nbsp;&middot;&nbsp; From $12,000/yr &nbsp;&middot;&nbsp; Multi-year discounts available</div>
+        <div class="tier-price-custom">From $12,000/yr</div>
+        <div class="tier-price-note">Negotiated engagement &nbsp;&middot;&nbsp; Multi-year discounts available</div>
+        <div class="tier-price-note" style="margin-top:2px;"><a href="mailto:industry@scalacartafoundation.org" style="color:rgba(245,158,11,0.65);text-decoration:none;">industry@scalacartafoundation.org</a></div>
         <div class="tier-divider"></div>
         <ul class="tier-benefits">
           <li><span class="tier-check">&#10003;</span> ATLAS Industry Suite</li>
           <li><span class="tier-check">&#10003;</span> Anonymized population adherence insights</li>
-          <li><span class="tier-check">&#10003;</span> TESSERA Industry Advisory Council seat</li>
+          <li><span class="tier-check">&#10003;</span> Founding seat on the TESSERA Industry Advisory Council (inaugural cohort)</li>
           <li><span class="tier-check">&#10003;</span> Co-branded research opportunities</li>
           <li><span class="tier-check">&#10003;</span> Regulatory evidence package access</li>
           <li><span class="tier-check">&#10003;</span> Disease-category population reports</li>
@@ -1499,7 +1557,7 @@ footer{
         <div class="path-tag" style="color:var(--pe);">TESSERA Membership &nbsp;&middot;&nbsp; From $199/year</div>
         <div class="path-title">Network standing.<br>ATLAS access included.</div>
         <ul class="path-list">
-          <li><span class="chk" style="color:#d4a843;">&#10003;</span> Application reviewed within 5 business days</li>
+          <li><span class="chk" style="color:#d4a843;">&#10003;</span> Application reviewed within 1–2 business days (LMIC) or 3–5 business days</li>
           <li><span class="chk" style="color:#d4a843;">&#10003;</span> Annual membership dues (tax-deductible, 501c3)</li>
           <li><span class="chk" style="color:#d4a843;">&#10003;</span> Invoice &amp; PO accepted for institutions</li>
           <li><span class="chk" style="color:#d4a843;">&#10003;</span> ATLAS workspace included at your tier</li>
@@ -1523,7 +1581,7 @@ footer{
         <div class="decide-row">
           <div class="decide-col"><span class="decide-who">A graduate student or clinical trainee</span> building your first adherence study</div>
           <div class="decide-col"><span class="d-badge" style="background:rgba(139,111,245,0.12);border:1px solid rgba(139,111,245,0.3);color:#8b6ff5;">Student Affiliate &middot; $199/yr</span></div>
-          <div class="decide-col">Same price as a standalone annual workspace key, and adds consortium credential, mosaic tile, letter of support, and mentor network. LMIC researchers join free. Choose this if you can wait 3–5 days for review.</div>
+          <div class="decide-col">Same price as a standalone annual workspace key, and adds consortium credential, mosaic tile, letter of support, and mentor network. LMIC researchers may apply for the TESSERA Research Grant below. LMIC applicants receive a decision within 1–2 business days.</div>
         </div>
         <div class="decide-row">
           <div class="decide-col"><span class="decide-who">An independent researcher or small lab</span> (1&#8211;3 people) running MAP studies</div>
@@ -1551,7 +1609,7 @@ footer{
         <span style="font-size:1.2rem;flex-shrink:0;">&#127757;</span>
         <div>
           <strong>Open Science Program &nbsp;&middot;&nbsp; LMIC Researchers</strong><br>
-          Researchers at institutions in low- and middle-income countries access TESSERA at significantly reduced rates: Student Affiliate free, Research Affiliate $49/yr, Validation Partner $199/yr, Institutional Partner $999/yr. Select your country during the application and eligibility is confirmed automatically.
+          Researchers at institutions in low- and middle-income countries access TESSERA at significantly reduced rates: Student Affiliate free, Research Affiliate $49/yr, Validation Partner $199/yr, Institutional Partner $999/yr. Select your country during the application and your application is prioritized for review.
         </div>
       </div>
     </div>
@@ -1675,7 +1733,7 @@ footer{
         <div class="step-title">Complete the Application</div>
         <p class="step-desc">
           Fill out the <a href="#apply" style="color:var(--pe);text-decoration:none;">membership application below</a>
-          with your institution, country, research focus, and preferred tier. Applications are reviewed within 5 business days.
+          with your institution, country, research focus, and preferred tier. Applications are reviewed within 1–2 business days for LMIC Research Grant applicants, and 3–5 business days for all others.
         </p>
       </div>
       <div class="step-card">
@@ -1722,7 +1780,84 @@ footer{
         </a>
       </div>
       <div class="cta-note">
-        Questions: consortium@scalacartafoundation.org &nbsp;&middot;&nbsp; Applications reviewed within 5 business days
+        Questions: consortium@scalacartafoundation.org &nbsp;&middot;&nbsp; LMIC Research Grant: 1–2 business days &nbsp;&middot;&nbsp; All other applications: 3–5 business days
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TESSERA LMIC RESEARCH GRANT
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="lmic-grant">
+  <div class="container">
+    <div class="lmic-grant-band">
+      <div class="lmic-grant-icon">&#127758;</div>
+      <div class="lmic-grant-body">
+        <div class="lmic-grant-kicker">Scala Carta Foundation &middot; Open Science Program</div>
+        <h2 class="lmic-grant-title">TESSERA <em>LMIC Research Grant</em></h2>
+        <p class="lmic-grant-desc">
+          Graduate students and researchers at institutions in low- and middle-income countries receive a full Student Affiliate membership and ATLAS workspace key at no cost, as a gesture of academic support from the Scala Carta Foundation. No purchase required. No external funding needed.
+        </p>
+        <div class="lmic-grant-details">
+          <div class="lmic-grant-item"><span class="lmic-grant-check">&#10003;</span> Formal letter of permission to use MMAS-8 and MAP in your thesis or study</div>
+          <div class="lmic-grant-item"><span class="lmic-grant-check">&#10003;</span> Full ATLAS Student Workspace, MAP certification, and PEACS training</div>
+          <div class="lmic-grant-item"><span class="lmic-grant-check">&#10003;</span> TESSERA Student Affiliate credential (cited in publications and thesis acknowledgments)</div>
+          <div class="lmic-grant-item"><span class="lmic-grant-check">&#10003;</span> Decision within 1–2 business days</div>
+        </div>
+        <div class="lmic-grant-actions">
+          <a href="#apply" class="lmic-grant-btn" onclick="pickTier(4)">Apply for the TESSERA Research Grant &rarr;</a>
+          <div class="lmic-grant-note">Eligibility is determined by your country of institution. Select your country in the application form to confirm.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       RESEARCH CONTRIBUTION LICENSE
+  ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="rcl" style="padding:60px 0;">
+    <div style="max-width:920px;margin:0 auto;padding:0 24px;">
+      <div style="display:flex;align-items:flex-start;gap:32px;background:linear-gradient(135deg,rgba(99,179,237,0.05),rgba(8,14,26,0));border:1px solid rgba(99,179,237,0.14);border-radius:16px;padding:44px 48px;">
+        <div style="font-size:3rem;flex-shrink:0;line-height:1;padding-top:4px;">&#128203;</div>
+        <div style="flex:1;">
+          <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(99,179,237,0.55);margin-bottom:10px;">TESSERA &nbsp;·&nbsp; Research Contribution License</div>
+          <h2 style="font-family:var(--font-display);font-size:clamp(1.6rem,2.4vw,2.1rem);font-weight:300;color:var(--bright);line-height:1.2;margin-bottom:14px;">Your institution restricts<br>external platforms or subscriptions.</h2>
+          <p style="font-size:0.97rem;color:var(--muted);line-height:1.76;margin-bottom:20px;max-width:620px;">Some researchers at funded universities and teaching hospitals cannot use external platforms due to ethics or data management agreements, or cannot pay for software subscriptions under their grant terms. This pathway exists for exactly that situation.</p>
+          <p style="font-size:0.97rem;color:var(--muted);line-height:1.76;margin-bottom:24px;max-width:620px;">The Research Contribution License is a data exchange, not a discount. You receive the full instrument package and a formal letter of permission. In return, you submit a standardized aggregate data summary after data collection is complete. That summary contains no patient identifiers and is designed to fall outside the scope of your ethics documents and data management agreement by default.</p>
+
+          <div style="display:flex;gap:28px;margin-bottom:28px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:240px;">
+              <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(99,179,237,0.5);margin-bottom:10px;">You receive</div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#10003;</span> Validated MMAS-8 instrument in your language version</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#10003;</span> Scoring key and administration documentation</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#10003;</span> Formal letter of permission naming your study (citable in ethics submissions and publications)</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#10003;</span> TESSERA Research Associate acknowledgment (citable in thesis and publications)</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#10003;</span> Your institution named as a contributor in the TESSERA Normative Dataset</div>
+              </div>
+            </div>
+            <div style="flex:1;min-width:240px;">
+              <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(99,179,237,0.5);margin-bottom:10px;">You submit (within 90 days of collection)</div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Completed TESSERA Normative Contribution Template (Excel)</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Item-level Q1-Q8 responses, condition, country, age range, education level</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> No patient names, ID numbers, dates of birth, or any other identifier</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Upload via the TESSERA Contribution Portal in ATLAS</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:rgba(99,179,237,0.05);border:1px solid rgba(99,179,237,0.15);border-radius:10px;padding:14px 18px;font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:24px;">
+            <strong style="color:#63b3ed;">GDPR / UK DPA note:</strong> The contribution template contains no personal data as defined under GDPR Art. 4(1) or UK DPA 2018. No Patient ID field exists in the template. Age ranges, not exact ages, are used. Submission does not require ethics amendment or DPA review. If your data governance officer requires written confirmation, contact philip.morisky@adherence.cc.
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="mailto:philip.morisky@adherence.cc?subject=Research%20Contribution%20License%20Request&body=Name%3A%0AInstitution%3A%0ACountry%3A%0AStudy%20title%3A%0AExpected%20N%3A%0AExpected%20data%20collection%20completion%3A" style="display:inline-block;background:rgba(99,179,237,0.12);border:1px solid rgba(99,179,237,0.38);border-radius:9px;padding:13px 28px;font-family:var(--font-body);font-size:0.97rem;font-weight:500;color:#63b3ed;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(99,179,237,0.22)'" onmouseout="this.style.background='rgba(99,179,237,0.12)'">Request a Research Contribution License &rarr;</a>
+            <a href="https://atlas.adherence.cc" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:13px 28px;font-family:var(--font-body);font-size:0.97rem;font-weight:500;color:var(--muted);text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--bright)'" onmouseout="this.style.color='var(--muted)'">Open TESSERA Contribution Portal in ATLAS &rarr;</a>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:0.64rem;letter-spacing:0.1em;color:rgba(107,128,153,0.45);line-height:1.5;margin-top:12px;">This license is available to PhD candidates and postdoctoral researchers at accredited institutions in non-LMIC countries. LMIC researchers apply through the TESSERA Research Grant above.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1911,6 +2046,19 @@ footer{
             <label>Brief Research Description <span class="fnote">(optional)</span></label>
             <textarea id="f-desc" placeholder="Briefly describe your study aims, target population, and how you plan to use the ATLAS platform…"></textarea>
           </div>
+
+          <div id="os-box" style="display:none;margin-top:16px;">
+            <div class="os-check-box">
+              <label class="os-check-lbl">
+                <input type="checkbox" id="f-os"/>
+                <div class="os-check-text">
+                  <strong>TESSERA Open Science Program — Research Grant Request</strong>
+                  <p>I am applying from an institution in an eligible region and would like to request full platform access at no cost through the Scala Carta Foundation's Open Science Program. An institutional email address is sufficient verification in most cases. If additional confirmation is needed, a scanned student ID, enrollment letter, or a letter of support from your supervising professor on institution letterhead may be requested by email at <a href="mailto:grants@scalacartafoundation.org" style="color:#10b981;">grants@scalacartafoundation.org</a>.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
           <div class="ferr" id="e2"></div>
           <div class="form-nav">
             <button class="btn-back" onclick="prevStep(2)">← Back</button>
@@ -1926,21 +2074,6 @@ footer{
             <div class="tier-picker" id="tier-picker"></div>
           </div>
 
-          <div id="os-box" style="display:none;">
-            <div class="os-check-box">
-              <label class="os-check-lbl">
-                <input type="checkbox" id="f-os"/>
-                <div class="os-check-text">
-                  <strong>TESSERA Open Science Program</strong>
-                  <p>I am applying from an institution in an eligible region and would like to
-                  request full platform access at no cost through the Scala Carta Foundation's
-                  Open Science Program. Eligibility is self-declared; no documentation is
-                  required at this stage.</p>
-                </div>
-              </label>
-            </div>
-          </div>
-
           <div class="field" style="margin-top:20px;">
             <label>How did you hear about TESSERA GRC?</label>
             <select id="f-ref">
@@ -1952,6 +2085,7 @@ footer{
               <option value="search">Web Search</option>
               <option value="atlas">ATLAS Platform</option>
               <option value="email">Email Outreach</option>
+              <option value="philip">Philip Morisky / Adherence Cartography</option>
               <option value="other">Other</option>
             </select>
           </div>
@@ -1979,17 +2113,17 @@ footer{
           <div class="s-hex">✓</div>
           <div class="s-title">Application Received</div>
           <div class="s-ref" id="s-ref">APP-2026-XXXX</div>
-          <p class="s-body">
+          <p class="s-body" id="s-body">
             Thank you for applying to TESSERA GRC. Your application has been submitted to the
             Scala Carta Foundation for review. A confirmation email will arrive within 24 hours,
-            and a membership decision within 5 business days.
+            and a membership decision within 1–2 business days for LMIC applicants, or up to 5 business days for all others.
           </p>
           <div class="s-next">
             <div class="s-next-h">What Happens Next</div>
             <div class="s-next-item"><span>1.</span><span>Confirmation email with your application reference number sent to your address.</span></div>
             <div class="s-next-item"><span>2.</span><span>Scala Carta Foundation staff review your application and assign your membership tier.</span></div>
-            <div class="s-next-item"><span>3.</span><span>You receive your ATLAS workspace access code and formal TESSERA GRC welcome package.</span></div>
-            <div class="s-next-item"><span>4.</span><span>If approved for the Open Science Program, full platform access is provisioned immediately upon activation.</span></div>
+            <div class="s-next-item"><span>3.</span><span>You receive your ATLAS workspace key by email. The key is ready to use in ATLAS immediately upon receipt, along with your formal TESSERA GRC welcome package.</span></div>
+            <div class="s-next-item"><span>4.</span><span>If approved for the TESSERA Research Grant, your workspace key will arrive by email and is ready to use in ATLAS immediately — no activation payment required.</span></div>
           </div>
         </div>
 
@@ -2073,6 +2207,7 @@ footer{
       <div class="footer-links">
         <a class="footer-link" href="/">ATLAS Platform</a>
         <a class="footer-link" href="#membership">Membership Tiers</a>
+        <a class="footer-link" href="#lmic-grant">LMIC Research Grant</a>
         <a class="footer-link" href="#research-exchange">Research Exchange</a>
         <a class="footer-link" href="#apply">Apply Now</a>
         <a class="footer-link" href="mailto:consortium@scalacartafoundation.org">Contact</a>
@@ -2570,16 +2705,64 @@ var COUNTRIES=['Afghanistan','Albania','Algeria','Angola','Argentina','Armenia',
 'Ukraine','United Kingdom','United States','Uruguay','Uzbekistan','Venezuela',
 'Vietnam','Yemen','Zambia','Zimbabwe','Other'];
 
+// LMIC classification — seeded from World Bank FY2026 list (effective July 1 2026).
+// Kept as live fallback; overwritten at runtime by fetchWBLMIC() below.
+// Vietnam and Philippines removed July 2026 (reclassified upper-middle-income).
 var LMIC=new Set(['Afghanistan','Bangladesh','Benin','Burkina Faso','Burundi',
 'Cambodia','Cameroon','Chad','Congo (DRC)','Ethiopia','Gambia','Ghana','Guinea',
 'Haiti','Honduras','India','Indonesia','Kenya','Kyrgyzstan','Laos','Liberia',
 'Mali','Mauritania','Morocco','Mozambique','Myanmar','Nepal','Nicaragua','Niger',
-'Nigeria','Pakistan','Philippines','Rwanda','Senegal','Sierra Leone','Somalia',
+'Nigeria','Pakistan','Rwanda','Senegal','Sierra Leone','Somalia',
 'South Sudan','Sri Lanka','Sudan','Syria','Tajikistan','Tanzania','Togo','Tunisia',
-'Uganda','Ukraine','Vietnam','Yemen','Zambia','Zimbabwe','Egypt','Bolivia',
+'Uganda','Ukraine','Yemen','Zambia','Zimbabwe','Egypt','Bolivia',
 'El Salvador','Guatemala','Albania','Armenia','Azerbaijan','Georgia','Moldova',
 'Algeria','Angola','Congo (Republic)','Iran','Iraq','Libya','Palestine',
 'Venezuela','Cuba','Jamaica','Paraguay']);
+
+// World Bank API name → site display name (official WB names differ from common English names)
+var WB_NAME_MAP={
+  'Viet Nam':'Vietnam',
+  'Congo, Dem. Rep.':'Congo (DRC)',
+  'Congo, Rep.':'Congo (Republic)',
+  'Syrian Arab Republic':'Syria',
+  'Iran, Islamic Rep.':'Iran',
+  'Egypt, Arab Rep.':'Egypt',
+  'Yemen, Rep.':'Yemen',
+  'Kyrgyz Republic':'Kyrgyzstan',
+  'Lao PDR':'Laos',
+  'West Bank and Gaza':'Palestine',
+  'Gambia, The':'Gambia',
+  'Bahamas, The':'Bahamas',
+  'Cabo Verde':'Cape Verde',
+  'Timor-Leste':'East Timor',
+  'Micronesia, Fed. Sts.':'Micronesia',
+  'Korea, Dem. People\'s Rep.':'North Korea',
+  'Eswatini':'Eswatini'
+};
+
+// Fetch current LIC + LMC country lists from World Bank API and update LMIC set.
+// Falls back silently to the hardcoded set above if the fetch fails or times out.
+(function fetchWBLMIC(){
+  var ctrl=new AbortController();
+  var timer=setTimeout(function(){ctrl.abort();},6000);
+  Promise.all([
+    fetch('https://api.worldbank.org/v2/country?incomeLevel=LIC&format=json&per_page=300',{signal:ctrl.signal}),
+    fetch('https://api.worldbank.org/v2/country?incomeLevel=LMC&format=json&per_page=300',{signal:ctrl.signal})
+  ]).then(function(rs){
+    clearTimeout(timer);
+    return Promise.all(rs.map(function(r){return r.json();}));
+  }).then(function(data){
+    var names=[];
+    (data[0][1]||[]).concat(data[1][1]||[]).forEach(function(c){
+      names.push(WB_NAME_MAP[c.name]||c.name);
+    });
+    if(names.length>0){
+      LMIC=new Set(names);
+      var cEl=document.getElementById('f-country');
+      if(cEl&&cEl.value) checkLMIC();
+    }
+  }).catch(function(){/* retain hardcoded fallback */});
+})();
 
 var csel=document.getElementById('f-country');
 if(csel){COUNTRIES.forEach(function(c){var o=document.createElement('option');o.value=o.textContent=c;csel.appendChild(o);});}
@@ -2712,6 +2895,8 @@ window.submitApp=async function(){
     var succ=document.getElementById('form-success');
     succ.style.display='block';
     document.getElementById('s-ref').textContent=ref;
+    var _sbody=document.getElementById('s-body');
+    if(_sbody){_sbody.innerHTML='Thank you for applying to TESSERA GRC. Your application has been submitted to the Scala Carta Foundation for review. A confirmation email will arrive within 24 hours, and a membership decision within '+(lmicEligible?'<strong style="color:#10b981;">1&#8211;2 business days</strong> (LMIC Research Grant pathway).':'3&#8211;5 business days.');}
     document.querySelector('.form-shell').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){
     err.textContent='Submission failed — please try again or contact info@adherence.cc.';
