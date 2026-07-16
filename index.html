@@ -178,6 +178,72 @@ nav{
 .theme-toggle:hover{color:var(--bright);border-color:var(--muted);}
 .theme-toggle svg{width:15px;height:15px;display:block;}
 
+/* ── Tier Tabs ─────────────────────────────────────────────────────── */
+.tier-tab-strip{display:flex;gap:0;margin-bottom:28px;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.tier-tab{
+  flex:1;background:none;border:none;padding:14px 8px;cursor:pointer;
+  color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;
+  border-right:1px solid var(--border);transition:all 0.18s;position:relative;
+}
+.tier-tab:last-child{border-right:none;}
+.tier-tab:hover,.tier-tab.active{background:var(--card);color:var(--bright);}
+.ttab-name{font-family:var(--font-mono);font-size:0.60rem;letter-spacing:0.10em;text-transform:uppercase;font-weight:500;}
+.ttab-price{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.04em;opacity:0.5;}
+.ttab-pop{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  background:#10b981;color:#fff;font-family:var(--font-mono);
+  font-size:0.44rem;letter-spacing:0.12em;text-transform:uppercase;
+  padding:2px 8px;border-radius:0 0 5px 5px;white-space:nowrap;
+}
+.tier-tab.tt-student.active .ttab-name{color:#8b6ff5;}
+.tier-tab.tt-affiliate.active .ttab-name{color:#10b981;}
+.tier-tab.tt-validation.active .ttab-name{color:#06b6d4;}
+.tier-tab.tt-institutional.active .ttab-name{color:#d4a843;}
+.tier-tab.tt-industry.active .ttab-name{color:#f59e0b;}
+.tiers-panel .tier-card{display:none;}
+.tiers-panel .tier-card.tc-active{display:flex;max-width:700px;margin:0 auto;}
+@media(max-width:640px){.tier-tab-strip{flex-wrap:wrap;border-radius:8px;}.tier-tab{flex:1 0 50%;border-bottom:1px solid var(--border);}}
+
+/* ── Community Tabs ─────────────────────────────────────────────────── */
+.comm-tab-strip{display:flex;gap:0;margin-bottom:32px;border-bottom:1px solid var(--border);}
+.comm-tab{
+  background:none;border:none;padding:10px 28px 12px;
+  font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.18s;
+}
+.comm-tab:hover{color:var(--bright);}
+.comm-tab.active{color:var(--base);border-bottom-color:var(--base);}
+
+/* ── Which-tier accordion ──────────────────────────────────────────── */
+.decide-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;max-width:920px;margin:28px auto 0;
+  background:none;border:1px solid var(--border);border-radius:10px;padding:14px 22px;
+  font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;transition:all 0.18s;
+}
+.decide-toggle:hover{color:var(--bright);border-color:var(--muted);}
+.toggle-chevron{font-size:0.75rem;transition:transform 0.22s;display:inline-block;line-height:1;}
+.decide-toggle.open .toggle-chevron{transform:rotate(180deg);}
+
+/* ── Access Pathways collapsible ───────────────────────────────────── */
+.pathways-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.pathways-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;background:var(--card);border:none;
+  padding:20px 28px;cursor:pointer;text-align:left;transition:background 0.18s;gap:24px;
+}
+.pathways-toggle:hover{background:var(--card2);}
+.pathways-kicker{font-family:var(--font-mono);font-size:0.60rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.pathways-pills{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.pathway-pill{font-size:0.88rem;font-weight:500;}
+.pathway-pill.lmic{color:#10b981;}
+.pathway-pill.rcl{color:#63b3ed;}
+.pathway-sep{color:var(--muted);font-size:0.75rem;}
+.pathways-chevron{font-size:0.75rem;color:var(--muted);flex-shrink:0;transition:transform 0.22s;display:inline-block;line-height:1;}
+.pathways-toggle.open .pathways-chevron{transform:rotate(180deg);}
+.pathways-expanded{border-top:1px solid var(--border);}
+
 /* ── Layout wrapper ─────────────────────────────────────────────────── */
 .page-wrap{position:relative;z-index:1;}
 section{position:relative;}
@@ -1472,7 +1538,32 @@ footer{
       </p>
     </div>
 
-    <div class="tiers-grid">
+    <!-- Tier tab strip -->
+    <div class="tier-tab-strip" id="tier-tab-strip">
+      <button class="tier-tab tt-student" onclick="switchTierTab('student',this)">
+        <span class="ttab-name">Student Affiliate</span>
+        <span class="ttab-price">$199 / yr</span>
+      </button>
+      <button class="tier-tab tt-affiliate" onclick="switchTierTab('affiliate',this)">
+        <span class="ttab-pop">Most Popular</span>
+        <span class="ttab-name">Research Affiliate</span>
+        <span class="ttab-price">$499 / yr</span>
+      </button>
+      <button class="tier-tab tt-validation" onclick="switchTierTab('validation',this)">
+        <span class="ttab-name">Validation Partner</span>
+        <span class="ttab-price">$1,999 / yr</span>
+      </button>
+      <button class="tier-tab tt-institutional" onclick="switchTierTab('institutional',this)">
+        <span class="ttab-name">Institutional Partner</span>
+        <span class="ttab-price">$5,999 / yr</span>
+      </button>
+      <button class="tier-tab tt-industry" onclick="switchTierTab('industry',this)">
+        <span class="ttab-name">Industry Partner</span>
+        <span class="ttab-price">From $12K / yr</span>
+      </button>
+    </div>
+
+    <div class="tiers-panel" id="tiers-panel">
 
       <!-- Tier 1: Student Affiliate -->
       <div class="tier-card t-student">
@@ -1603,7 +1694,7 @@ footer{
         <a href="#apply" class="tier-cta" onclick="pickTier(5)">Start a Conversation</a>
       </div>
 
-    </div>
+    </div><!-- /tiers-panel -->
   </div>
 </section>
 
@@ -1651,8 +1742,12 @@ footer{
       </div>
     </div>
 
-    <!-- Tier decision guide -->
-    <div class="decide-guide">
+    <!-- Tier decision guide (accordion) -->
+    <button class="decide-toggle" id="decide-toggle" onclick="toggleDecideGuide(this)">
+      <span>Help me choose a tier</span>
+      <span class="toggle-chevron">&#9660;</span>
+    </button>
+    <div class="decide-guide" id="decide-guide" style="display:none;">
       <div class="decide-guide-label">Which tier fits your situation?</div>
       <div class="decide-rows">
         <div class="decide-row dheader">
@@ -1702,86 +1797,84 @@ footer{
 <!-- ═══════════════════════════════════════════════════════════════════
      RESEARCH EXCHANGE
 ═══════════════════════════════════════════════════════════════════════ -->
-<section id="research-exchange">
-  <div class="container">
-    <div class="section-label">Global Collaboration <span>&middot; Research Exchange</span></div>
-    <div class="rx-grid">
-      <div class="rx-text">
-        <h2>A pinboard for the<br><em>global adherence community.</em></h2>
-        <p>
-          Post active studies, call for international co-investigators, and discover matching
-          cohorts across 40+ countries. Research Affiliate tier and above can post; all tiers
-          can browse and respond to open calls.
-        </p>
-        <a href="/" class="btn-ghost" style="display:inline-flex;margin-top:8px;">View in ATLAS Globe &#8599;</a>
-      </div>
-
-      <!-- Live Exchange from Firebase -->
-      <div class="rx-card-mock">
-        <div class="rx-card-header">
-          <div class="rx-card-label">&#9670; Research Exchange</div>
-          <div class="rx-card-count" id="rx-count">Connecting&hellip;</div>
-        </div>
-        <div id="rx-live-posts">
-          <!-- skeleton -->
-          <div class="rx-post" style="opacity:0.2;pointer-events:none;" aria-hidden="true">
-            <div class="rx-post-tier"><div class="rx-post-tier-dot" style="background:#d4a843;"></div>&nbsp;</div>
-            <div class="rx-post-title" style="background:rgba(255,255,255,0.06);color:transparent;border-radius:4px;width:80%;">&nbsp;</div>
-            <div class="rx-post-meta" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:55%;margin-top:6px;">&nbsp;</div>
-          </div>
-        </div>
-        <div class="rx-lock">
-          &#128274; &nbsp; Join TESSERA to post your study or respond to open calls
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══════════════════════════════════════════════════════════════════
-     RESEARCHER DIRECTORY
+     COMMUNITY — Research Exchange + Researcher Directory (tabbed)
 ═══════════════════════════════════════════════════════════════════════ -->
-<section id="researcher-directory">
+<section id="community">
   <div class="container">
-    <div class="section-label">Community <span>&middot; Researcher Directory</span></div>
-    <div class="dir-grid">
+    <div class="comm-tab-strip">
+      <button class="comm-tab active" onclick="switchCommTab('rx',this)">Research Exchange</button>
+      <button class="comm-tab" onclick="switchCommTab('dir',this)">Researcher Directory</button>
+    </div>
 
-      <!-- Live researcher profiles from Firebase -->
-      <div class="dir-cards-mock">
-        <div class="dir-count-row" id="dir-count-row">
-          <div class="dir-count-dot" id="dir-count-dot" style="opacity:0.3;"></div>
-          <span id="dir-count-label">ATLAS Researcher Directory &middot; Connecting&hellip;</span>
+    <!-- Panel: Research Exchange -->
+    <div class="comm-panel" id="comm-rx">
+      <div class="section-label">Global Collaboration <span>&middot; Research Exchange</span></div>
+      <div class="rx-grid" id="research-exchange">
+        <div class="rx-text">
+          <h2>A pinboard for the<br><em>global adherence community.</em></h2>
+          <p>
+            Post active studies, call for international co-investigators, and discover matching
+            cohorts across 40+ countries. Research Affiliate tier and above can post; all tiers
+            can browse and respond to open calls.
+          </p>
+          <a href="/" class="btn-ghost" style="display:inline-flex;margin-top:8px;">View in ATLAS Globe &#8599;</a>
         </div>
-        <div id="dir-live-cards">
-          <div class="dir-profile-card" style="opacity:0.25;pointer-events:none;user-select:none;" aria-hidden="true">
-            <div class="dir-profile-top">
-              <div class="dir-avatar" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);color:transparent;">__</div>
-              <div>
-                <div class="dir-name" style="background:rgba(255,255,255,0.06);color:transparent;border-radius:4px;width:120px;">&nbsp;</div>
-                <div class="dir-cred" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:80px;margin-top:4px;">&nbsp;</div>
-              </div>
+        <div class="rx-card-mock">
+          <div class="rx-card-header">
+            <div class="rx-card-label">&#9670; Research Exchange</div>
+            <div class="rx-card-count" id="rx-count">Connecting&hellip;</div>
+          </div>
+          <div id="rx-live-posts">
+            <div class="rx-post" style="opacity:0.2;pointer-events:none;" aria-hidden="true">
+              <div class="rx-post-tier"><div class="rx-post-tier-dot" style="background:#d4a843;"></div>&nbsp;</div>
+              <div class="rx-post-title" style="background:rgba(255,255,255,0.06);color:transparent;border-radius:4px;width:80%;">&nbsp;</div>
+              <div class="rx-post-meta" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:55%;margin-top:6px;">&nbsp;</div>
             </div>
-            <div class="dir-inst" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:180px;">&nbsp;</div>
-            <div class="dir-badges"><span class="dir-badge dir-badge-map" style="opacity:0.15;">MAP</span></div>
+          </div>
+          <div class="rx-lock">&#128274; &nbsp; Join TESSERA to post your study or respond to open calls</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Researcher Directory -->
+    <div class="comm-panel" id="comm-dir" style="display:none;">
+      <div class="section-label">Community <span>&middot; Researcher Directory</span></div>
+      <div class="dir-grid" id="researcher-directory">
+        <div class="dir-cards-mock">
+          <div class="dir-count-row" id="dir-count-row">
+            <div class="dir-count-dot" id="dir-count-dot" style="opacity:0.3;"></div>
+            <span id="dir-count-label">ATLAS Researcher Directory &middot; Connecting&hellip;</span>
+          </div>
+          <div id="dir-live-cards">
+            <div class="dir-profile-card" style="opacity:0.25;pointer-events:none;user-select:none;" aria-hidden="true">
+              <div class="dir-profile-top">
+                <div class="dir-avatar" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);color:transparent;">__</div>
+                <div>
+                  <div class="dir-name" style="background:rgba(255,255,255,0.06);color:transparent;border-radius:4px;width:120px;">&nbsp;</div>
+                  <div class="dir-cred" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:80px;margin-top:4px;">&nbsp;</div>
+                </div>
+              </div>
+              <div class="dir-inst" style="background:rgba(255,255,255,0.04);color:transparent;border-radius:3px;width:180px;">&nbsp;</div>
+              <div class="dir-badges"><span class="dir-badge dir-badge-map" style="opacity:0.15;">MAP</span></div>
+            </div>
           </div>
         </div>
+        <div class="dir-text">
+          <h2>Find your next<br><em>collaborator by name.</em></h2>
+          <p>
+            Searchable profiles of active TESSERA members: instruments, specialties, region, and
+            institutional affiliation. Each profile is verified to a live ATLAS workspace. Browse
+            by specialty, country, or disease category, and connect directly.
+          </p>
+          <p style="font-size:0.84rem;color:rgba(212,168,67,0.65);font-family:var(--font-mono);letter-spacing:0.06em;margin-top:4px;">
+            Researcher Affiliate tier and above. Profile creation is opt-in.
+          </p>
+          <a href="/" class="btn-ghost" style="display:inline-flex;margin-top:8px;">Access Directory in ATLAS &#8599;</a>
+        </div>
       </div>
-
-      <!-- Text column -->
-      <div class="dir-text">
-        <h2>Find your next<br><em>collaborator by name.</em></h2>
-        <p>
-          Searchable profiles of active TESSERA members: instruments, specialties, region, and
-          institutional affiliation. Each profile is verified to a live ATLAS workspace. Browse
-          by specialty, country, or disease category, and connect directly.
-        </p>
-        <p style="font-size:0.84rem;color:rgba(212,168,67,0.65);font-family:var(--font-mono);letter-spacing:0.06em;margin-top:4px;">
-          Researcher Affiliate tier and above. Profile creation is opt-in.
-        </p>
-        <a href="/" class="btn-ghost" style="display:inline-flex;margin-top:8px;">Access Directory in ATLAS &#8599;</a>
-      </div>
-
     </div>
+
   </div>
 </section>
 
@@ -1869,10 +1962,24 @@ footer{
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     TESSERA LMIC RESEARCH GRANT
+     ACCESS PATHWAYS (collapsible: LMIC Grant + RCL)
 ═══════════════════════════════════════════════════════════════════════ -->
-<section id="lmic-grant">
+<section id="lmic-grant" style="padding:40px 0;">
   <div class="container">
+    <div class="pathways-card">
+      <button class="pathways-toggle" id="pathways-toggle" onclick="togglePathways(this)">
+        <div>
+          <div class="pathways-kicker">Scala Carta Foundation &middot; Special Access Pathways</div>
+          <div class="pathways-pills">
+            <span class="pathway-pill lmic">LMIC Research Grant &mdash; Free for qualifying researchers</span>
+            <span class="pathway-sep">&middot;</span>
+            <span class="pathway-pill rcl">Research Contribution License &mdash; Data exchange pathway</span>
+          </div>
+        </div>
+        <span class="pathways-chevron">&#9660;</span>
+      </button>
+      <div class="pathways-expanded" id="pathways-expanded" style="display:none;">
+        <div style="padding:40px 0 0;">
     <div class="lmic-grant-band">
       <div class="lmic-grant-icon">&#127758;</div>
       <div class="lmic-grant-body">
@@ -1893,12 +2000,9 @@ footer{
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       RESEARCH CONTRIBUTION LICENSE
-  ═══════════════════════════════════════════════════════════════════════ -->
-  <div id="rcl" style="padding:60px 0;">
+    <!-- Research Contribution License -->
+    <div id="rcl" style="padding:40px 28px 0;">
     <div style="max-width:920px;margin:0 auto;padding:0 24px;">
       <div style="display:flex;align-items:flex-start;gap:32px;background:linear-gradient(135deg,rgba(99,179,237,0.05),rgba(8,14,26,0));border:1px solid rgba(99,179,237,0.14);border-radius:16px;padding:44px 48px;">
         <div style="font-size:3rem;flex-shrink:0;line-height:1;padding-top:4px;">&#128203;</div>
@@ -1941,7 +2045,11 @@ footer{
           <div style="font-family:var(--font-mono);font-size:0.64rem;letter-spacing:0.1em;color:rgba(107,128,153,0.45);line-height:1.5;margin-top:12px;">This license is available to PhD candidates and postdoctoral researchers at accredited institutions in non-LMIC countries. LMIC researchers apply through the TESSERA Research Grant above.</div>
         </div>
       </div>
-    </div>
+    </div><!-- /max-width -->
+    </div><!-- /rcl -->
+  </div><!-- /pathways inner padding -->
+      </div><!-- /pathways-expanded -->
+    </div><!-- /pathways-card -->
   </div>
 </section>
 
@@ -3007,6 +3115,7 @@ document.querySelectorAll('#apply .rv').forEach(function(el){rvObs.observe(el);}
 </script>
 
 <script>
+/* ── Day/Night toggle ───────────────────────────────────────────────── */
 (function(){
   var html=document.documentElement;
   var isDark=localStorage.getItem('scf-theme')!=='light';
@@ -3024,6 +3133,46 @@ document.querySelectorAll('#apply .rv').forEach(function(el){rvObs.observe(el);}
     apply(isDark);
   };
 })();
+
+/* ── Tier tabs ──────────────────────────────────────────────────────── */
+var _tierMap={student:'t-student',affiliate:'t-affiliate',validation:'t-validation',institutional:'t-institutional',industry:'t-industry'};
+function switchTierTab(key,btn){
+  document.querySelectorAll('.tier-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.tiers-panel .tier-card').forEach(function(c){c.classList.remove('tc-active');});
+  var card=document.querySelector('.tiers-panel .'+_tierMap[key]);
+  if(card)card.classList.add('tc-active');
+}
+// Initialize on DOM ready
+(function(){
+  var aff=document.querySelector('.tier-tab.tt-affiliate');
+  if(aff)switchTierTab('affiliate',aff);
+})();
+
+/* ── Community tabs ─────────────────────────────────────────────────── */
+function switchCommTab(key,btn){
+  document.querySelectorAll('.comm-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.comm-panel').forEach(function(p){p.style.display='none';});
+  var panel=document.getElementById('comm-'+key);
+  if(panel)panel.style.display='block';
+}
+
+/* ── Which-tier accordion ──────────────────────────────────────────── */
+function toggleDecideGuide(btn){
+  var guide=document.getElementById('decide-guide');
+  var open=guide.style.display!=='none';
+  guide.style.display=open?'none':'block';
+  btn.classList.toggle('open',!open);
+}
+
+/* ── Access Pathways collapsible ───────────────────────────────────── */
+function togglePathways(btn){
+  var panel=document.getElementById('pathways-expanded');
+  var open=panel.style.display!=='none';
+  panel.style.display=open?'none':'block';
+  btn.classList.toggle('open',!open);
+}
 </script>
 
 </body>
