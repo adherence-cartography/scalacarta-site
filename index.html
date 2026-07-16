@@ -1360,6 +1360,7 @@ footer{
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" integrity="sha384-ajMUFBUFMCyjh8uxJg6bkGcKe9RTolyjwbxB3yES0QQMenP3Oztj/W9vA2SJPcIh" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js" integrity="sha384-f6/UpzjTjIXASlp20cArQsaRh1EvHVJd5kegy/gYR9W2D0a32TnEqUEiW4Zm/5O0" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="page-bg"></div>
@@ -2029,7 +2030,7 @@ footer{
                 <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Completed TESSERA Normative Contribution Template (Excel)</div>
                 <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Item-level Q1-Q8 responses, condition, country, age range, education level</div>
                 <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> No patient names, ID numbers, dates of birth, or any other identifier</div>
-                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Upload via the TESSERA Contribution Portal in ATLAS</div>
+                <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.88rem;color:var(--muted);line-height:1.5;"><span style="color:#63b3ed;flex-shrink:0;margin-top:1px;font-size:0.78rem;">&#8594;</span> Upload directly on this page — no ATLAS account required</div>
               </div>
             </div>
           </div>
@@ -2038,11 +2039,42 @@ footer{
             <strong style="color:#63b3ed;">GDPR / UK DPA note:</strong> The contribution template contains no personal data as defined under GDPR Art. 4(1) or UK DPA 2018. No Patient ID field exists in the template. Age ranges, not exact ages, are used. Submission does not require ethics amendment or DPA review. If your data governance officer requires written confirmation, contact philip.morisky@adherence.cc.
           </div>
 
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <a href="mailto:philip.morisky@adherence.cc?subject=Research%20Contribution%20License%20Request&body=Name%3A%0AInstitution%3A%0ACountry%3A%0AStudy%20title%3A%0AExpected%20N%3A%0AExpected%20data%20collection%20completion%3A" style="display:inline-block;background:rgba(99,179,237,0.12);border:1px solid rgba(99,179,237,0.38);border-radius:9px;padding:13px 28px;font-family:var(--font-body);font-size:0.97rem;font-weight:500;color:#63b3ed;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(99,179,237,0.22)'" onmouseout="this.style.background='rgba(99,179,237,0.12)'">Request a Research Contribution License &rarr;</a>
-            <a href="https://atlas.adherence.cc/keys" target="_blank" rel="noopener" style="display:inline-block;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:13px 28px;font-family:var(--font-body);font-size:0.97rem;font-weight:500;color:var(--muted);text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--bright)'" onmouseout="this.style.color='var(--muted)'">Already have a workspace key? Submit via ATLAS &rarr;</a>
+          <!-- RCL Upload Widget -->
+          <div style="border-top:1px solid rgba(99,179,237,0.15);margin-top:8px;padding-top:24px;">
+
+            <!-- Step 1 -->
+            <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(99,179,237,0.45);margin-bottom:8px;">Step 1 &mdash; Download the template</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+              <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;max-width:460px;margin:0;">The template has no Patient ID column. Fill in one row per patient using age ranges and coded responses, then upload below.</p>
+              <button onclick="downloadRCLTemplate()" style="flex-shrink:0;background:rgba(99,179,237,0.10);border:1px solid rgba(99,179,237,0.35);border-radius:8px;padding:11px 22px;font-family:var(--font-body);font-size:0.9rem;font-weight:500;color:#63b3ed;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(99,179,237,0.2)'" onmouseout="this.style.background='rgba(99,179,237,0.10)'">&#8675; Download Template</button>
+            </div>
+
+            <!-- Step 2 -->
+            <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(99,179,237,0.45);margin-bottom:10px;">Step 2 &mdash; Complete your details and upload</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+              <input id="rcl-name" type="text" placeholder="Your full name" style="background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.2);border-radius:7px;padding:10px 13px;color:var(--text);font-family:var(--font-body);font-size:0.85rem;outline:none;transition:border-color 0.18s;" onfocus="this.style.borderColor='rgba(99,179,237,0.5)'" onblur="this.style.borderColor='rgba(99,179,237,0.2)'" />
+              <input id="rcl-email" type="email" placeholder="Email address" style="background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.2);border-radius:7px;padding:10px 13px;color:var(--text);font-family:var(--font-body);font-size:0.85rem;outline:none;transition:border-color 0.18s;" onfocus="this.style.borderColor='rgba(99,179,237,0.5)'" onblur="this.style.borderColor='rgba(99,179,237,0.2)'" />
+              <input id="rcl-institution" type="text" placeholder="Institution / University" style="background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.2);border-radius:7px;padding:10px 13px;color:var(--text);font-family:var(--font-body);font-size:0.85rem;outline:none;transition:border-color 0.18s;" onfocus="this.style.borderColor='rgba(99,179,237,0.5)'" onblur="this.style.borderColor='rgba(99,179,237,0.2)'" />
+              <input id="rcl-study" type="text" placeholder="Study title" style="background:rgba(99,179,237,0.04);border:1px solid rgba(99,179,237,0.2);border-radius:7px;padding:10px 13px;color:var(--text);font-family:var(--font-body);font-size:0.85rem;outline:none;transition:border-color 0.18s;" onfocus="this.style.borderColor='rgba(99,179,237,0.5)'" onblur="this.style.borderColor='rgba(99,179,237,0.2)'" />
+            </div>
+
+            <!-- Drop zone -->
+            <div id="rcl-drop" onclick="document.getElementById('rcl-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='rgba(99,179,237,0.6)'" ondragleave="this.style.borderColor='rgba(99,179,237,0.25)'" ondrop="event.preventDefault();this.style.borderColor='rgba(99,179,237,0.25)';handleRCLFile(event.dataTransfer.files[0])" style="border:1.5px dashed rgba(99,179,237,0.25);border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:border-color 0.18s;margin-bottom:12px;" onmouseover="this.style.borderColor='rgba(99,179,237,0.5)'" onmouseout="this.style.borderColor='rgba(99,179,237,0.25)'">
+              <div style="font-size:0.88rem;color:var(--muted);">Drop your completed template here, or <span style="color:#63b3ed;text-decoration:underline;">click to browse</span></div>
+              <div id="rcl-file-label" style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(99,179,237,0.5);margin-top:6px;">No file selected &mdash; .xlsx files only</div>
+              <input id="rcl-file-input" type="file" accept=".xlsx,.xls" style="display:none;" onchange="handleRCLFile(this.files[0])" />
+            </div>
+
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <button id="rcl-submit-btn" onclick="submitRCLUpload()" disabled style="background:rgba(99,179,237,0.08);border:1px solid rgba(99,179,237,0.2);border-radius:8px;padding:11px 28px;font-family:var(--font-body);font-size:0.9rem;font-weight:500;color:rgba(99,179,237,0.4);cursor:not-allowed;transition:all 0.2s;">Submit Data to TESSERA</button>
+              <div id="rcl-status" style="font-size:0.82rem;color:var(--muted);line-height:1.5;"></div>
+            </div>
+
+            <div style="margin-top:16px;font-size:0.78rem;color:rgba(107,128,153,0.5);line-height:1.6;">
+              Can&rsquo;t upload directly? <a href="mailto:philip.morisky@adherence.cc?subject=RCL%20Data%20Submission&body=Name%3A%0AInstitution%3A%0AStudy%20title%3A%0A%0AAttached%3A%20TESSERA_Normative_Contribution_Template.xlsx" style="color:rgba(99,179,237,0.6);text-decoration:none;" onmouseover="this.style.color='#63b3ed'" onmouseout="this.style.color='rgba(99,179,237,0.6)'">Email your completed file instead.</a>
+              &nbsp;&middot;&nbsp; This pathway is for PhD candidates and postdoctoral researchers at accredited institutions in non-LMIC countries. LMIC researchers use the TESSERA Research Grant above.
+            </div>
           </div>
-          <div style="font-family:var(--font-mono);font-size:0.64rem;letter-spacing:0.1em;color:rgba(107,128,153,0.45);line-height:1.5;margin-top:12px;">This license is available to PhD candidates and postdoctoral researchers at accredited institutions in non-LMIC countries. LMIC researchers apply through the TESSERA Research Grant above.</div>
         </div>
       </div>
     </div><!-- /max-width -->
@@ -3172,6 +3204,141 @@ function togglePathways(btn){
   var open=panel.style.display!=='none';
   panel.style.display=open?'none':'block';
   btn.classList.toggle('open',!open);
+}
+
+/* ── RCL Template download ──────────────────────────────────────────── */
+function downloadRCLTemplate(){
+  if(typeof XLSX==='undefined'){alert('Template library not yet loaded — please try again in a moment.');return;}
+  var wb=XLSX.utils.book_new();
+
+  // Instructions sheet
+  var instData=[
+    ['TESSERA NORMATIVE CONTRIBUTION TEMPLATE — Instructions'],[''],
+    ['1. Do NOT add a Patient ID column. This template is designed to contain no personal data.'],
+    ['2. One row = one patient assessment.'],
+    ['3. Country: full country name (e.g. Germany, Nigeria, Brazil).'],
+    ['4. Gender: Male | Female | Non-binary | Prefer not to say'],
+    ['5. Age Range: 18-29 | 30-39 | 40-49 | 50-59 | 60-69 | 70+'],
+    ['6. Education: Primary | Secondary | Tertiary | Postgraduate'],
+    ['7. Q1-Q7 responses: 1 = Yes (missed/forgot), 0 = No (did not miss)'],
+    ['8. Q8 response: 1 = Never/Rarely | 2 = Sometimes | 3 = Often | 4 = Always (difficulty remembering)'],
+    ['9. Leave a cell blank if data is genuinely missing — do not enter 0 as a substitute.'],[''],
+    ['GDPR / UK DPA: This template contains no personal data as defined under GDPR Art 4(1) or UK DPA 2018.'],
+    ['No Patient ID field exists. Age ranges are used, not exact ages. Submission does not require ethics amendment.'],[''],
+    ['Submit via the upload portal at scalacartafoundation.org or email philip.morisky@adherence.cc'],
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(instData),'Instructions');
+
+  // Data sheet
+  var sentinel='TESSERA NORMATIVE CONTRIBUTION TEMPLATE';
+  var cols=['Country','City','Condition / Indication','Drug Type','Drug Name','Drug Strength','Route','Gender','Age Range','Education','Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8'];
+  var ws=XLSX.utils.aoa_to_sheet([[sentinel],[],[cols]]);
+  // Column widths
+  ws['!cols']=[{wch:16},{wch:14},{wch:22},{wch:14},{wch:18},{wch:14},{wch:12},{wch:14},{wch:12},{wch:14},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6}];
+  XLSX.utils.book_append_sheet(wb,ws,'Data');
+  XLSX.writeFile(wb,'TESSERA_Normative_Contribution_Template.xlsx');
+}
+
+/* ── RCL File parse ─────────────────────────────────────────────────── */
+function handleRCLFile(file){
+  if(!file)return;
+  if(typeof XLSX==='undefined'){_rclStatus('error','Template library not loaded. Please refresh and try again.');return;}
+  var label=document.getElementById('rcl-file-label');
+  label.textContent='Reading '+file.name+'...';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var wb;
+    try{wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});}
+    catch(err){_rclStatus('error','Could not read file. Please use the downloaded .xlsx template.');label.textContent='Read error — try again.';return;}
+    var wsName=wb.SheetNames.indexOf('Data')>=0?'Data':wb.SheetNames[0];
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[wsName],{header:1,defval:''});
+    var sentinel=String(rows[0]&&rows[0][0]||'').toUpperCase();
+    if(!sentinel.includes('NORMATIVE')){
+      _rclStatus('error','This does not appear to be the TESSERA Normative Contribution Template. Please download the template above, fill it in, and upload that file.');
+      label.textContent='Wrong template — please use the download above.';
+      return;
+    }
+    // Row 0 = sentinel, Row 1 = empty, Row 2 = headers, Row 3+ = data
+    var dataRows=rows.slice(3).filter(function(r){return r.some(function(c){return String(c).trim()!=='';});});
+    if(dataRows.length===0){
+      _rclStatus('error','No data rows found. Please complete the Data sheet and try again.');
+      label.textContent='No data rows found.';
+      return;
+    }
+    window._rclRows=dataRows;
+    label.textContent=file.name+' — '+dataRows.length+' row'+(dataRows.length!==1?'s':'')+' ready';
+    _rclStatus('ready',dataRows.length+' record'+(dataRows.length!==1?'s':'')+' parsed. Fill in your details above and click Submit.');
+    var btn=document.getElementById('rcl-submit-btn');
+    btn.disabled=false;
+    btn.style.color='#63b3ed';
+    btn.style.borderColor='rgba(99,179,237,0.45)';
+    btn.style.cursor='pointer';
+    btn.style.background='rgba(99,179,237,0.10)';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/* ── RCL Submit to Firebase ─────────────────────────────────────────── */
+function submitRCLUpload(){
+  var name=(document.getElementById('rcl-name').value||'').trim();
+  var email=(document.getElementById('rcl-email').value||'').trim();
+  var institution=(document.getElementById('rcl-institution').value||'').trim();
+  var study=(document.getElementById('rcl-study').value||'').trim();
+  if(!name||!email||!institution||!study){_rclStatus('error','Please fill in all four fields (name, email, institution, study title).');return;}
+  if(!email.includes('@')){_rclStatus('error','Please enter a valid email address.');return;}
+  var rows=window._rclRows;
+  if(!rows||rows.length===0){_rclStatus('error','Please upload your completed template first.');return;}
+  var db;
+  try{db=firebase.database();}
+  catch(e){_rclStatus('error','Database unavailable. Please email your file to philip.morisky@adherence.cc.');return;}
+  var btn=document.getElementById('rcl-submit-btn');
+  btn.disabled=true;btn.style.cursor='not-allowed';btn.textContent='Submitting…';
+  var ts=Date.now();
+  var batchRef='rcl_'+email.replace(/[^a-z0-9]/gi,'_').toLowerCase()+'_'+ts;
+  var pushes=rows.map(function(r,i){
+    return db.ref('assessments').push({
+      country:      String(r[0]||'').trim(),
+      city:         String(r[1]||'').trim(),
+      patientNum:   '',
+      condition:    String(r[2]||'').trim(),
+      drugType:     String(r[3]||'').trim(),
+      drugName:     String(r[4]||'').trim(),
+      drugStrength: String(r[5]||'').trim(),
+      route:        String(r[6]||'').trim(),
+      gender:       String(r[7]||'').trim(),
+      ageRange:     String(r[8]||'').trim(),
+      education:    String(r[9]||'').trim(),
+      q1:r[10],q2:r[11],q3:r[12],q4:r[13],q5:r[14],q6:r[15],q7:r[16],q8:r[17],
+      submittedAt:ts,
+      submittedDate:new Date(ts).toISOString(),
+      upload_source:'tessera_rcl',
+      tessera_contribution:true,
+      rcl_submission:true,
+      submitter_name:name,
+      submitter_email:email,
+      institution:institution,
+      study_title:study,
+      batch_ref:batchRef,
+      row_index:i,
+    });
+  });
+  Promise.all(pushes).then(function(){
+    btn.textContent='Submitted';
+    _rclStatus('success',rows.length+' record'+(rows.length!==1?'s':'')+' submitted to the TESSERA normative dataset. Thank you for contributing to global adherence science.');
+    window._rclRows=null;
+    document.getElementById('rcl-file-input').value='';
+    document.getElementById('rcl-file-label').textContent='No file selected — .xlsx files only';
+  }).catch(function(err){
+    btn.disabled=false;btn.style.cursor='pointer';btn.textContent='Submit Data to TESSERA';
+    _rclStatus('error','Submission failed ('+err.message+'). Please email your file to philip.morisky@adherence.cc.');
+  });
+}
+function _rclStatus(type,msg){
+  var el=document.getElementById('rcl-status');
+  if(!el)return;
+  var colors={error:'#ef4444',ready:'#63b3ed',success:'#10b981'};
+  el.style.color=colors[type]||'var(--muted)';
+  el.textContent=msg;
 }
 </script>
 
