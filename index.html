@@ -87,7 +87,8 @@ html[data-theme="light"] #cta [style*="color:#fff"],
 html[data-theme="light"] #community [style*="color:#fff"],
 html[data-theme="light"] #how-to-join [style*="color:#fff"],
 html[data-theme="light"] #rcl [style*="color:#fff"],
-html[data-theme="light"] #founding-hub [style*="color:#fff"]
+html[data-theme="light"] #founding-hub [style*="color:#fff"],
+html[data-theme="light"] #grants [style*="color:#fff"]
 {color:var(--bright)!important;}
 html[data-theme="light"] #donate [style*="color:rgba(255,255,255,0.25)"]
 {color:var(--muted)!important;}
@@ -1093,6 +1094,81 @@ section{position:relative;}
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   GRANTS LEDGER
+═══════════════════════════════════════════════════════════════════════ */
+.grants-counters{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-bottom:48px;
+}
+.grants-counter-cell{
+  background:var(--card);padding:32px 24px;text-align:center;
+}
+.grants-counter-val{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,4vw,3.4rem);
+  font-weight:300;line-height:1;
+}
+.grants-counter-label{
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--muted);margin-top:8px;
+}
+.grants-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:20px;
+}
+.grant-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:28px 24px;
+  display:flex;flex-direction:column;gap:12px;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.grant-card:hover{
+  border-color:rgba(212,168,67,0.25);
+  box-shadow:0 4px 24px rgba(0,0,0,0.18);
+}
+.grant-card-empty{opacity:0.32;pointer-events:none;}
+.grant-chip{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-family:var(--font-mono);font-size:0.58rem;
+  letter-spacing:0.14em;text-transform:uppercase;font-weight:500;
+  width:fit-content;
+}
+.grant-chip-lmic{background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.28);}
+.grant-chip-subscription{background:rgba(212,168,67,0.12);color:#d4a843;border:1px solid rgba(212,168,67,0.28);}
+.grant-chip-gateway{background:rgba(6,182,212,0.12);color:#06b6d4;border:1px solid rgba(6,182,212,0.28);}
+.grant-title{
+  font-family:var(--font-display);font-size:1.2rem;
+  font-weight:300;color:var(--bright);line-height:1.35;
+}
+.grant-researcher{font-size:0.9rem;font-weight:500;color:var(--text);}
+.grant-meta{
+  font-family:var(--font-mono);font-size:0.65rem;
+  letter-spacing:0.06em;color:var(--muted);
+}
+.grant-value-row{display:flex;align-items:baseline;gap:12px;margin-top:4px;}
+.grant-value{
+  font-family:var(--font-display);font-size:1.5rem;
+  font-weight:300;color:var(--pe);
+}
+.grant-date{
+  font-family:var(--font-mono);font-size:0.62rem;
+  letter-spacing:0.08em;color:var(--muted);
+}
+.grant-impact{
+  font-size:0.84rem;color:var(--muted);line-height:1.6;
+  padding-top:10px;border-top:1px solid var(--border);
+  font-style:italic;
+}
+@media(max-width:900px){
+  .grants-counters{grid-template-columns:1fr;}
+  .grants-grid{grid-template-columns:1fr;}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════════════════════════════════════ */
 footer{
@@ -1425,6 +1501,7 @@ footer{
     <a class="nav-link" href="#membership">Membership</a>
     <a class="nav-link" href="#research-exchange">Community</a>
     <a class="nav-link" href="/mosaic/">The Mosaic</a>
+    <a class="nav-link" href="#grants">Impact</a>
     <a class="nav-link" href="#donate">Support</a>
     <a class="nav-cta" href="#apply">Apply to Join</a>
   </div>
@@ -2072,6 +2149,50 @@ footer{
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════
+     GRANTS LEDGER — live from tessera_grants in Firebase
+═══════════════════════════════════════════════════════════════════════ -->
+<section id="grants" style="padding:80px 0;border-top:1px solid var(--border);">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div class="section-label" style="justify-content:center;"><span>&#9670;</span> Transparency</div>
+      <h2 style="font-family:var(--font-display);font-size:clamp(2rem,3.2vw,2.8rem);font-weight:300;color:#fff;line-height:1.2;margin-bottom:18px;">Every grant, <em style="font-style:italic;color:var(--pe);">on the record.</em></h2>
+      <p style="font-size:1rem;color:var(--muted);line-height:1.7;max-width:580px;margin:0 auto;">Each time Scala Carta Foundation awards a subscription grant or research fellowship, it appears here. No annual reports. No PDFs. A live ledger, updated the moment an award is issued.</p>
+    </div>
+
+    <!-- Counters -->
+    <div class="grants-counters">
+      <div class="grants-counter-cell">
+        <div id="gc-count" class="grants-counter-val" style="color:var(--pe);">0</div>
+        <div class="grants-counter-label">Grants Awarded</div>
+      </div>
+      <div class="grants-counter-cell">
+        <div id="gc-value" class="grants-counter-val" style="color:var(--green);">$0</div>
+        <div class="grants-counter-label">Deployed to Researchers</div>
+      </div>
+      <div class="grants-counter-cell">
+        <div id="gc-countries" class="grants-counter-val" style="color:var(--cyan);">0</div>
+        <div class="grants-counter-label">Countries Reached</div>
+      </div>
+    </div>
+
+    <!-- Grant cards -->
+    <div class="grants-grid" id="grants-grid">
+      <div class="grant-card grant-card-empty" aria-hidden="true">
+        <div class="grant-chip grant-chip-lmic">LMIC Research Grant</div>
+        <div class="grant-title">First award will appear here</div>
+        <div class="grant-researcher">Scala Carta Foundation</div>
+        <div class="grant-meta">scalacartafoundation.org &middot; United States</div>
+        <div class="grant-value-row">
+          <span class="grant-value">—</span>
+          <span class="grant-date">Pending</span>
+        </div>
+        <div class="grant-impact">Awards are recorded here the moment they are issued. This ledger is public and permanent.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
      DONATE
 ═══════════════════════════════════════════════════════════════════════ -->
 <section id="donate" style="padding:80px 0;border-top:1px solid var(--border);">
@@ -2657,6 +2778,7 @@ footer{
       <div class="footer-links">
         <a class="footer-link" href="#what-we-do">About the Foundation</a>
         <a class="footer-link" href="#membership">Membership Tiers</a>
+        <a class="footer-link" href="#grants">Impact Ledger</a>
         <a class="footer-link" href="#lmic-grant">LMIC Research Grant</a>
         <a class="footer-link" href="#research-exchange">Research Exchange</a>
         <a class="footer-link" href="#donate">Support / Donate</a>
@@ -3359,6 +3481,105 @@ var rvObs=new IntersectionObserver(function(entries){
   entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');rvObs.unobserve(e.target);}});
 },{threshold:0.07});
 document.querySelectorAll('#apply .rv').forEach(function(el){rvObs.observe(el);});
+
+// ── Grants Ledger ────────────────────────────────────────────────────
+var _GRANT_TYPE_CFG={
+  lmic_grant:        {label:'LMIC Research Grant',   cls:'grant-chip-lmic'},
+  subscription_grant:{label:'Subscription Grant',    cls:'grant-chip-subscription'},
+  community_gateway: {label:'Community Gateway',     cls:'grant-chip-gateway'},
+};
+
+function _grantFmtValue(v){
+  if(!v)return'—';
+  return'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0});
+}
+function _grantFmtDate(ts){
+  if(!ts)return'';
+  return new Date(ts).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+}
+function _buildGrantCard(g){
+  var tCfg=_GRANT_TYPE_CFG[g.grant_type]||{label:g.grant_type||'Grant',cls:'grant-chip-subscription'};
+  var meta=[g.institution,g.country].filter(Boolean).join(' · ');
+  var card=document.createElement('div');
+  card.className='grant-card';
+  card.innerHTML=
+    '<div class="grant-chip '+tCfg.cls+'">'+_esc(tCfg.label)+'</div>'+
+    '<div class="grant-title">'+_esc(g.study_title||'—')+'</div>'+
+    '<div class="grant-researcher">'+_esc(g.recipient||'—')+'</div>'+
+    (meta?'<div class="grant-meta">'+_esc(meta)+'</div>':'')+
+    '<div class="grant-value-row">'+
+      '<span class="grant-value">'+_grantFmtValue(g.grant_value)+'</span>'+
+      (g.awarded_date?'<span class="grant-date">'+_grantFmtDate(g.awarded_date)+'</span>':'')+
+    '</div>'+
+    (g.impact?'<div class="grant-impact">'+_esc(g.impact)+'</div>':'');
+  return card;
+}
+function _animateCounter(el,target,fmtFn){
+  var duration=1400,startTime=null;
+  function step(ts){
+    if(!startTime)startTime=ts;
+    var p=Math.min((ts-startTime)/duration,1);
+    var ease=1-Math.pow(1-p,3);
+    el.textContent=fmtFn(Math.round(ease*target));
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+var _grantsData=null,_grantsAnimated=false;
+function _grantsRunCounters(){
+  if(!_grantsData||_grantsAnimated)return;
+  _grantsAnimated=true;
+  var gcCount=document.getElementById('gc-count');
+  var gcValue=document.getElementById('gc-value');
+  var gcCountries=document.getElementById('gc-countries');
+  if(gcCount)_animateCounter(gcCount,_grantsData.count,function(v){return String(v);});
+  if(gcValue)_animateCounter(gcValue,_grantsData.totalValue,function(v){return'$'+v.toLocaleString('en-US');});
+  if(gcCountries)_animateCounter(gcCountries,_grantsData.countryCount,function(v){return String(v);});
+}
+var _grantsCounterObs=new IntersectionObserver(function(entries){
+  if(entries[0].isIntersecting){_grantsRunCounters();_grantsCounterObs.disconnect();}
+},{threshold:0.2});
+var _grantsSection=document.getElementById('grants');
+if(_grantsSection)_grantsCounterObs.observe(_grantsSection);
+
+_db.ref('tessera_grants').on('value',function(snap){
+  var raw=snap.val()||{};
+  var grants=Object.values(raw).filter(function(g){return g&&g.study_title;});
+  grants.sort(function(a,b){return(b.awarded_date||0)-(a.awarded_date||0);});
+
+  var totalValue=grants.reduce(function(s,g){return s+(Number(g.grant_value)||0);},0);
+  var countries={};
+  grants.forEach(function(g){if(g.country)countries[g.country]=true;});
+  var countryCount=Object.keys(countries).length;
+
+  // Cache for counter animation
+  _grantsData={count:grants.length,totalValue:totalValue,countryCount:countryCount};
+  _grantsAnimated=false;
+  _grantsRunCounters();
+
+  // Render cards
+  var grid=document.getElementById('grants-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+
+  if(grants.length===0){
+    var empty=document.createElement('div');
+    empty.className='grant-card grant-card-empty';
+    empty.setAttribute('aria-hidden','true');
+    empty.innerHTML=
+      '<div class="grant-chip grant-chip-lmic">LMIC Research Grant</div>'+
+      '<div class="grant-title">First award will appear here</div>'+
+      '<div class="grant-researcher">Scala Carta Foundation</div>'+
+      '<div class="grant-meta">scalacartafoundation.org &middot; United States</div>'+
+      '<div class="grant-value-row"><span class="grant-value">—</span><span class="grant-date">Pending</span></div>'+
+      '<div class="grant-impact">Awards are recorded here the moment they are issued. This ledger is public and permanent.</div>';
+    grid.appendChild(empty);
+    return;
+  }
+
+  grants.forEach(function(g){grid.appendChild(_buildGrantCard(g));});
+});
 
 (function(){
   var params=new URLSearchParams(window.location.search);
