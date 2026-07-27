@@ -3570,7 +3570,7 @@ var _grantsCounterObs=new IntersectionObserver(function(entries){
 var _grantsSection=document.getElementById('grants');
 if(_grantsSection)_grantsCounterObs.observe(_grantsSection);
 
-_db.ref('tessera_grants').on('value',function(snap){
+_fdb.ref('tessera_grants').on('value',function(snap){
   var raw=snap.val()||{};
   var grants=Object.values(raw).filter(function(g){return g&&(g.study_title||g.recipient);});
   grants.sort(function(a,b){return(b.granted_at||b.awarded_date||0)-(a.granted_at||a.awarded_date||0);});
