@@ -1131,6 +1131,7 @@ section{position:relative;}
   box-shadow:0 4px 24px rgba(0,0,0,0.18);
 }
 .grant-card-empty{opacity:0.32;pointer-events:none;}
+.grant-card-revoked{opacity:0.55;}
 .grant-chip{
   display:inline-block;padding:3px 10px;border-radius:20px;
   font-family:var(--font-mono);font-size:0.58rem;
@@ -3489,28 +3490,56 @@ var _GRANT_TYPE_CFG={
   community_gateway: {label:'Community Gateway',     cls:'grant-chip-gateway'},
 };
 
-function _grantFmtValue(v){
-  if(!v)return'—';
-  return'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0});
+// Annual price per sa-consortium tier number — value is computed organically, never stored
+var _GRANT_ANNUAL_PRICE={0:0,1:5999,2:1999,3:499,4:199,5:12000};
+var _GRANT_TIER_LABEL={0:'Founder',1:'Institutional Partner',2:'Validation Partner',3:'Research Affiliate',4:'Student Affiliate',5:'Industry Partner'};
+
+function _calcGrantValue(g){
+  // Organic mode: tier + timestamps present
+  var annual=_GRANT_ANNUAL_PRICE[g.tier];
+  if(annual&&g.granted_at){
+    var end=(g.status==='revoked'&&g.revoked_at)?g.revoked_at:Date.now();
+    var months=(end-g.granted_at)/(1000*60*60*24*30.4375);
+    return Math.round((annual/12)*months);
+  }
+  // Fallback: static grant_value field (manual entries)
+  return Number(g.grant_value)||0;
 }
+
+function _grantSubline(g){
+  var annual=_GRANT_ANNUAL_PRICE[g.tier];
+  if(!annual||!g.granted_at)return'';
+  var monthly=Math.round(annual/12);
+  var end=(g.status==='revoked'&&g.revoked_at)?g.revoked_at:Date.now();
+  var months=Math.floor((end-g.granted_at)/(1000*60*60*24*30.4375));
+  var tierLabel=_GRANT_TIER_LABEL[g.tier]||'';
+  var suffix=g.status==='revoked'?' (concluded)':' active';
+  return'$'+monthly+'/mo \xb7 '+tierLabel+' \xb7 '+months+' month'+(months!==1?'s':'')+suffix;
+}
+
 function _grantFmtDate(ts){
   if(!ts)return'';
-  return new Date(ts).toLocaleDateString('en-US',{month:'short',year:'numeric'});
+  return'Since '+new Date(ts).toLocaleDateString('en-US',{month:'short',year:'numeric'});
 }
+
 function _buildGrantCard(g){
   var tCfg=_GRANT_TYPE_CFG[g.grant_type]||{label:g.grant_type||'Grant',cls:'grant-chip-subscription'};
-  var meta=[g.institution,g.country].filter(Boolean).join(' · ');
+  var meta=[g.institution,g.country].filter(Boolean).join(' \xb7 ');
+  var computed=_calcGrantValue(g);
+  var subline=_grantSubline(g);
+  var fmtVal=computed>0?'$'+computed.toLocaleString('en-US'):'—';
   var card=document.createElement('div');
-  card.className='grant-card';
+  card.className='grant-card'+(g.status==='revoked'?' grant-card-revoked':'');
   card.innerHTML=
-    '<div class="grant-chip '+tCfg.cls+'">'+_esc(tCfg.label)+'</div>'+
+    '<div class="grant-chip '+_esc(tCfg.cls)+'">'+_esc(tCfg.label)+'</div>'+
     '<div class="grant-title">'+_esc(g.study_title||'—')+'</div>'+
     '<div class="grant-researcher">'+_esc(g.recipient||'—')+'</div>'+
     (meta?'<div class="grant-meta">'+_esc(meta)+'</div>':'')+
     '<div class="grant-value-row">'+
-      '<span class="grant-value">'+_grantFmtValue(g.grant_value)+'</span>'+
-      (g.awarded_date?'<span class="grant-date">'+_grantFmtDate(g.awarded_date)+'</span>':'')+
+      '<span class="grant-value">'+_esc(fmtVal)+'</span>'+
+      (g.granted_at?'<span class="grant-date">'+_grantFmtDate(g.granted_at)+'</span>':'')+
     '</div>'+
+    (subline?'<div class="grant-meta" style="margin-top:-4px;">'+_esc(subline)+'</div>':'')+
     (g.impact?'<div class="grant-impact">'+_esc(g.impact)+'</div>':'');
   return card;
 }
@@ -3545,10 +3574,10 @@ if(_grantsSection)_grantsCounterObs.observe(_grantsSection);
 
 _db.ref('tessera_grants').on('value',function(snap){
   var raw=snap.val()||{};
-  var grants=Object.values(raw).filter(function(g){return g&&g.study_title;});
-  grants.sort(function(a,b){return(b.awarded_date||0)-(a.awarded_date||0);});
+  var grants=Object.values(raw).filter(function(g){return g&&(g.study_title||g.recipient);});
+  grants.sort(function(a,b){return(b.granted_at||b.awarded_date||0)-(a.granted_at||a.awarded_date||0);});
 
-  var totalValue=grants.reduce(function(s,g){return s+(Number(g.grant_value)||0);},0);
+  var totalValue=grants.reduce(function(s,g){return s+_calcGrantValue(g);},0);
   var countries={};
   grants.forEach(function(g){if(g.country)countries[g.country]=true;});
   var countryCount=Object.keys(countries).length;
