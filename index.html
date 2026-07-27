@@ -1164,8 +1164,33 @@ section{position:relative;}
   padding-top:10px;border-top:1px solid var(--border);
   font-style:italic;
 }
+.grants-meta-row{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-bottom:48px;
+}
+.grants-meta-cell{background:var(--card);padding:24px 20px;text-align:center;}
+.grants-meta-val{
+  font-family:var(--font-display);
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:300;line-height:1;
+}
+.grant-card-hidden{display:none !important;}
+.grants-show-more{margin-top:28px;text-align:center;}
+.grants-show-more-btn{
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:8px;padding:10px 28px;
+  font-family:var(--font-mono);font-size:0.65rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;
+  transition:border-color 0.2s,color 0.2s;
+}
+.grants-show-more-btn:hover{border-color:rgba(212,168,67,0.35);color:var(--pe);}
 @media(max-width:900px){
   .grants-counters{grid-template-columns:1fr;}
+  .grants-meta-row{grid-template-columns:1fr;}
   .grants-grid{grid-template-columns:1fr;}
 }
 
@@ -2176,6 +2201,18 @@ footer{
       </div>
     </div>
 
+    <!-- Impact metrics -->
+    <div class="grants-meta-row">
+      <div class="grants-meta-cell">
+        <div id="gc-studies" class="grants-meta-val" style="color:var(--cyan);">—</div>
+        <div class="grants-counter-label">Studies Published</div>
+      </div>
+      <div class="grants-meta-cell">
+        <div id="gc-trained" class="grants-meta-val" style="color:#8b6ff5;">—</div>
+        <div class="grants-counter-label">Researchers Trained</div>
+      </div>
+    </div>
+
     <!-- Grant cards -->
     <div class="grants-grid" id="grants-grid">
       <div class="grant-card grant-card-empty" aria-hidden="true">
@@ -2189,6 +2226,9 @@ footer{
         </div>
         <div class="grant-impact">Awards are recorded here the moment they are issued. This ledger is public and permanent.</div>
       </div>
+    </div>
+    <div class="grants-show-more" id="grants-show-more" style="display:none;">
+      <button class="grants-show-more-btn" id="grants-show-more-btn" onclick="_grantsToggleAll()">See all grants &rarr;</button>
     </div>
   </div>
 </section>
@@ -3555,6 +3595,7 @@ function _animateCounter(el,target,fmtFn){
 }
 
 var _grantsData=null,_grantsAnimated=false;
+var _GRANTS_PEEK=3,_grantsExpanded=false;
 function _grantsRunCounters(){
   if(!_grantsData||_grantsAnimated)return;
   _grantsAnimated=true;
@@ -3571,6 +3612,15 @@ var _grantsCounterObs=new IntersectionObserver(function(entries){
 var _grantsSection=document.getElementById('grants');
 if(_grantsSection)_grantsCounterObs.observe(_grantsSection);
 
+function _grantsToggleAll(){
+  _grantsExpanded=!_grantsExpanded;
+  var cards=document.querySelectorAll('#grants-grid .grant-card:not(.grant-card-empty)');
+  cards.forEach(function(c,i){if(i>=_GRANTS_PEEK)c.classList.toggle('grant-card-hidden',!_grantsExpanded);});
+  var btn=document.getElementById('grants-show-more-btn');
+  if(btn)btn.textContent=_grantsExpanded?'Show fewer ↑':'See all '+cards.length+' grants →';
+}
+window._grantsToggleAll=_grantsToggleAll;
+
 _fdb.ref('tessera_grants').on('value',function(snap){
   var raw=snap.val()||{};
   var grants=Object.values(raw).filter(function(g){return g&&(g.study_title||g.recipient);});
@@ -3581,15 +3631,14 @@ _fdb.ref('tessera_grants').on('value',function(snap){
   grants.forEach(function(g){if(g.country)countries[g.country]=true;});
   var countryCount=Object.keys(countries).length;
 
-  // Cache for counter animation
   _grantsData={count:grants.length,totalValue:totalValue,countryCount:countryCount};
   _grantsAnimated=false;
   _grantsRunCounters();
 
-  // Render cards
   var grid=document.getElementById('grants-grid');
   if(!grid)return;
   grid.innerHTML='';
+  _grantsExpanded=false;
 
   if(grants.length===0){
     var empty=document.createElement('div');
@@ -3606,7 +3655,26 @@ _fdb.ref('tessera_grants').on('value',function(snap){
     return;
   }
 
-  grants.forEach(function(g){grid.appendChild(_buildGrantCard(g));});
+  grants.forEach(function(g,i){
+    var card=_buildGrantCard(g);
+    if(i>=_GRANTS_PEEK)card.classList.add('grant-card-hidden');
+    grid.appendChild(card);
+  });
+
+  var showMore=document.getElementById('grants-show-more');
+  var showMoreBtn=document.getElementById('grants-show-more-btn');
+  if(showMore){
+    showMore.style.display=grants.length>_GRANTS_PEEK?'block':'none';
+    if(showMoreBtn)showMoreBtn.textContent='See all '+grants.length+' grants →';
+  }
+});
+
+_fdb.ref('tessera_meta').on('value',function(snap){
+  var m=snap.val()||{};
+  var sEl=document.getElementById('gc-studies');
+  var tEl=document.getElementById('gc-trained');
+  if(sEl)sEl.textContent=m.studies_published!=null?String(m.studies_published):'—';
+  if(tEl)tEl.textContent=m.researchers_trained!=null?String(m.researchers_trained):'—';
 });
 
 (function(){
