@@ -3490,26 +3490,24 @@ var _GRANT_TYPE_CFG={
   community_gateway: {label:'Community Gateway',     cls:'grant-chip-gateway'},
 };
 
-// Annual price per sa-consortium tier number — value is computed organically, never stored
-var _GRANT_ANNUAL_PRICE={0:0,1:5999,2:1999,3:499,4:199,5:12000};
+// Retail monthly price per sa-consortium tier — mirrors atlas.adherence.cc/keys pricing
+// Tier 4=Student $19/mo · Tier 3=Researcher $49/mo · Tier 2=PI $149/mo · Tier 1=Academic $399/mo
+var _GRANT_MONTHLY_PRICE={0:0,1:399,2:149,3:49,4:19,5:599};
 var _GRANT_TIER_LABEL={0:'Founder',1:'Institutional Partner',2:'Validation Partner',3:'Research Affiliate',4:'Student Affiliate',5:'Industry Partner'};
 
 function _calcGrantValue(g){
-  // Organic mode: tier + timestamps present
-  var annual=_GRANT_ANNUAL_PRICE[g.tier];
-  if(annual&&g.granted_at){
+  var monthly=_GRANT_MONTHLY_PRICE[g.tier];
+  if(monthly&&g.granted_at){
     var end=(g.status==='revoked'&&g.revoked_at)?g.revoked_at:Date.now();
     var months=(end-g.granted_at)/(1000*60*60*24*30.4375);
-    return Math.round((annual/12)*months);
+    return Math.round(monthly*months);
   }
-  // Fallback: static grant_value field (manual entries)
   return Number(g.grant_value)||0;
 }
 
 function _grantSubline(g){
-  var annual=_GRANT_ANNUAL_PRICE[g.tier];
-  if(!annual||!g.granted_at)return'';
-  var monthly=Math.round(annual/12);
+  var monthly=_GRANT_MONTHLY_PRICE[g.tier];
+  if(!monthly||!g.granted_at)return'';
   var end=(g.status==='revoked'&&g.revoked_at)?g.revoked_at:Date.now();
   var months=Math.floor((end-g.granted_at)/(1000*60*60*24*30.4375));
   var tierLabel=_GRANT_TIER_LABEL[g.tier]||'';
