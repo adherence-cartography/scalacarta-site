@@ -3484,6 +3484,7 @@ var rvObs=new IntersectionObserver(function(entries){
 document.querySelectorAll('#apply .rv').forEach(function(el){rvObs.observe(el);});
 
 // ── Grants Ledger ────────────────────────────────────────────────────
+function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 var _GRANT_TYPE_CFG={
   lmic_grant:        {label:'LMIC Research Grant',   cls:'grant-chip-lmic'},
   subscription_grant:{label:'Subscription Grant',    cls:'grant-chip-subscription'},
