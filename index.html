@@ -1854,7 +1854,7 @@ footer{
 
     <!-- Checkout success banner -->
     <div id="checkout-success-banner">
-      Your TESSERA membership payment was received. Check your email for onboarding instructions. Questions: <a href="mailto:consortium@scalacartafoundation.org" style="color:#10b981;">consortium@scalacartafoundation.org</a>
+      Payment received. Complete your membership profile below to activate your workspace. Questions: <a href="mailto:consortium@scalacartafoundation.org" style="color:#10b981;">consortium@scalacartafoundation.org</a>
     </div>
 
     <!-- LMIC pricing toggle -->
@@ -1968,7 +1968,7 @@ footer{
           <li><span class="tier-check">&#10003;</span> Research Exchange posting rights</li>
           <li><span class="tier-check">&#10003;</span> PEACS phenotype comparison tools</li>
         </ul>
-        <a href="#apply" class="tier-cta" id="cta-tier-2" onclick="return sTierClick(2,event)">Subscribe Now</a>
+        <a href="#apply" class="tier-cta" id="cta-tier-2" onclick="return sTierClick(2,event)">Apply Now</a>
       </div>
 
       <!-- Tier 4: Institutional Partner -->
@@ -1995,7 +1995,7 @@ footer{
           <li><span class="tier-check">&#10003;</span> TESSERA Summit invitation (inaugural event, 2027)</li>
           <li><span class="tier-check">&#10003;</span> Input into ATLAS platform development roadmap</li>
         </ul>
-        <a href="#apply" class="tier-cta" id="cta-tier-1" onclick="return sTierClick(1,event)">Subscribe Now</a>
+        <a href="#apply" class="tier-cta" id="cta-tier-1" onclick="return sTierClick(1,event)">Apply Now</a>
       </div>
 
       <!-- Tier 5: Industry Partner -->
@@ -3469,8 +3469,12 @@ window.toggleLMIC=function(){
 };
 
 window.sTierClick=function(tierId,event){
+  // LMIC Student = free grant → let href="#apply" navigate
   if(lmicMode&&tierId===4){pickTier(4);return true;}
   event.preventDefault();
+  // Validation (2) + Institutional (1) always go through application review
+  if(tierId===1||tierId===2){pickTier(tierId);window.location.href='#apply';return false;}
+  // Student (4) + Research Affiliate (3) → self-serve Stripe
   var prices=lmicMode?STRIPE_PRICES.lmic:STRIPE_PRICES.standard;
   var priceId=prices[tierId];
   if(!priceId){pickTier(tierId);window.location.href='#apply';return false;}
@@ -3504,7 +3508,12 @@ window.sTierClick=function(tierId,event){
 (function(){
   if(window.location.search.indexOf('checkout=success')!==-1){
     var banner=document.getElementById('checkout-success-banner');
-    if(banner){banner.style.display='block';window.history.replaceState({},'',window.location.pathname);}
+    if(banner) banner.style.display='block';
+    window.history.replaceState({},'',window.location.pathname);
+    setTimeout(function(){
+      var applyEl=document.getElementById('apply');
+      if(applyEl) applyEl.scrollIntoView({behavior:'smooth',block:'start'});
+    },400);
   }
 })();
 
