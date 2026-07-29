@@ -1636,6 +1636,10 @@ footer{
 
     <div class="hero-visual">
       <div class="globe-wrap">
+        <div id="globe-view-toggle" style="position:absolute;top:14px;right:14px;z-index:10;display:flex;border-radius:6px;overflow:hidden;border:1px solid rgba(78,156,245,0.25);">
+          <button id="btn-globe-view" onclick="setMapView('globe')" style="background:rgba(78,156,245,0.18);border:none;padding:6px 12px;font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(78,156,245,0.9);cursor:pointer;line-height:1;">Globe</button>
+          <button id="btn-flat-view" onclick="setMapView('flat')" style="background:transparent;border:none;border-left:1px solid rgba(78,156,245,0.25);padding:6px 12px;font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(78,156,245,0.45);cursor:pointer;line-height:1;">Flat</button>
+        </div>
         <!-- 3D Canvas Globe -->
         <canvas id="tessera-globe" width="440" height="440" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
 
@@ -3138,6 +3142,7 @@ var ctx = cv.getContext('2d');
 var W=440,H=440,CX=220,CY=220,R=190;
 var rotY = 0.7, TILT = -0.26, SPEED = 0.0015;
 var D = Math.PI/180;
+var flatMode = false;
 
 // Simplified continent coastlines [lat_deg, lng_deg]
 var LAND = [
@@ -3189,7 +3194,7 @@ function proj(latD, lngD) {
   return {sx: CX + R*x1, sy: CY - R*y2, z: z2};
 }
 
-function draw() {
+function drawGlobe() {
   ctx.clearRect(0,0,W,H);
 
   // Outer atmosphere
@@ -3312,6 +3317,85 @@ function draw() {
     ctx.globalAlpha=1;
   });
 }
+
+function drawFlat() {
+  var FH=370, FY0=35;
+  var lngOff=((rotY*180/Math.PI)%360+360)%360;
+  function fx(latD,lngD){
+    var raw=((lngD-lngOff)%360+360)%360;
+    var adjLng=raw>180?raw-360:raw;
+    return{x:(adjLng+180)/360*W, y:FY0+(75-latD)/150*FH};
+  }
+  ctx.fillStyle='#050916';
+  ctx.fillRect(0,0,W,H);
+  // Clip to map area
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0,FY0,W,FH); ctx.clip();
+  // Lat graticules
+  for(var lat=-75;lat<=75;lat+=15){
+    var yg=FY0+(75-lat)/150*FH;
+    ctx.beginPath(); ctx.moveTo(0,yg); ctx.lineTo(W,yg);
+    ctx.strokeStyle=lat===0?'rgba(212,168,67,0.25)':'rgba(120,160,220,0.08)';
+    ctx.lineWidth=lat===0?1.3:0.7; ctx.stroke();
+  }
+  // Lng graticules (every 30°)
+  for(var l=0;l<360;l+=30){
+    var xl=((l-lngOff)%360+360)%360/360*W;
+    ctx.beginPath(); ctx.moveTo(xl,FY0); ctx.lineTo(xl,FY0+FH);
+    ctx.strokeStyle='rgba(120,160,220,0.07)'; ctx.lineWidth=0.6; ctx.stroke();
+  }
+  // Coastlines — draw at -W, 0, +W offsets to handle seam wrap
+  LAND.forEach(function(coast){
+    [-W,0,W].forEach(function(xOff){
+      ctx.beginPath();
+      var first=true,prevX=null;
+      coast.forEach(function(pt){
+        if(pt[0]<-78||pt[0]>78){first=true;return;}
+        var p=fx(pt[0],pt[1]);
+        var px=p.x+xOff;
+        if(first){ctx.moveTo(px,p.y);first=false;}
+        else if(prevX!==null&&Math.abs(px-prevX)>W*0.4){ctx.moveTo(px,p.y);}
+        else{ctx.lineTo(px,p.y);}
+        prevX=px;
+      });
+      ctx.strokeStyle='rgba(78,156,245,0.38)'; ctx.lineWidth=1.2; ctx.stroke();
+    });
+  });
+  // Member dots
+  DOTS.forEach(function(d){
+    var p=fx(d[0],d[1]);
+    var r=d[2],g=d[3],b=d[4],dr=5;
+    [-W,0,W].forEach(function(xOff){
+      var px=p.x+xOff;
+      if(px<-30||px>W+30) return;
+      var glow=ctx.createRadialGradient(px,p.y,0,px,p.y,dr*4.5);
+      glow.addColorStop(0,'rgba('+r+','+g+','+b+',0.45)');
+      glow.addColorStop(0.4,'rgba('+r+','+g+','+b+',0.15)');
+      glow.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+      ctx.beginPath(); ctx.arc(px,p.y,dr*4.5,0,2*Math.PI); ctx.fillStyle=glow; ctx.fill();
+      ctx.beginPath(); ctx.arc(px,p.y,dr,0,2*Math.PI); ctx.fillStyle='rgb('+r+','+g+','+b+')'; ctx.fill();
+      ctx.beginPath(); ctx.arc(px,p.y,dr*0.45,0,2*Math.PI); ctx.fillStyle='rgba(255,255,255,0.65)'; ctx.fill();
+    });
+  });
+  ctx.restore();
+  // Border
+  ctx.beginPath(); ctx.rect(0,FY0,W,FH);
+  ctx.strokeStyle='rgba(78,156,245,0.18)'; ctx.lineWidth=1; ctx.stroke();
+  // Label
+  ctx.fillStyle='rgba(120,160,220,0.28)';
+  ctx.font='9px monospace';
+  ctx.fillText('EQUIRECTANGULAR · TESSERA CONSORTIUM SITES',12,FY0+FH+18);
+}
+
+function draw(){if(flatMode) drawFlat(); else drawGlobe();}
+
+window.setMapView=function(mode){
+  flatMode=mode==='flat';
+  var bg=document.getElementById('btn-globe-view');
+  var bf=document.getElementById('btn-flat-view');
+  if(bg){bg.style.background=flatMode?'transparent':'rgba(78,156,245,0.18)';bg.style.color=flatMode?'rgba(78,156,245,0.45)':'rgba(78,156,245,0.9)';}
+  if(bf){bf.style.background=flatMode?'rgba(78,156,245,0.18)':'transparent';bf.style.color=flatMode?'rgba(78,156,245,0.9)':'rgba(78,156,245,0.45)';}
+};
 
 function tick(){rotY+=SPEED; draw(); requestAnimationFrame(tick);}
 tick();
