@@ -3485,17 +3485,18 @@ window.sTierClick=function(tierId,event){
       cancelUrl:window.location.origin+window.location.pathname+'#membership'
     })
   })
-  .then(function(r){return r.json();})
-  .then(function(data){
-    if(data.url){window.location.href=data.url;}
+  .then(function(r){return r.json().then(function(d){return{ok:r.ok,status:r.status,data:d};});})
+  .then(function(res){
+    if(res.data&&res.data.url){window.location.href=res.data.url;}
     else{
       if(ctaEl){ctaEl.textContent='Subscribe Now';ctaEl.style.pointerEvents='';}
-      alert('Unable to start checkout. Please contact consortium@scalacartafoundation.org.');
+      var msg=res.data&&res.data.error?res.data.error:'No checkout URL returned (status '+res.status+')';
+      alert('Checkout error: '+msg+'\n\nContact consortium@scalacartafoundation.org if this persists.');
     }
   })
-  .catch(function(){
+  .catch(function(err){
     if(ctaEl){ctaEl.textContent='Subscribe Now';ctaEl.style.pointerEvents='';}
-    alert('Network error. Please try again or contact consortium@scalacartafoundation.org.');
+    alert('Network error: '+err.message+'\n\nContact consortium@scalacartafoundation.org.');
   });
   return false;
 };
