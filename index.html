@@ -657,7 +657,7 @@ section{position:relative;}
 .lmic-toggle-btn.active .lmic-toggle-no{display:none;}
 .lmic-toggle-btn.active .lmic-toggle-yes{display:inline;}
 /* ── Checkout success banner ───────────────────────────────────────────── */
-#checkout-success-banner{display:none;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);border-radius:12px;padding:18px 24px;text-align:center;margin-bottom:32px;color:#10b981;font-size:0.95rem;}
+#checkout-success-banner,#donation-success-banner{display:none;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);border-radius:12px;padding:18px 24px;text-align:center;margin-bottom:32px;color:#10b981;font-size:0.95rem;}
 /* ── Which-tier decision guide ─────────────────────────────────────────── */
 #which-tier{padding:0 0 80px;}
 .decide-header{text-align:center;margin-bottom:44px;}
@@ -2263,6 +2263,7 @@ footer{
 ═══════════════════════════════════════════════════════════════════════ -->
 <section id="donate" style="padding:80px 0;border-top:1px solid var(--border);">
   <div class="container">
+    <div id="donation-success-banner">Thank you for your donation. A receipt has been sent to your email. Questions: <a href="mailto:philip.morisky@scalacartafoundation.org" style="color:#10b981;">philip.morisky@scalacartafoundation.org</a></div>
     <div style="text-align:center;margin-bottom:56px;">
       <div class="section-label" style="justify-content:center;"><span>04</span> Support the Mission</div>
       <h2 style="font-family:var(--font-display);font-size:clamp(2rem,3.5vw,3rem);font-weight:300;color:#fff;line-height:1.2;margin-bottom:18px;">Fund the science that <em style="font-style:italic;color:var(--pe);">saves lives</em></h2>
@@ -2274,26 +2275,26 @@ footer{
         <div style="font-family:var(--font-display);font-size:2rem;font-weight:300;color:var(--pe);margin-bottom:8px;">$100</div>
         <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Supporter</div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:20px;">Covers the full annual TESSERA Research Grant for an LMIC graduate student: MAP certification, ATLAS workspace, and a formal letter of permission for their thesis. One gift, one researcher fully equipped for an entire year.</p>
-        <a href="mailto:philip.morisky@scalacartafoundation.org?subject=Donation%20-%20Supporter%20%24100" style="display:block;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.3);background:rgba(212,168,67,0.06);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.8);text-decoration:none;transition:all 0.2s;">Donate $100</a>
+        <button id="donate-btn-supporter" onclick="doDonate('supporter','$100',this)" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.3);background:rgba(212,168,67,0.06);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.8);cursor:pointer;transition:all 0.2s;">Donate $100</button>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 20px;text-align:center;">
         <div style="font-family:var(--font-display);font-size:2rem;font-weight:300;color:var(--pe);margin-bottom:8px;">$500</div>
         <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Contributor</div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:20px;">Sponsors a Research Affiliate membership for an independent LMIC investigator: three researcher seats, normative benchmarking access, and a publication acknowledgment pathway. The grant tier we receive the most requests for.</p>
-        <a href="mailto:philip.morisky@scalacartafoundation.org?subject=Donation%20-%20Contributor%20%24500" style="display:block;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.3);background:rgba(212,168,67,0.06);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.8);text-decoration:none;transition:all 0.2s;">Donate $500</a>
+        <button id="donate-btn-contributor" onclick="doDonate('contributor','$500',this)" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.3);background:rgba(212,168,67,0.06);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.8);cursor:pointer;transition:all 0.2s;">Donate $500</button>
       </div>
       <div style="background:linear-gradient(135deg,rgba(212,168,67,0.08),rgba(212,168,67,0.02));border:1px solid rgba(212,168,67,0.28);border-radius:14px;padding:28px 20px;text-align:center;position:relative;">
         <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--pe);color:#080e1a;font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;padding:3px 12px;border-radius:20px;white-space:nowrap;font-weight:600;">Most Impactful</div>
         <div style="font-family:var(--font-display);font-size:2rem;font-weight:300;color:var(--pe);margin-bottom:8px;">$2,500</div>
         <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Research Patron</div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:20px;">Partners with a clinical team in a low-income country to run a full MAP validation study: instrument deployment, data collection support, and co-authorship credit on a TESSERA normative dataset publication.</p>
-        <a href="mailto:philip.morisky@scalacartafoundation.org?subject=Donation%20-%20Research%20Patron%20%242500" style="display:block;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.45);background:rgba(212,168,67,0.12);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.9);text-decoration:none;transition:all 0.2s;">Donate $2,500</a>
+        <button id="donate-btn-patron" onclick="doDonate('patron','$2,500',this)" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.45);background:rgba(212,168,67,0.12);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.9);cursor:pointer;transition:all 0.2s;">Donate $2,500</button>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 20px;text-align:center;">
         <div style="font-family:var(--font-display);font-size:2rem;font-weight:300;color:var(--pe);margin-bottom:8px;">$10,000</div>
         <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Foundation Fellow</div>
         <p style="font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:20px;">Endows a named fellowship for one year: full Validation Partner membership, 10 ATLAS seats, co-authorship rights on consortium publications, and TESSERA Site designation. Your name appears in TESSERA research outputs.</p>
-        <a href="mailto:philip.morisky@scalacartafoundation.org?subject=Donation%20-%20Foundation%20Fellow%20%2410000" style="display:block;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.3);background:rgba(212,168,67,0.06);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.8);text-decoration:none;transition:all 0.2s;">Donate $10,000</a>
+        <a href="mailto:philip.morisky@scalacartafoundation.org?subject=Foundation%20Fellow%20Endowment%20%E2%80%94%20%2410%2C000" style="display:block;padding:10px;border-radius:8px;border:1px solid rgba(212,168,67,0.3);background:rgba(212,168,67,0.06);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(212,168,67,0.8);text-decoration:none;transition:all 0.2s;">Request Invoice</a>
       </div>
     </div>
     <div style="text-align:center;padding:24px;background:rgba(212,168,67,0.03);border:1px solid rgba(212,168,67,0.12);border-radius:12px;">
@@ -3515,7 +3516,47 @@ window.sTierClick=function(tierId,event){
       if(applyEl) applyEl.scrollIntoView({behavior:'smooth',block:'start'});
     },400);
   }
+  if(window.location.search.indexOf('donated=1')!==-1){
+    var banner=document.getElementById('donation-success-banner');
+    if(banner) banner.style.display='block';
+    window.history.replaceState({},'',window.location.pathname);
+    setTimeout(function(){
+      var donateEl=document.getElementById('donate');
+      if(donateEl) donateEl.scrollIntoView({behavior:'smooth',block:'start'});
+    },200);
+  }
 })();
+
+var DONATION_PRICES={
+  supporter:   'price_REPLACE_SUPPORTER',
+  contributor: 'price_REPLACE_CONTRIBUTOR',
+  patron:      'price_REPLACE_PATRON',
+};
+
+window.doDonate=function(tier,label,btnEl){
+  var priceId=DONATION_PRICES[tier];
+  if(!priceId||priceId.indexOf('REPLACE')!==-1){
+    alert('Donation checkout is being set up. Contact philip.morisky@scalacartafoundation.org to donate now.');
+    return;
+  }
+  if(btnEl){btnEl.textContent='Redirecting…';btnEl.style.pointerEvents='none';}
+  fetch('https://atlas.adherence.cc/stripe-checkout',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({priceId:priceId,mode:'payment',donationTier:tier,
+      successUrl:window.location.origin+window.location.pathname+'?donated=1',
+      cancelUrl:window.location.origin+window.location.pathname+'#donate'})})
+  .then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});})
+  .then(function(res){
+    if(res.data&&res.data.url){window.location.href=res.data.url;}
+    else{
+      if(btnEl){btnEl.textContent='Donate '+label;btnEl.style.pointerEvents='';}
+      alert('Checkout error: '+(res.data&&res.data.error?res.data.error:'No checkout URL returned')+'\n\nContact philip.morisky@scalacartafoundation.org.');
+    }
+  })
+  .catch(function(err){
+    if(btnEl){btnEl.textContent='Donate '+label;btnEl.style.pointerEvents='';}
+    alert('Network error: '+err.message+'\n\nContact philip.morisky@scalacartafoundation.org.');
+  });
+};
 
 document.querySelectorAll('#disease-chips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('sel');});});
 document.querySelectorAll('#inst-chips .chip').forEach(function(c){c.addEventListener('click',function(){
