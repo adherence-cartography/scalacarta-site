@@ -647,6 +647,17 @@ section{position:relative;}
 .tier-price-note{font-size:0.68rem;color:var(--muted);margin-bottom:14px;line-height:1.6;}
 .tier-price-custom{font-family:'IBM Plex Mono',monospace;font-size:1.05rem;letter-spacing:0.02em;color:var(--bright);margin:14px 0 3px;}
 
+/* ── LMIC pricing toggle ───────────────────────────────────────────────── */
+.lmic-toggle-row{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 32px;}
+.lmic-toggle-label{font-size:0.8rem;color:var(--muted);}
+.lmic-toggle-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 18px;color:var(--muted);font-size:0.8rem;cursor:pointer;transition:background 0.2s,border-color 0.2s,color 0.2s;font-family:inherit;}
+.lmic-toggle-btn:hover{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3);color:#10b981;}
+.lmic-toggle-btn.active{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.45);color:#10b981;}
+.lmic-toggle-yes{display:none;}
+.lmic-toggle-btn.active .lmic-toggle-no{display:none;}
+.lmic-toggle-btn.active .lmic-toggle-yes{display:inline;}
+/* ── Checkout success banner ───────────────────────────────────────────── */
+#checkout-success-banner{display:none;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);border-radius:12px;padding:18px 24px;text-align:center;margin-bottom:32px;color:#10b981;font-size:0.95rem;}
 /* ── Which-tier decision guide ─────────────────────────────────────────── */
 #which-tier{padding:0 0 80px;}
 .decide-header{text-align:center;margin-bottom:44px;}
@@ -1841,6 +1852,20 @@ footer{
       </p>
     </div>
 
+    <!-- Checkout success banner -->
+    <div id="checkout-success-banner">
+      Your TESSERA membership payment was received. Check your email for onboarding instructions. Questions: <a href="mailto:consortium@scalacartafoundation.org" style="color:#10b981;">consortium@scalacartafoundation.org</a>
+    </div>
+
+    <!-- LMIC pricing toggle -->
+    <div class="lmic-toggle-row">
+      <span class="lmic-toggle-label">Pricing for LMIC institutions:</span>
+      <button class="lmic-toggle-btn" id="lmic-toggle-btn" onclick="toggleLMIC()">
+        <span class="lmic-toggle-no">Show LMIC rates</span>
+        <span class="lmic-toggle-yes">LMIC rates active</span>
+      </button>
+    </div>
+
     <!-- Tier tab strip -->
     <div class="tier-tab-strip" id="tier-tab-strip">
       <button class="tier-tab tt-student" onclick="switchTierTab('student',this)">
@@ -1875,8 +1900,8 @@ footer{
         <div class="tier-name">Student<br>Affiliate</div>
         <div class="tier-target">Graduate Students &middot; Clinical Trainees</div>
         <div class="tier-price">
-          <span class="tier-price-amt">$199</span>
-          <span class="tier-price-period">/year</span>
+          <span class="tier-price-amt" id="price-tier-4">$199</span>
+          <span class="tier-price-period" id="period-tier-4">/year</span>
         </div>
         <div class="tier-price-note">TESSERA Research Grant available — see below &nbsp;&middot;&nbsp; Institutional email required</div>
         <div class="tier-divider"></div>
@@ -1891,7 +1916,7 @@ footer{
           <li><span class="tier-check">&#10003;</span> PEACS interpretation training</li>
           <li><span class="tier-check">&#10003;</span> Pathway to Research Affiliate upon degree completion</li>
         </ul>
-        <a href="#apply" class="tier-cta" onclick="pickTier(4)">Apply Now</a>
+        <a href="#apply" class="tier-cta" id="cta-tier-4" onclick="return sTierClick(4,event)">Subscribe Now</a>
       </div>
 
       <!-- Tier 2: Research Affiliate — Most Popular -->
@@ -1902,7 +1927,7 @@ footer{
         <div class="tier-name">Research<br>Affiliate</div>
         <div class="tier-target">Independent Researchers &middot; Labs</div>
         <div class="tier-price">
-          <span class="tier-price-amt">$499</span>
+          <span class="tier-price-amt" id="price-tier-3">$499</span>
           <span class="tier-price-period">/year</span>
         </div>
         <div class="tier-price-note">3 researcher accounts (access for up to 3 team members) &nbsp;&middot;&nbsp; LMIC from $49/yr</div>
@@ -1917,7 +1942,7 @@ footer{
           <li><span class="tier-check">&#10003;</span> Structured real-world data export (CSV, SPSS-ready)</li>
           <li><span class="tier-check">&#10003;</span> Acknowledgment in TESSERA consortium publications</li>
         </ul>
-        <a href="#apply" class="tier-cta" onclick="pickTier(3)">Apply Now</a>
+        <a href="#apply" class="tier-cta" id="cta-tier-3" onclick="return sTierClick(3,event)">Subscribe Now</a>
       </div>
 
       <!-- Tier 3: Validation Partner -->
@@ -1927,7 +1952,7 @@ footer{
         <div class="tier-name">Validation<br>Partner</div>
         <div class="tier-target">Research Centers &middot; Clinical Departments</div>
         <div class="tier-price">
-          <span class="tier-price-amt">$1,999</span>
+          <span class="tier-price-amt" id="price-tier-2">$1,999</span>
           <span class="tier-price-period">/year</span>
         </div>
         <div class="tier-price-note">Annual membership dues &nbsp;&middot;&nbsp; LMIC from $199/yr</div>
@@ -1943,7 +1968,7 @@ footer{
           <li><span class="tier-check">&#10003;</span> Research Exchange posting rights</li>
           <li><span class="tier-check">&#10003;</span> PEACS phenotype comparison tools</li>
         </ul>
-        <a href="#apply" class="tier-cta" onclick="pickTier(2)">Apply Now</a>
+        <a href="#apply" class="tier-cta" id="cta-tier-2" onclick="return sTierClick(2,event)">Subscribe Now</a>
       </div>
 
       <!-- Tier 4: Institutional Partner -->
@@ -1953,7 +1978,7 @@ footer{
         <div class="tier-name">Institutional<br>Partner</div>
         <div class="tier-target">Universities &middot; Health Systems &middot; Hospitals</div>
         <div class="tier-price">
-          <span class="tier-price-amt">$5,999</span>
+          <span class="tier-price-amt" id="price-tier-1">$5,999</span>
           <span class="tier-price-period">/year</span>
         </div>
         <div class="tier-price-note">Invoice &amp; PO accepted &nbsp;&middot;&nbsp; LMIC institutions from $999/yr</div>
@@ -1970,7 +1995,7 @@ footer{
           <li><span class="tier-check">&#10003;</span> TESSERA Summit invitation (inaugural event, 2027)</li>
           <li><span class="tier-check">&#10003;</span> Input into ATLAS platform development roadmap</li>
         </ul>
-        <a href="#apply" class="tier-cta" onclick="pickTier(1)">Apply Now</a>
+        <a href="#apply" class="tier-cta" id="cta-tier-1" onclick="return sTierClick(1,event)">Subscribe Now</a>
       </div>
 
       <!-- Tier 5: Industry Partner -->
@@ -3408,6 +3433,79 @@ window.pickTier=function(id){
   selTier=id;
   TIERS.forEach(function(t){var el=document.getElementById('to'+t.id);if(el)el.classList.toggle('sel',t.id===id);});
 };
+
+// ── Stripe Checkout integration ──────────────────────────────────────────────
+var STRIPE_PRICES={
+  standard:{
+    1:'price_1TyOP3DCONQBAuS4cBDLdobx',
+    2:'price_1TyOOmDCONQBAuS4h9G9h8JR',
+    3:'price_1TyOO2DCONQBAuS4ZqQwgRla',
+    4:'price_1TyOOMDCONQBAuS4U0L6umrb',
+  },
+  lmic:{
+    1:'price_1TyOPtDCONQBAuS43H5414OX',
+    2:'price_1TyOPfDCONQBAuS4cgcKgPm2',
+    3:'price_1TyOPPDCONQBAuS451jqqL6O',
+  }
+};
+var TIER_DISPLAY_PRICES={
+  standard:{1:'$5,999',2:'$1,999',3:'$499',4:'$199'},
+  lmic:    {1:'$999',  2:'$199',  3:'$49', 4:'Free'}
+};
+var lmicMode=false;
+
+window.toggleLMIC=function(){
+  lmicMode=!lmicMode;
+  var btn=document.getElementById('lmic-toggle-btn');
+  if(btn) btn.classList.toggle('active',lmicMode);
+  [1,2,3,4].forEach(function(id){
+    var amtEl=document.getElementById('price-tier-'+id);
+    if(amtEl) amtEl.textContent=TIER_DISPLAY_PRICES[lmicMode?'lmic':'standard'][id];
+  });
+  var perEl=document.getElementById('period-tier-4');
+  if(perEl) perEl.textContent=lmicMode?'':'/year';
+  var ctaEl=document.getElementById('cta-tier-4');
+  if(ctaEl) ctaEl.textContent=lmicMode?'Apply for Free Grant':'Subscribe Now';
+};
+
+window.sTierClick=function(tierId,event){
+  if(lmicMode&&tierId===4){pickTier(4);return true;}
+  event.preventDefault();
+  var prices=lmicMode?STRIPE_PRICES.lmic:STRIPE_PRICES.standard;
+  var priceId=prices[tierId];
+  if(!priceId){pickTier(tierId);window.location.href='#apply';return false;}
+  var ctaEl=document.getElementById('cta-tier-'+tierId);
+  if(ctaEl){ctaEl.textContent='Redirecting…';ctaEl.style.pointerEvents='none';}
+  fetch('https://atlas.adherence.cc/stripe-checkout',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      priceId:priceId,
+      successUrl:window.location.origin+window.location.pathname+'?checkout=success',
+      cancelUrl:window.location.origin+window.location.pathname+'#membership'
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data.url){window.location.href=data.url;}
+    else{
+      if(ctaEl){ctaEl.textContent='Subscribe Now';ctaEl.style.pointerEvents='';}
+      alert('Unable to start checkout. Please contact consortium@scalacartafoundation.org.');
+    }
+  })
+  .catch(function(){
+    if(ctaEl){ctaEl.textContent='Subscribe Now';ctaEl.style.pointerEvents='';}
+    alert('Network error. Please try again or contact consortium@scalacartafoundation.org.');
+  });
+  return false;
+};
+
+(function(){
+  if(window.location.search.indexOf('checkout=success')!==-1){
+    var banner=document.getElementById('checkout-success-banner');
+    if(banner){banner.style.display='block';window.history.replaceState({},'',window.location.pathname);}
+  }
+})();
 
 document.querySelectorAll('#disease-chips .chip').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('sel');});});
 document.querySelectorAll('#inst-chips .chip').forEach(function(c){c.addEventListener('click',function(){
