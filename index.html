@@ -3772,7 +3772,7 @@ window._grantsToggleAll=_grantsToggleAll;
 
 _fdb.ref('tessera_grants').on('value',function(snap){
   var raw=snap.val()||{};
-  var grants=Object.values(raw).filter(function(g){return g&&(g.study_title||g.recipient);});
+  var grants=Object.values(raw).filter(function(g){return g&&typeof g==='object'&&(g.study_title||g.recipient||g.institution||g.country||g.granted_at);});
   grants.sort(function(a,b){return(b.granted_at||b.awarded_date||0)-(a.granted_at||a.awarded_date||0);});
 
   var totalValue=grants.reduce(function(s,g){return s+_calcGrantValue(g);},0);
