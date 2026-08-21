@@ -1440,6 +1440,12 @@ footer{
 .tier-opt-name{font-family:var(--font-mono);font-size:0.70rem;font-weight:600;color:var(--text);margin-bottom:3px;transition:color 0.17s;}
 .tier-opt.sel .tier-opt-name{color:var(--tc);}
 .tier-opt-note{font-size:0.68rem;color:var(--dim);line-height:1.44;}
+.tier-opt.dimmed{opacity:0.22;cursor:not-allowed;pointer-events:none;}
+.grant-tier-banner{display:none;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.28);border-radius:10px;padding:14px 18px;margin-bottom:14px;}
+.grant-tier-banner.show{display:block;}
+.grant-tier-banner-kicker{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(16,185,129,0.65);margin-bottom:5px;}
+.grant-tier-banner-title{font-size:0.86rem;font-weight:600;color:#10b981;margin-bottom:4px;}
+.grant-tier-banner-note{font-size:0.73rem;color:var(--dim);line-height:1.6;}
 .os-check-box{
   background:rgba(249,115,22,0.04);border:1px solid rgba(249,115,22,0.18);
   border-radius:9px;padding:17px 19px;margin-top:14px;
@@ -2876,8 +2882,13 @@ footer{
         <!-- Step 3 -->
         <div class="form-step" id="fs3">
           <div class="step-h">Step 3 of 3 — Membership &amp; Access</div>
+          <div id="grant-tier-banner" class="grant-tier-banner">
+            <div class="grant-tier-banner-kicker">TESSERA LMIC Research Grant</div>
+            <div class="grant-tier-banner-title">Your tier has been set to Research Affiliate — no payment required.</div>
+            <div class="grant-tier-banner-note">The Board will review your application within 5 business days. If approved, your ATLAS workspace key arrives by email ready to use immediately. Paid membership tiers are shown below for reference only.</div>
+          </div>
           <div class="field" style="margin-bottom:16px;">
-            <label>Membership Tier <span class="r">*</span></label>
+            <label id="tier-picker-label">Membership Tier <span class="r">*</span></label>
             <div class="tier-picker" id="tier-picker"></div>
           </div>
 
@@ -3601,6 +3612,35 @@ window.pickTier=function(id){
   TIERS.forEach(function(t){var el=document.getElementById('to'+t.id);if(el)el.classList.toggle('sel',t.id===id);});
 };
 
+function _setGrantPathway(active){
+  var banner=document.getElementById('grant-tier-banner');
+  var lbl=document.getElementById('tier-picker-label');
+  if(active){
+    selTier=3;
+    if(picker){
+      picker.innerHTML=TIERS.map(function(t){
+        var isGrant=t.id===3;
+        return '<div class="tier-opt'+(isGrant?' sel':' dimmed')+'" id="to'+t.id+'" style="--tc:'+t.color+';">'
+          +'<div class="tier-opt-name">'+t.label+(isGrant?' <span style="font-size:0.60rem;font-weight:400;color:#10b981;"> · Grant</span>':'')+'</div>'
+          +'<div class="tier-opt-note">'+t.note+'</div></div>';
+      }).join('');
+    }
+    if(banner)banner.classList.add('show');
+    if(lbl)lbl.innerHTML='Membership Tier <span style="font-family:var(--font-mono);font-size:0.62rem;color:#10b981;font-weight:400;text-transform:uppercase;letter-spacing:0.12em;"> · Grant Pathway</span>';
+  }else{
+    selTier=null;
+    if(picker){
+      picker.innerHTML=TIERS.map(function(t){
+        return '<div class="tier-opt" id="to'+t.id+'" style="--tc:'+t.color+';" onclick="pickTier('+t.id+')">'
+          +'<div class="tier-opt-name">'+t.label+'</div>'
+          +'<div class="tier-opt-note">'+t.note+'</div></div>';
+      }).join('');
+    }
+    if(banner)banner.classList.remove('show');
+    if(lbl)lbl.innerHTML='Membership Tier <span class="r">*</span>';
+  }
+}
+
 // ── Stripe Checkout integration ──────────────────────────────────────────────
 var STRIPE_PRICES={
   standard:{
@@ -3766,6 +3806,8 @@ window.nextStep=function(from){
     if(!country){err.textContent='Please select your country.';return;}
     if(!role){err.textContent='Please select your role.';return;}
     if(!study){err.textContent='A study title or research focus is required.';return;}
+    var osChecked=document.getElementById('f-os')&&document.getElementById('f-os').checked;
+    _setGrantPathway(!!osChecked);
     goStep(3);
   }
 };
