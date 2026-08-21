@@ -1454,6 +1454,11 @@ footer{
 .os-check-lbl input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;accent-color:#f97316;cursor:pointer;}
 .os-check-text strong{font-family:var(--font-mono);font-size:0.70rem;font-weight:600;color:#f97316;display:block;margin-bottom:4px;letter-spacing:0.06em;}
 .os-check-text p{font-size:0.74rem;color:var(--muted);line-height:1.54;}
+.hardship-box-inner{background:rgba(148,163,184,0.04);border:1px solid rgba(148,163,184,0.18);border-radius:9px;padding:17px 19px;}
+.hardship-check-lbl{display:flex;align-items:flex-start;gap:11px;cursor:pointer;}
+.hardship-check-lbl input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;accent-color:#94a3b8;cursor:pointer;}
+.hardship-check-text strong{font-family:var(--font-mono);font-size:0.68rem;font-weight:600;color:#94a3b8;display:block;margin-bottom:4px;letter-spacing:0.06em;}
+.hardship-check-text p{font-size:0.74rem;color:var(--muted);line-height:1.54;}
 .terms-lbl{display:flex;align-items:flex-start;gap:9px;margin-top:14px;font-size:0.74rem;color:var(--muted);line-height:1.5;cursor:pointer;}
 .terms-lbl input[type=checkbox]{width:15px;height:15px;flex-shrink:0;margin-top:2px;accent-color:var(--pe);cursor:pointer;}
 .terms-lbl a{color:var(--pe);text-decoration:none;}
@@ -2860,6 +2865,22 @@ footer{
             <textarea id="f-desc" placeholder="Who are your patients, and what adherence challenge do they face? Describe the gap in your setting — why this evidence does not yet exist here, and what your study would contribute. The more specific you are about your population, condition, and context, the stronger your case to the Board." style="min-height:110px;"></textarea>
           </div>
 
+          <div id="hardship-box" style="display:none;margin-top:16px;">
+            <div class="hardship-box-inner">
+              <label class="hardship-check-lbl">
+                <input type="checkbox" id="f-hardship" onchange="_toggleHardshipDesc(this.checked)"/>
+                <div class="hardship-check-text">
+                  <strong>Financial Hardship Exception Request</strong>
+                  <p>Your institution is not in a World Bank LMIC-eligible region, but you have a documented financial constraint that prevents you from paying membership dues. Check this box to request a Board review of your situation. If approved, a reduced or waived rate will be arranged by email.</p>
+                </div>
+              </label>
+              <div id="hardship-desc-wrap" style="display:none;margin-top:12px;">
+                <label style="font-family:var(--font-mono);font-size:0.63rem;color:var(--dim);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px;">Describe your constraint <span class="r">*</span></label>
+                <textarea id="f-hardship-desc" placeholder="e.g. Unfunded independent researcher, grant denial, institutional policy on external subscriptions, personal financial hardship — be specific so the Board can make an informed decision." style="min-height:76px;"></textarea>
+              </div>
+            </div>
+          </div>
+
           <div id="os-box" style="display:none;margin-top:16px;">
             <div class="os-check-box">
               <label class="os-check-lbl">
@@ -3586,7 +3607,17 @@ if(csel){COUNTRIES.forEach(function(c){var o=document.createElement('option');o.
 
 window.checkLMIC=function(){
   var v=document.getElementById('f-country').value;
-  document.getElementById('os-box').style.display=LMIC.has(v)?'block':'none';
+  var isLmic=v&&LMIC.has(v);
+  document.getElementById('os-box').style.display=isLmic?'block':'none';
+  document.getElementById('hardship-box').style.display=(v&&!isLmic)?'block':'none';
+  if(!isLmic){
+    var hc=document.getElementById('f-hardship');
+    if(hc)hc.checked=false;
+    document.getElementById('hardship-desc-wrap').style.display='none';
+  }
+};
+window._toggleHardshipDesc=function(on){
+  document.getElementById('hardship-desc-wrap').style.display=on?'block':'none';
 };
 
 var TIERS=[
@@ -3806,6 +3837,11 @@ window.nextStep=function(from){
     if(!country){err.textContent='Please select your country.';return;}
     if(!role){err.textContent='Please select your role.';return;}
     if(!study){err.textContent='A study title or research focus is required.';return;}
+    var hardshipChecked=document.getElementById('f-hardship')&&document.getElementById('f-hardship').checked;
+    if(hardshipChecked){
+      var hdesc=document.getElementById('f-hardship-desc').value.trim();
+      if(!hdesc){err.textContent='Please describe your financial constraint so the Board can review your request.';return;}
+    }
     var osChecked=document.getElementById('f-os')&&document.getElementById('f-os').checked;
     _setGrantPathway(!!osChecked);
     goStep(3);
@@ -3852,6 +3888,8 @@ window.submitApp=async function(){
     description:document.getElementById('f-desc').value.trim(),
     open_science:openScience,
     lmic_eligible:lmicEligible,
+    hardship_request:!!(document.getElementById('f-hardship')&&document.getElementById('f-hardship').checked),
+    hardship_explanation:(document.getElementById('f-hardship-desc')?document.getElementById('f-hardship-desc').value.trim():''),
     referral:document.getElementById('f-ref').value,
     message:document.getElementById('f-msg').value.trim(),
     status:'pending',
@@ -3867,7 +3905,8 @@ window.submitApp=async function(){
     succ.style.display='block';
     document.getElementById('s-ref').textContent=ref;
     var _sbody=document.getElementById('s-body');
-    if(_sbody){_sbody.innerHTML='Thank you for applying to TESSERA GRC. Your application has been submitted to the Scala Carta Foundation for review. A confirmation email will arrive within 24 hours, and a membership decision within '+(lmicEligible?'<strong style="color:#10b981;">1&#8211;2 business days</strong> (LMIC Research Grant pathway).':'3&#8211;5 business days.');}
+    var _hardshipFlag=!!(document.getElementById('f-hardship')&&document.getElementById('f-hardship').checked);
+    if(_sbody){var _timeline=lmicEligible?'<strong style="color:#10b981;">1&#8211;2 business days</strong> (LMIC Research Grant pathway).':_hardshipFlag?'3&#8211;5 business days. Your hardship exception request has been noted and will be reviewed by the Board alongside your application.':'3&#8211;5 business days.';_sbody.innerHTML='Thank you for applying to TESSERA GRC. Your application has been submitted to the Scala Carta Foundation for review. A confirmation email will arrive within 24 hours, and a membership decision within '+_timeline;}
     document.querySelector('.form-shell').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){
     err.textContent='Submission failed — please try again or contact philip.morisky@scalacartafoundation.org.';
