@@ -2860,7 +2860,7 @@ footer{
             </div>
           </div>
           <div class="field">
-            <label>Research Statement</label>
+            <label>Research Statement <span class="r">*</span></label>
             <p style="font-size:0.78rem;color:var(--dim);line-height:1.6;margin:4px 0 8px;">The Board reads this when considering eligibility for the TESSERA LMIC Grant. Tell us who your patients are, what medication adherence challenge they face, and why this evidence is scarce or absent in your setting. Specific and honest answers carry more weight than broad statements of intent.</p>
             <textarea id="f-desc" placeholder="Who are your patients, and what adherence challenge do they face? Describe the gap in your setting — why this evidence does not yet exist here, and what your study would contribute. The more specific you are about your population, condition, and context, the stronger your case to the Board." style="min-height:110px;"></textarea>
           </div>
@@ -2909,8 +2909,9 @@ footer{
             <div class="grant-tier-banner-note">The Board will review your application within 5 business days. If approved, your ATLAS workspace key arrives by email ready to use immediately. Paid membership tiers are shown below for reference only.</div>
           </div>
           <div class="field" style="margin-bottom:16px;">
-            <label id="tier-picker-label">Membership Tier <span class="r">*</span></label>
+            <label id="tier-picker-label">Preferred Tier <span class="r">*</span></label>
             <div class="tier-picker" id="tier-picker"></div>
+            <div style="font-size:0.72rem;color:#6b7280;margin-top:6px;">Your preferred tier is a request. The board reviews all applications and may adjust your tier during the approval process.</div>
           </div>
 
           <div class="field" style="margin-top:20px;">
@@ -3668,7 +3669,7 @@ function _setGrantPathway(active){
       }).join('');
     }
     if(banner)banner.classList.remove('show');
-    if(lbl)lbl.innerHTML='Membership Tier <span class="r">*</span>';
+    if(lbl)lbl.innerHTML='Preferred Tier <span class="r">*</span>';
   }
 }
 
@@ -3833,10 +3834,12 @@ window.nextStep=function(from){
     var country=document.getElementById('f-country').value;
     var role=document.getElementById('f-role').value;
     var study=document.getElementById('f-study').value.trim();
+    var desc=document.getElementById('f-desc').value.trim();
     if(!inst){err.textContent='Institution name is required.';return;}
     if(!country){err.textContent='Please select your country.';return;}
     if(!role){err.textContent='Please select your role.';return;}
     if(!study){err.textContent='A study title or research focus is required.';return;}
+    if(desc.length<50){err.textContent='A Research Statement is required. Please describe your patients, the adherence challenge they face, and why this evidence is needed in your setting (minimum 50 characters).';return;}
     var hardshipChecked=document.getElementById('f-hardship')&&document.getElementById('f-hardship').checked;
     if(hardshipChecked){
       var hdesc=document.getElementById('f-hardship-desc').value.trim();
@@ -3852,7 +3855,7 @@ window.prevStep=function(from){goStep(from-1);};
 
 window.submitApp=async function(){
   var err=document.getElementById('e3');err.textContent='';
-  if(!selTier){err.textContent='Please select a membership tier.';return;}
+  if(!selTier){err.textContent='Please select your preferred tier.';return;}
   if(!document.getElementById('f-terms').checked){err.textContent='Please accept the membership terms to proceed.';return;}
   var btn=document.getElementById('btn-sub');
   btn.disabled=true;btn.textContent='Submitting…';
